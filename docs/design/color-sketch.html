@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>LuminaBox · phác thảo màu</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Merriweather:wght@700;900&display=swap" rel="stylesheet" />
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { font-size: 15px; }
+  body { font-family: "Inter", system-ui, sans-serif; background: #e9e6df; color: #201c1a; padding: 28px; -webkit-font-smoothing: antialiased; }
+  h1 { font-family: "Merriweather", Georgia, serif; font-size: 1.6rem; }
+  .intro { max-width: 70rem; margin-bottom: 24px; color: #514a3f; font-size: .95rem; line-height: 1.55; }
+  .intro b { color: #201c1a; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(640px, 1fr)); gap: 28px; }
+  .frame { background: #fff; border-radius: 14px; padding: 16px; box-shadow: 0 2px 14px rgba(0,0,0,.08); }
+  .meta h2 { font-size: 1.05rem; display: flex; align-items: center; gap: 8px; }
+  .tag { font-size: .7rem; font-weight: 700; padding: 2px 8px; border-radius: 999px; background: #d4a72c; color: #3a2a00; }
+  .meta p { font-size: .85rem; color: #514a3f; margin: 4px 0 10px; line-height: 1.5; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+  .chip { display: flex; align-items: center; gap: 6px; font-size: .7rem; color: #514a3f; border: 1px solid #e4ddc9; border-radius: 999px; padding: 2px 8px 2px 3px; }
+  .chip i { width: 16px; height: 16px; border-radius: 50%; border: 1px solid rgba(0,0,0,.15); display: block; }
+  .chip code { font-family: ui-monospace, Menlo, Consolas, monospace; color: #201c1a; }
+  .scale-box { width: calc(1280px * var(--s)); height: calc(960px * var(--s)); --s: .5; overflow: hidden; border-radius: 8px; border: 1px solid rgba(0,0,0,.12); }
+  .stage { width: 1280px; height: 960px; transform: scale(var(--s)); transform-origin: top left; position: relative; display: flex; flex-direction: column; overflow: hidden; background: var(--bg); color: var(--ink); }
+
+  .sky { position: absolute; inset: 0; pointer-events: none; }
+  .blob { position: absolute; display: block; }
+  .b1 { top: -180px; left: -140px; width: 560px; height: 440px; background: color-mix(in oklab, var(--primary) 24%, transparent); border-radius: 58% 42% 47% 53% / 52% 46% 54% 48%; }
+  .b2 { top: 80px; right: -200px; width: 500px; height: 500px; background: color-mix(in oklab, var(--accent) 30%, transparent); border-radius: 44% 56% 63% 37% / 46% 58% 42% 54%; }
+  .b3 { bottom: 160px; left: 120px; width: 420px; height: 300px; background: color-mix(in oklab, var(--primary) 16%, transparent); border-radius: 62% 38% 41% 59% / 55% 43% 57% 45%; }
+  .rail { position: absolute; top: 0; bottom: 0; left: 50%; width: 1140px; transform: translateX(-50%); background: color-mix(in oklab, color-mix(in oklab, var(--bg) 80%, var(--primary)) 12%, transparent); }
+  .rail::before, .rail::after { content: ""; position: absolute; top: 0; bottom: 0; width: 2px; background: linear-gradient(180deg, transparent, color-mix(in oklab, var(--primary) 35%, transparent) 12%, color-mix(in oklab, var(--primary) 35%, transparent) 88%, transparent); }
+  .rail::before { left: 0; } .rail::after { right: 0; }
+
+  .hd { position: relative; z-index: 2; color: var(--on-bar); box-shadow: 0 2px 10px rgba(0,0,0,.18); }
+  .hd .bar { background: var(--bar); }
+  .hd.grad .bar { background: linear-gradient(180deg, var(--bar), var(--bar2)); }
+  .wrap { width: 1140px; margin: 0 auto; padding: 0 32px; display: flex; align-items: center; }
+  .topbar { height: 32px; font-size: 12px; background: rgba(0,0,0,.16); color: var(--on-bar-dim); border-bottom: 1px solid rgba(255,255,255,.1); }
+  .topbar .wrap { justify-content: space-between; }
+  .mainbar { height: 56px; gap: 28px; }
+  .logo { display: flex; align-items: center; gap: 8px; font-family: "Merriweather", Georgia, serif; font-weight: 900; font-size: 20px; color: var(--on-bar-strong); }
+  .logo i { width: 32px; height: 32px; border-radius: 50%; background: var(--soft); display: grid; place-items: center; color: var(--bar); }
+  .search { flex: 1; height: 38px; border-radius: 9px; background: var(--card); border: 1px solid var(--line); display: flex; align-items: center; gap: 8px; padding: 0 12px; color: var(--ink3); font-size: 13px; }
+  .acts { display: flex; gap: 6px; }
+  .act { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 2px 12px; font-size: 11px; color: var(--on-bar-dim); }
+  .navbar { height: 40px; border-top: 1px solid rgba(255,255,255,.1); font-size: 13px; font-weight: 500; }
+  .navbar .wrap { gap: 28px; height: 100%; }
+  .nav-item { height: 100%; display: flex; align-items: center; border-bottom: 2px solid transparent; color: var(--on-bar-dim); }
+  .nav-item.on { color: var(--on-bar-strong); border-color: var(--accent); }
+  .hd.hair::after { content: ""; display: block; height: 2px; background: linear-gradient(90deg, transparent, var(--accent), transparent); opacity: .85; }
+
+  .hd.split .topbar, .hd.split .navbar { background: var(--card); color: var(--ink2); border-color: var(--line); }
+  .hd.split .nav-item { color: var(--ink2); }
+  .hd.split .nav-item.on { color: var(--primary); border-color: var(--primary); }
+  .hd.split .topbar { background: color-mix(in oklab, var(--card) 70%, var(--bg)); }
+
+  .body { position: relative; z-index: 1; width: 1140px; margin: 0 auto; padding: 24px 32px 0; display: flex; flex-direction: column; gap: 22px; }
+  .tiles { display: grid; grid-template-columns: 2fr 1fr; grid-template-rows: 150px 130px; gap: 14px; }
+  .tile { border-radius: 16px; position: relative; overflow: hidden; padding: 18px; display: flex; flex-direction: column; justify-content: flex-end; box-shadow: 0 1px 2px rgba(0,0,0,.05), 0 4px 16px rgba(0,0,0,.07); }
+  .tile h3 { font-family: "Merriweather", Georgia, serif; font-weight: 900; font-size: 18px; }
+  .tile p { font-size: 12px; margin-top: 3px; opacity: .85; }
+  .tile.big { grid-row: span 2; background: linear-gradient(135deg, var(--deep) 0%, var(--bar) 100%); color: #fff; }
+  .tile.big .pill { align-self: flex-start; margin-top: 12px; background: var(--soft); color: var(--bar); font-size: 12px; font-weight: 600; padding: 6px 14px; border-radius: 999px; }
+  .tile.light { background: linear-gradient(135deg, color-mix(in oklab, var(--bg) 70%, var(--soft)), var(--soft)); color: var(--primary2); }
+  .tile.light p { color: var(--ink2); opacity: 1; }
+  .tile.hot { background: linear-gradient(135deg, var(--primary), var(--primary2)); color: #fff; }
+  .tile .glow { position: absolute; right: -30px; top: -30px; width: 140px; height: 140px; border-radius: 50%; background: radial-gradient(circle, rgba(255,255,255,.22), transparent 70%); }
+
+  .sec-h { display: flex; justify-content: space-between; align-items: end; }
+  .sec-h h4 { font-family: "Merriweather", Georgia, serif; font-weight: 900; font-size: 17px; color: var(--primary2); }
+  .sec-h span { font-size: 12px; font-weight: 600; color: var(--primary); }
+  .cats { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; margin-top: 10px; }
+  .cat { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 12px 6px; display: flex; flex-direction: column; align-items: center; gap: 6px; font-size: 12px; font-weight: 500; color: var(--ink2); box-shadow: 0 1px 2px rgba(0,0,0,.04); }
+  .cat i { width: 34px; height: 34px; border-radius: 50%; background: var(--soft); display: grid; place-items: center; color: var(--primary); }
+  .partner { border-radius: 16px; padding: 18px 22px; background: linear-gradient(135deg, var(--primary2), var(--primary)); color: #fff; display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+  .partner h4 { font-family: "Merriweather", Georgia, serif; font-weight: 900; font-size: 17px; }
+  .partner p { font-size: 12px; opacity: .85; margin-top: 3px; max-width: 520px; }
+  .btn { background: var(--card); color: var(--primary); font-weight: 600; font-size: 12px; padding: 8px 16px; border-radius: 8px; white-space: nowrap; }
+  .btn.solid { background: var(--primary); color: var(--on-primary); box-shadow: 0 4px 14px color-mix(in oklab, var(--primary) 35%, transparent); }
+
+  .ft { margin-top: auto; position: relative; z-index: 2; background: var(--bar); color: var(--on-bar-dim); }
+  .ft.lift { box-shadow: 0 -10px 24px rgba(0,0,0,.08); }
+  .ft.hair::before { content: ""; display: block; height: 2px; background: linear-gradient(90deg, transparent, var(--accent), transparent); opacity: .85; }
+  .ft .cols { width: 1140px; margin: 0 auto; padding: 26px 32px; display: grid; grid-template-columns: 1.3fr 1fr 1fr; gap: 30px; font-size: 12px; }
+  .ft h5 { color: var(--on-bar-strong); font-size: 13px; margin-bottom: 8px; }
+  .ft .brand { font-family: "Merriweather", Georgia, serif; font-weight: 900; font-size: 19px; color: var(--on-bar-strong); margin-bottom: 8px; }
+  .ft li { list-style: none; margin-bottom: 6px; }
+  .ft .copy { border-top: 1px solid rgba(255,255,255,.1); text-align: center; font-size: 11px; padding: 10px; opacity: .7; }
+  .ft.split { background: var(--card); color: var(--ink2); border-top: 1px solid var(--line); }
+  .ft.split h5, .ft.split .brand { color: var(--primary2); }
+  .ft.split .copy { border-color: var(--line); }
+  svg { width: 1em; height: 1em; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+</style>
+</head>
+<body>
+  <h1>LuminaBox · phác thảo màu</h1>
+  <p class="intro">
+    Mỗi khung là cùng một bố cục (header 3 tầng, dải nội dung có mây nền, ô tính năng, danh mục, khối đối tác, footer) với một gam màu khác nhau.
+    Khung <b>A</b> là màu hiện tại để so sánh. Chỉ là bản phác: các nút không hoạt động. Hãy nhìn độ "nổi" của hai dải trên và dưới so với phần giữa.
+    Dưới mỗi khung có bảng màu và tên vai trò của từng màu, để sau này đổi thẳng vào token trong <code>index.css</code>.
+  </p>
+  <div class="grid" id="grid"></div>
+
+<script>
+  const ICON = {
+    moon: '<svg viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>',
+    search: '<svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>',
+    spark: '<svg viewBox="0 0 24 24"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/></svg>',
+    user: '<svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>',
+    cart: '<svg viewBox="0 0 24 24"><circle cx="9" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/><path d="M2 3h3l2.7 11.4a2 2 0 0 0 2 1.6h7.6a2 2 0 0 0 2-1.5L21 7H6"/></svg>',
+    truck: '<svg viewBox="0 0 24 24"><path d="M2 6h12v10H2zM14 10h4l3 3v3h-7z"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg>',
+  };
+
+  const PALETTES = [
+    { key: "A", name: "Hiện tại", tag: "", note: "Đỏ đậm #7a1418, rất bão hoà. Đây là mốc để so sánh.",
+      c: { bar: "#7a1418", bar2: "#7a1418", deep: "#2b1214", onBarStrong: "#ffffff", onBarDim: "rgba(246,226,200,.85)", accent: "#d4a72c", bg: "#f6efdf", card: "#fcf8ee", line: "#e4ddc9", ink: "#201c1a", ink2: "#514a3f", ink3: "#8a7f6a", primary: "#a91e22", primary2: "#7a1418", soft: "#f6e2c8", onPrimary: "#ffffff" },
+      cls: {} },
+    { key: "B", name: "Garnet dịu", tag: "đề xuất", note: "Đỏ garnet bớt chói, chuyển sắc nhẹ, đường vàng mảnh và bóng đổ để dải đỏ hoà vào nền; nền giữa ấm hơn một chút.",
+      c: { bar: "#7d2a2d", bar2: "#8c3336", deep: "#341618", onBarStrong: "#ffffff", onBarDim: "rgba(246,226,200,.85)", accent: "#d4a72c", bg: "#f3e4d3", card: "#fbf5ea", line: "#e2d2bc", ink: "#241c1a", ink2: "#554a40", ink3: "#8c7f6c", primary: "#a3262b", primary2: "#7d2a2d", soft: "#f4dcc6", onPrimary: "#ffffff" },
+      cls: { hd: "grad hair", ft: "lift hair" } },
+    { key: "C", name: "Sữa và đỏ điểm", tag: "", note: "Chỉ hàng logo-tìm kiếm màu đỏ; thanh trên và thanh điều hướng màu sữa như MoonCake. Ít khối đỏ nhất, nhưng không còn \"header đỏ\" trọn vẹn.",
+      c: { bar: "#8a1c20", bar2: "#8a1c20", deep: "#2b1214", onBarStrong: "#ffffff", onBarDim: "rgba(246,226,200,.9)", accent: "#d4a72c", bg: "#f6efdf", card: "#fcf8ee", line: "#e4ddc9", ink: "#201c1a", ink2: "#514a3f", ink3: "#8a7f6a", primary: "#a91e22", primary2: "#8a1c20", soft: "#f6e2c8", onPrimary: "#ffffff" },
+      cls: { hd: "split", ft: "split" } },
+    { key: "D", name: "Terracotta", tag: "", note: "Đỏ gạch ấm, nhẹ và gần màu đất nung; hợp với bánh nướng, ít \"đỏ cờ\" hơn.",
+      c: { bar: "#9a4a3a", bar2: "#a9553f", deep: "#3a1d17", onBarStrong: "#ffffff", onBarDim: "rgba(250,230,215,.9)", accent: "#e0b04a", bg: "#f6ebde", card: "#fdf7ee", line: "#e6d6c2", ink: "#2a1f1a", ink2: "#5a4a40", ink3: "#917f6e", primary: "#b5513f", primary2: "#8a3a2c", soft: "#f7dfcf", onPrimary: "#ffffff" },
+      cls: { hd: "grad hair", ft: "lift hair" } },
+    { key: "E", name: "Rượu nâu", tag: "", note: "Nâu đỏ rất sâu, sang và trầm; nền be ấm. Nút chính đỏ rượu.",
+      c: { bar: "#4f2224", bar2: "#5d2a2c", deep: "#220f10", onBarStrong: "#ffffff", onBarDim: "rgba(240,222,198,.85)", accent: "#c9a24a", bg: "#efe4d2", card: "#faf4e8", line: "#dccfb8", ink: "#231b18", ink2: "#4f443b", ink3: "#85786a", primary: "#8a2b2f", primary2: "#5a1f22", soft: "#ecd5bd", onPrimary: "#ffffff" },
+      cls: { hd: "grad hair", ft: "lift hair" } },
+    { key: "F", name: "Đêm trăng", tag: "", note: "Xanh đêm và trăng vàng, hợp tên Lumina và đêm Trung thu. Đổi hẳn nhận diện từ đỏ sang xanh.",
+      c: { bar: "#1c2a48", bar2: "#243558", deep: "#0e1628", onBarStrong: "#ffffff", onBarDim: "rgba(226,232,246,.85)", accent: "#e0b44a", bg: "#f2eee4", card: "#fbf8f1", line: "#dfd9c9", ink: "#1c1f28", ink2: "#454a58", ink3: "#80838f", primary: "#2f4a85", primary2: "#1c2a48", soft: "#dfe6f4", onPrimary: "#ffffff" },
+      cls: { hd: "grad hair", ft: "lift hair" } },
+    { key: "G", name: "Ngọc bích", tag: "", note: "Xanh ngọc đậm với vàng đồng, cảm giác thanh và truyền thống. Đổi hẳn nhận diện từ đỏ sang xanh lục.",
+      c: { bar: "#1f4d3f", bar2: "#285b4b", deep: "#0f2a22", onBarStrong: "#ffffff", onBarDim: "rgba(223,240,232,.88)", accent: "#d4a72c", bg: "#f1ede0", card: "#fbf8ef", line: "#dcd8c5", ink: "#1d221f", ink2: "#464c47", ink3: "#808680", primary: "#2d6a54", primary2: "#1f4d3f", soft: "#d9e8df", onPrimary: "#ffffff" },
+      cls: { hd: "grad hair", ft: "lift hair" } },
+  ];
+
+  const LABELS = [["bar", "Dải trên/dưới"], ["bg", "Nền trang"], ["card", "Thẻ, ô nhập"], ["primary", "Nút chính"], ["soft", "Chữ phụ trên dải, nền icon"], ["accent", "Vàng nhấn"], ["ink", "Chữ chính"]];
+
+  const cssVars = (c) => Object.entries({
+    "--bar": c.bar, "--bar2": c.bar2, "--deep": c.deep, "--on-bar-strong": c.onBarStrong, "--on-bar-dim": c.onBarDim, "--accent": c.accent,
+    "--bg": c.bg, "--card": c.card, "--line": c.line, "--ink": c.ink, "--ink2": c.ink2, "--ink3": c.ink3,
+    "--primary": c.primary, "--primary2": c.primary2, "--soft": c.soft, "--on-primary": c.onPrimary,
+  }).map(([k, v]) => `${k}:${v}`).join(";");
+
+  const stage = (p) => {
+    const hd = p.cls.hd || "", ft = p.cls.ft || "";
+    const split = hd.includes("split");
+    return `
+    <div class="stage" style="${cssVars(p.c)}">
+      <div class="sky"><span class="blob b1"></span><span class="blob b2"></span><span class="blob b3"></span><span class="rail"></span></div>
+      <header class="hd ${hd}">
+        <div class="topbar"><div class="wrap"><span style="display:flex;gap:18px"><span>${ICON.truck} Miễn phí vận chuyển từ 500.000đ</span><span>Đổi trả trong 7 ngày</span></span><span>Tiếng Việt</span></div></div>
+        <div class="bar"><div class="wrap mainbar">
+          <div class="logo"><i>${ICON.moon}</i>LuminaBox</div>
+          <div class="search">${ICON.search} Bạn cần tìm bánh gì?</div>
+          <div class="acts"><div class="act">${ICON.spark}Hiệu ứng</div><div class="act">${ICON.user}Đăng nhập</div><div class="act">${ICON.cart}Giỏ hàng</div></div>
+        </div></div>
+        <div class="${split ? "navbar" : "bar navbar"}"><div class="wrap"><span class="nav-item">Danh mục</span><span class="nav-item on">Trang chủ</span><span class="nav-item">Bánh &amp; hộp Trung thu</span><span class="nav-item">Sản phẩm</span><span class="nav-item">Gian hàng</span><span class="nav-item">Trở thành đối tác</span><span class="nav-item">Giới thiệu</span></div></div>
+      </header>
+      <div class="body">
+        <div class="tiles">
+          <div class="tile big"><span class="glow"></span><h3>Bộ sưu tập hộp quà</h3><p>Chọn từng chiếc bánh nướng, bánh dẻo hoặc tự phối hộp quà theo khẩu vị.</p><span class="pill">Chọn bánh và hộp bánh →</span></div>
+          <div class="tile light"><h3>Trở thành đối tác</h3><p>Thuê gian hàng hoặc bán online.</p></div>
+          <div class="tile hot"><span class="glow"></span><h3>Mua sắm ngay</h3><p>Tìm bánh theo vị, giá và gian hàng.</p></div>
+        </div>
+        <div>
+          <div class="sec-h"><h4>Danh mục bánh</h4><span>Xem tất cả</span></div>
+          <div class="cats">${["Bánh nướng", "Bánh dẻo", "Bánh chay", "Bánh tuyết", "Hộp quà", "Combo"].map((n) => `<div class="cat"><i>${ICON.moon}</i>${n}</div>`).join("")}</div>
+        </div>
+        <div class="partner"><div><h4>Trở thành đối tác của LuminaBox</h4><p>Thuê gian hàng hoặc bán online, LuminaBox lo phần kết nối khách hàng và thanh toán hoa hồng.</p></div><span style="display:flex;gap:10px"><span class="btn">Thuê gian hàng</span><span class="btn">Bán online</span></span></div>
+        <div style="display:flex;gap:10px"><span class="btn solid">Nút chính</span><span class="btn" style="border:1px solid var(--line);background:var(--card)">Nút phụ</span></div>
+      </div>
+      <footer class="ft ${ft}">
+        <div class="cols">
+          <div><div class="brand">LuminaBox</div><p>Sàn thương mại bánh Trung thu nhiều gian hàng, mua bánh lẻ và hộp combo trong một lần thanh toán.</p></div>
+          <div><h5>Dành cho khách hàng</h5><ul><li>Hướng dẫn đặt hàng</li><li>Chính sách đổi trả</li><li>Voucher và khuyến mãi</li></ul></div>
+          <div><h5>Dành cho đối tác</h5><ul><li>Thuê gian hàng</li><li>Bán online cùng LuminaBox</li><li>Chính sách hoa hồng</li></ul></div>
+        </div>
+        <div class="copy">© 2026 LuminaBox. Dự án PRN232.</div>
+      </footer>
+    </div>`;
+  };
+
+  const frame = (p) => `
+    <section class="frame">
+      <div class="meta">
+        <h2>${p.key} · ${p.name} ${p.tag ? `<span class="tag">${p.tag}</span>` : ""}</h2>
+        <p>${p.note}</p>
+        <div class="chips">${LABELS.map(([k, label]) => `<span class="chip"><i style="background:${p.c[k]}"></i>${label} <code>${p.c[k]}</code></span>`).join("")}</div>
+      </div>
+      <div class="scale-box">${stage(p)}</div>
+    </section>`;
+
+  document.getElementById("grid").innerHTML = PALETTES.map(frame).join("");
+</script>
+</body>
+</html>
