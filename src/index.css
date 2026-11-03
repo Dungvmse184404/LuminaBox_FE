@@ -183,6 +183,65 @@
   opacity: 0.85;
 }
 
+.lb-glow-hairline {
+  position: relative;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in oklab, var(--color-gold) 55%, transparent) 22%,
+    color-mix(in oklab, var(--color-gold) 55%, transparent) 78%,
+    transparent
+  );
+}
+
+.lb-glow-hairline-spot {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--color-gold) 30%,
+    color-mix(in oklab, var(--color-gold) 45%, var(--color-card)) 50%,
+    var(--color-gold) 70%,
+    transparent
+  );
+}
+
+.lb-glow-hairline-spot::before,
+.lb-glow-hairline-spot::after {
+  content: "";
+  position: absolute;
+  border-radius: 9999px;
+  pointer-events: none;
+}
+
+.lb-glow-hairline-spot::before {
+  inset: -5px 14%;
+  background: radial-gradient(closest-side, var(--color-gold), transparent);
+  filter: blur(3px);
+}
+
+.lb-glow-hairline-spot::after {
+  inset: -16px 4%;
+  background: radial-gradient(closest-side, color-mix(in oklab, var(--color-gold) 60%, transparent), transparent);
+  filter: blur(8px);
+}
+
+.lb-glow-hairline[data-idle] .lb-glow-hairline-spot {
+  opacity: 0.6;
+}
+
+.lb-glow-hairline[data-animated] .lb-glow-hairline-spot {
+  transition:
+    transform 0.45s var(--ease-soft),
+    width 0.45s var(--ease-soft),
+    opacity 0.3s ease-out;
+}
+
 .lb-ambient {
   overflow: hidden;
   isolation: isolate;
@@ -365,5 +424,9 @@
   .lb-flash,
   .lb-cloud {
     animation: none;
+  }
+
+  .lb-glow-hairline[data-animated] .lb-glow-hairline-spot {
+    transition: none;
   }
 }

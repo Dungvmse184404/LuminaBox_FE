@@ -4,14 +4,13 @@ import { EmptyState } from "@/components/ui/States";
 
 interface Props {
   title: string;
-  spec?: string;
 }
 
-export function PlaceholderPage({ title, spec }: Props) {
+export function PlaceholderPage({ title }: Props) {
   return (
     <>
       <PageHeader title={title} />
-      <EmptyState title="Trang chưa được xây dựng" description={spec ? `Đặc tả: ${spec}` : undefined} action={<Hammer size={18} className="text-gold" />} />
+      <EmptyState title="Sắp ra mắt" description="Tính năng này đang được hoàn thiện." action={<Hammer size={18} className="text-gold" />} />
     </>
   );
 }

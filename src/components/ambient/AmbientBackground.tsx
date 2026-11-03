@@ -2,29 +2,50 @@ import { useEffect, useRef, useState } from "react";
 import { useEffectSettings } from "@/lib/appearance";
 import { FluidSolver } from "@/lib/asciiFluid";
 
+// Số lớp mây CSS (.lb-cloud-1 … .lb-cloud-6) vẽ phía sau lớp nước.
 const CLOUD_LAYERS = [1, 2, 3, 4, 5, 6];
 
-const CELL_SIZE = 13;
+// Kích thước 1 ô lưới (px) = 1 ký tự ASCII. Nhỏ hơn → mịn hơn nhưng nặng hơn. Màn < 768px tự nhân 1.25.
+const CELL_SIZE = 12;
+// Ký tự dùng theo độ đậm của nước, từ nhạt → đậm.
 const RAMP = ["-", "·", "+", "*"] as const;
-const RAMP_STOPS = [0.05, 0.14, 0.32, 0.6] as const;
+// Ngưỡng density để đổi sang ký tự tương ứng trong RAMP. Dưới RAMP_STOPS[0] thì không vẽ.
+const RAMP_STOPS = [0.06, 0.14, 0.32, 0.6] as const;
+// Số mức độ trong suốt cho mỗi ký tự (chia density thành N bậc alpha).
 const ALPHA_STEPS = 5;
-const MIN_ALPHA = 0.6;
-const MAX_ALPHA = 0.3;
+// Alpha ở mức density thấp nhất → cao nhất. Hiện MIN > MAX nên chỗ càng đậm lại càng trong.
+const MIN_ALPHA = 0.8;
+const MAX_ALPHA = 0.4;
 
+// Tỉ lệ vận tốc còn lại sau 1 giây (0.5 = mất một nửa mỗi giây). Cao hơn → nước trôi lâu, xa hơn.
 const VELOCITY_RETENTION = 0.5;
+// Nước từ chuột: tỉ lệ density còn lại sau 1 giây ở vùng nhạt / vùng đậm. Cao hơn → vệt nước tồn tại lâu hơn.
 const DENSITY_RETENTION_FAINT = 0.52;
 const DENSITY_RETENTION_DENSE = 0.1;
+// Vũng nước tự trôi: giống trên nhưng tách riêng. Chỉ thấy rõ khi cụm đã ngừng bơm (hết DRIFT_ATTACK + DRIFT_RELEASE).
+const DRIFT_RETENTION_FAINT = 0.52;
+const DRIFT_RETENTION_DENSE = 0.06;
 
+// Tốc độ tối đa (ô/giây) truyền từ chuột vào nước khi bật vệt theo chuột.
 const POINTER_MAX_SPEED = 55;
+// Bán kính (ô) mỗi lần bơm nước từ chuột.
 const SPLAT_RADIUS = 1.3;
+// Số tia bắn ra khi click để bật vệt chuột.
 const BURST_ARMS = 26;
+// Tốc độ (ô/giây) của các tia khi click.
 const BURST_SPEED = 56;
 
-const DRIFT_RADIUS = [2.8, 4] as const;
-const DRIFT_ATTACK = [0.8, 1.8] as const;
-const DRIFT_RELEASE = [2.8, 3.4] as const;
-const DRIFT_SPEED = 13;
-const DRIFT_FEED = 16.2;
+// Bán kính [min, max] (ô) của mỗi cụm nước tự trôi.
+const DRIFT_RADIUS = [2.4, 3.8] as const;
+// Thời gian [min, max] (giây) để cụm nước hiện dần lên.
+const DRIFT_ATTACK = [0.8, 2.8] as const;
+// Thời gian [min, max] (giây) để cụm nước mờ dần rồi biến mất.
+const DRIFT_RELEASE = [4.8, 5.2] as const;
+// Tốc độ trôi [min, max] (ô/giây) của mỗi cụm nước. Khoảng càng hẹp → các cụm trôi càng đều nhau.
+const DRIFT_SPEED = [2.8, 3.8] as const;
+// Lượng nước bơm vào mỗi giây khi cụm đang hiện rõ nhất. Cao hơn → cụm đậm hơn.
+const DRIFT_FEED = 5.2;
+// Số cụm tối đa cùng lúc = fluidDrift (setting) × giá trị này.
 const DRIFT_PUFFS_PER_LEVEL = 4;
 
 type Rgb = [number, number, number];
@@ -249,7 +270,7 @@ export function AmbientBackground() {
 
     const spawnPuff = (): Puff => {
       const angle = Math.random() * Math.PI * 2;
-      const speed = Math.random() * DRIFT_SPEED;
+      const speed = between(DRIFT_SPEED);
       return {
         x: spawnCol(),
         y: 2 + Math.random() * (solver.rows - 5),
@@ -292,13 +313,13 @@ export function AmbientBackground() {
         }
         puff.x += puff.vx * dt;
         puff.y += puff.vy * dt;
-        solver.splat(puff.x, puff.y, puff.vx, puff.vy, DRIFT_FEED * envelopeOf(puff) * dt, puff.radius);
+        solver.splat(puff.x, puff.y, puff.vx, puff.vy, DRIFT_FEED * envelopeOf(puff) * dt, puff.radius, "drift");
       }
       return puffs.length > 0;
     };
 
     const render = () => {
-      const { cols, rows, density } = solver;
+      const { cols, rows, density, driftDensity } = solver;
       for (const [x, w] of bands) ctx.clearRect(x, 0, w, cssHeight);
       for (const bucket of buckets) bucket.length = 0;
       painted = 0;
@@ -307,7 +328,7 @@ export function AmbientBackground() {
         for (let x = 1; x < cols - 1; x++) {
           if (x >= hiddenFrom && x <= hiddenTo) continue;
           const i = x + y * cols;
-          const d = density[i];
+          const d = Math.min(1.6, density[i] + driftDensity[i]);
           if (d < RAMP_STOPS[0]) continue;
           let tier = 0;
           while (tier < RAMP.length - 1 && d >= RAMP_STOPS[tier + 1]) tier++;
@@ -361,7 +382,12 @@ export function AmbientBackground() {
       }
 
       idle = false;
-      solver.step(dt, VELOCITY_RETENTION ** dt, DENSITY_RETENTION_FAINT ** dt, DENSITY_RETENTION_DENSE ** dt);
+      solver.step(
+        dt,
+        VELOCITY_RETENTION ** dt,
+        { faint: DENSITY_RETENTION_FAINT ** dt, dense: DENSITY_RETENTION_DENSE ** dt },
+        { faint: DRIFT_RETENTION_FAINT ** dt, dense: DRIFT_RETENTION_DENSE ** dt },
+      );
       render();
     };
 
