@@ -1,6 +1,7 @@
-import { useState, type ReactNode } from "react";
+import { useRef, useState, type ReactNode } from "react";
 import { Link, NavLink } from "react-router-dom";
 import { ChevronDown, Menu, Moon, ShoppingCart, Truck, Undo2, X } from "lucide-react";
+import { GlowHairline } from "@/components/ui/GlowHairline";
 import { useCategories } from "@/features/catalog/hooks/useCategories";
 import { cn } from "@/lib/cn";
 import { AccountMenu } from "./AccountMenu";
@@ -18,9 +19,11 @@ const NAV_ITEMS = [
 ];
 
 const CATEGORY_QUERY = { pageSize: 50, sortBy: "name", isDescending: false };
+const ACTIVE_NAV_SELECTOR = '[aria-current="page"]:not([href*="#"])';
 
 export function Header() {
   const { data: categories } = useCategories(CATEGORY_QUERY);
+  const navRef = useRef<HTMLElement>(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const [categoriesOpen, setCategoriesOpen] = useState(false);
 
@@ -84,17 +87,14 @@ export function Header() {
               ))}
             </div>
           )}
-          <nav className="flex items-center gap-7 text-sm font-medium">
+          <nav ref={navRef} className="flex items-center gap-7 text-sm font-medium">
             {NAV_ITEMS.map((item) => (
               <NavLink
                 key={item.label}
                 to={item.to}
                 end={item.end}
                 className={({ isActive }) =>
-                  cn(
-                    "border-b-2 py-2 transition-colors",
-                    isActive && !item.to.includes("#") ? "border-gold text-white" : "border-transparent text-primary-soft/85 hover:text-white",
-                  )
+                  cn("py-2 transition-colors", isActive && !item.to.includes("#") ? "text-white" : "text-primary-soft/85 hover:text-white")
                 }
               >
                 {item.label}
@@ -104,7 +104,7 @@ export function Header() {
         </Container>
       </div>
 
-      <div className="lb-hairline" />
+      <GlowHairline scopeRef={navRef} activeSelector={ACTIVE_NAV_SELECTOR} itemSelector="a" />
 
       {menuOpen && (
         <nav className="border-t border-white/10 bg-chrome px-4 py-3 lg:hidden">

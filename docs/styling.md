@@ -14,7 +14,7 @@ Tailwind CSS v4. Tokens live in `src/index.css` under `@theme` and become utilit
 | Surface | `cream` (page background, warm `#f3e4d3`), `cream-dark`, `card` (milky white `#fbf5ea` for cards, inputs, menus; there is no pure white) |
 | Brand | `primary` (red, buttons), `primary-dark` (garnet `#7d2a2d`: headings, gradients, fluid ink), `primary-soft` (text on red) |
 | Chrome (header and footer) | `chrome` `#7d2a2d`, `chrome-light` `#8c3336` (bottom of the header gradient), `chrome-deep` `#341618` (darkest tile) |
-| Accent | `gold` `#f2c744` (bright: lines and ornaments on red, active nav underline), `gold-deep` `#c49a1c` (gold on light surfaces, e.g. fluid ink) |
+| Accent | `gold` `#f2c744` (bright: lines and ornaments on red, active nav glow), `gold-deep` `#c49a1c` (gold on light surfaces, e.g. fluid ink) |
 | Text and lines | `ink`, `ink-soft`, `ink-muted`, `line` |
 | Status | `success`, `warning`, `danger`, `info` |
 | Font | `font-sans` (Inter), `font-serif` (Merriweather, headings) |
@@ -28,7 +28,14 @@ Tailwind CSS v4. Tokens live in `src/index.css` under `@theme` and become utilit
 - To tune the density change `font-size` on `html` or `--page-max`; do not scale individual components.
 
 ## Header and footer
-The header and the footer use `chrome` (the header fades to `chrome-light` at the bottom). A thin `gold` line (`lb-hairline`) closes the header and opens the footer, and the footer casts a soft shadow upward so the red bars blend into the page. Text on them is `primary-soft` (white on hover or active), the top bar is a darker overlay, the active navigation item has a `gold` underline, and menus open as milky `card` panels. The search field stays milky white on the red bar.
+The header and the footer use `chrome` (the header fades to `chrome-light` at the bottom). A thin `gold` line closes the header (`GlowHairline`) and opens the footer (`lb-hairline`), and the footer casts a soft shadow upward so the red bars blend into the page. Text on them is `primary-soft` (white on hover or active), the top bar is a darker overlay, and menus open as milky `card` panels. The search field stays milky white on the red bar.
+
+### Glow hairline
+`components/ui/GlowHairline.tsx` draws the header line with a bright `gold` glow under the active navigation item instead of an underline. The glow slides to the hovered or focused item and back to the active one when the pointer leaves; with no active item it rests, dimmer, in the middle.
+
+- Props: `scopeRef` (the strip of items), `activeSelector` (default `[aria-current="page"], [aria-selected="true"]`, so it works for `NavLink` and `role="tab"` strips), `itemSelector` (set it to follow hover and focus), `spread` (glow width as a multiple of the item width, default `2`).
+- It re-measures on route or selection changes (attribute changes inside the scope), resize and font loading.
+- Classes `lb-glow-hairline` and `lb-glow-hairline-spot` in `index.css`; the slide is disabled under `prefers-reduced-motion`.
 
 ## Base layer
 Focus ring on `:focus-visible`, text selection color, pointer cursor on enabled buttons, responsive media, no link underline, `scrollbar-gutter: stable`.
@@ -43,6 +50,8 @@ Focus ring on `:focus-visible`, text selection color, pointer cursor on enabled 
 | `lb-fade-in` | simple fade for menus and overlays |
 | `lb-skeleton` | shimmer for loading placeholders |
 | `lb-flash` | short glow to draw attention to a just-picked item |
+| `lb-hairline` | static `gold` line, brightest in the middle (footer) |
+| `lb-glow-hairline`, `lb-glow-hairline-spot` | line and moving glow of `GlowHairline` |
 | `lb-ambient`, `lb-cloud-1..6`, `lb-rail`, `lb-rail-blur`, `lb-rail-tint`, `lb-clouds-paused` | background layer of `AmbientBackground` (clouds and the content rail) |
 
 Every animation is disabled under `prefers-reduced-motion`.

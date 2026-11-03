@@ -1,5 +1,12 @@
 const PRESSURE_ITERATIONS = 4;
 
+export type DensityChannel = "pointer" | "drift";
+
+export interface DensityFade {
+  faint: number;
+  dense: number;
+}
+
 export class FluidSolver {
   readonly cols: number;
   readonly rows: number;
@@ -7,6 +14,7 @@ export class FluidSolver {
   readonly u: Float32Array;
   readonly v: Float32Array;
   readonly density: Float32Array;
+  readonly driftDensity: Float32Array;
 
   private readonly uPrev: Float32Array;
   private readonly vPrev: Float32Array;
@@ -23,6 +31,7 @@ export class FluidSolver {
     this.u = new Float32Array(size);
     this.v = new Float32Array(size);
     this.density = new Float32Array(size);
+    this.driftDensity = new Float32Array(size);
     this.uPrev = new Float32Array(size);
     this.vPrev = new Float32Array(size);
     this.densityPrev = new Float32Array(size);
@@ -30,8 +39,9 @@ export class FluidSolver {
     this.divergence = new Float32Array(size);
   }
 
-  splat(cx: number, cy: number, fx: number, fy: number, amount: number, radius: number) {
-    const { cols, rows, u, v, density } = this;
+  splat(cx: number, cy: number, fx: number, fy: number, amount: number, radius: number, channel: DensityChannel = "pointer") {
+    const { cols, rows, u, v } = this;
+    const density = channel === "drift" ? this.driftDensity : this.density;
 
     const minX = Math.max(1, Math.floor(cx - radius));
     const maxX = Math.min(cols - 2, Math.ceil(cx + radius));
@@ -61,9 +71,10 @@ export class FluidSolver {
     this.u.fill(0);
     this.v.fill(0);
     this.density.fill(0);
+    this.driftDensity.fill(0);
   }
 
-  step(dt: number, velocityDecay: number, densityDecayFaint: number, densityDecayDense: number) {
+  step(dt: number, velocityDecay: number, pointerFade: DensityFade, driftFade: DensityFade) {
     this.project();
 
     this.uPrev.set(this.u);
@@ -75,8 +86,12 @@ export class FluidSolver {
 
     this.densityPrev.set(this.density);
     this.advect(this.density, this.densityPrev, this.u, this.v, dt);
+    this.densityPrev.set(this.driftDensity);
+    this.advect(this.driftDensity, this.densityPrev, this.u, this.v, dt);
 
-    this.dissipate(velocityDecay, densityDecayFaint, densityDecayDense);
+    this.dampVelocity(velocityDecay);
+    this.fade(this.density, pointerFade);
+    this.fade(this.driftDensity, driftFade);
   }
 
   private advect(dst: Float32Array, src: Float32Array, velU: Float32Array, velV: Float32Array, dt: number) {
@@ -139,20 +154,25 @@ export class FluidSolver {
     }
   }
 
-  private dissipate(velocityDecay: number, densityDecayFaint: number, densityDecayDense: number) {
-    const { u, v, density } = this;
-    const span = densityDecayDense - densityDecayFaint;
+  private dampVelocity(velocityDecay: number) {
+    const { u, v } = this;
 
-    for (let i = 0; i < density.length; i++) {
+    for (let i = 0; i < u.length; i++) {
       u[i] *= velocityDecay;
       v[i] *= velocityDecay;
+    }
+  }
 
+  private fade(density: Float32Array, { faint, dense }: DensityFade) {
+    const span = dense - faint;
+
+    for (let i = 0; i < density.length; i++) {
       const current = density[i];
 
       if (current === 0) continue;
 
       const weight = current > 1 ? 1 : current;
-      const d = current * (densityDecayFaint + span * weight);
+      const d = current * (faint + span * weight);
 
       density[i] = d < 0.004 ? 0 : d;
     }
