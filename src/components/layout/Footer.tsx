@@ -32,7 +32,15 @@ function LinkColumn({ title, links }: { title: string; links: Array<{ to: string
   );
 }
 
-export function Footer() {
+export function Footer({ compact = false }: { compact?: boolean }) {
+  if (compact) {
+    return (
+      <footer className="relative z-10 bg-chrome py-2 text-center text-xs text-primary-soft/70">
+        © {new Date().getFullYear()} LuminaBox
+      </footer>
+    );
+  }
+
   return (
     <footer className="relative z-10 mt-12 bg-chrome text-primary-soft shadow-[0_-10px_24px_rgba(0,0,0,0.08)]">
       <div className="lb-hairline" />

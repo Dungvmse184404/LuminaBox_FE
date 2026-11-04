@@ -2,6 +2,8 @@ import { env } from "@/lib/env";
 
 const TOKEN_KEY = "luminabox.tokens";
 
+export const SESSION_EXPIRED_EVENT = "luminabox:session-expired";
+
 export interface Tokens {
   accessToken: string;
   refreshToken: string;
@@ -120,6 +122,19 @@ export async function refreshTokens(): Promise<Tokens | null> {
   return refreshing;
 }
 
+export async function fetchAllPages<T>(path: string, query: RequestOptions["query"] = {}, auth = false): Promise<T[]> {
+  const items: T[] = [];
+  let page = 1;
+  let totalPages = 1;
+  do {
+    const { data } = await request<{ items: T[]; totalPages: number }>(path, { auth, query: { ...query, page, pageSize: 50 } });
+    items.push(...(data?.items ?? []));
+    totalPages = data?.totalPages ?? 1;
+    page += 1;
+  } while (page <= totalPages);
+  return items;
+}
+
 export async function request<T = undefined>(
   path: string,
   { method = "GET", body, auth = false, query }: RequestOptions = {},
@@ -147,6 +162,7 @@ export async function request<T = undefined>(
   if (auth && response.status === 401) {
     const renewed = await refreshTokens();
     if (renewed) response = await send(renewed);
+    else window.dispatchEvent(new Event(SESSION_EXPIRED_EVENT));
   }
 
   return parse<T>(response);

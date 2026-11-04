@@ -1,5 +1,7 @@
-import { createContext, useCallback, useContext, useMemo, useState, type ReactNode } from "react";
-import { saveTokens } from "@/lib/api";
+import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
+import { ApiError, loadTokens, saveTokens, SESSION_EXPIRED_EVENT } from "@/lib/api";
+import { env } from "@/lib/env";
+import { authApi } from "./api/authApi";
 import type { CurrentUser, UserRole } from "./types";
 
 const SESSION_KEY = "luminabox.session";
@@ -36,8 +38,27 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const logout = useCallback(() => {
-    saveTokens(null);
+    authApi.logout().catch(() => undefined).finally(() => saveTokens(null));
     setUser(null);
+  }, [setUser]);
+
+  useEffect(() => {
+    if (env.useMock) return;
+
+    if (!loadTokens()) {
+      setUser(null);
+      return;
+    }
+
+    authApi.me().then(setUser).catch((error) => {
+      if (error instanceof ApiError && error.status === 401) setUser(null);
+    });
+  }, [setUser]);
+
+  useEffect(() => {
+    const onExpired = () => setUser(null);
+    window.addEventListener(SESSION_EXPIRED_EVENT, onExpired);
+    return () => window.removeEventListener(SESSION_EXPIRED_EVENT, onExpired);
   }, [setUser]);
 
   const value = useMemo<AuthValue>(
