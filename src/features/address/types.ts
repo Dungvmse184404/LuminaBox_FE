@@ -13,6 +13,8 @@ export interface Address {
   wardName: string;
   addressLine: string;
   isDefault: boolean;
+  latitude: number | null;
+  longitude: number | null;
 }
 
 export interface AddressPayload {
@@ -22,6 +24,8 @@ export interface AddressPayload {
   wardId: string;
   addressLine: string;
   isDefault: boolean;
+  latitude: number | null;
+  longitude: number | null;
 }
 
 export interface Location {

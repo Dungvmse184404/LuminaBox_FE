@@ -21,6 +21,8 @@ export function useLogin() {
   });
 }
 
+export const useRegister = () => useMutation({ mutationFn: authApi.register });
+
 export const useVerifyOtp = () =>
   useMutation({
     mutationFn: ({ email, otpCode }: { email: string; otpCode: string }) => authApi.verifyOtp(email, otpCode),

@@ -13,10 +13,10 @@ Roles come from the BE (`Role` claim): `User`, `Organization` (Organizer), `Mana
 | Route | Role | Layout | Flow (BE docs) | Status |
 |---|---|---|---|---|
 | `/` | public | `AppLayout` | – | built |
-| `/login` | public | `AppLayout` | Flow 1 | built (login, OTP for unverified accounts; register and forgot password not yet) |
-| `/products`, `/products/:id` | public | `AppLayout` | Flow 8 | built (list, detail, GHN fee) |
+| `/login`, `/register` | public | `AppLayout` | Flow 1 | built (login, register, OTP; forgot password not yet) |
+| `/products`, `/products/:id` | public | `AppLayout` | Flow 8 | built (list, detail; the GHN fee is shown at checkout only) |
 | `/cake-sets` | public | `AppLayout` | Flow 8, 9 | stub |
-| `/stalls` | public | `AppLayout`, full screen with a compact footer | Flow 4 | built (map, list, detail, rental timeline; submit waits for the registration API) |
+| `/stalls`, `/stalls?stall=<id>` | public | `AppLayout`, full screen with a compact footer | Flow 4 | built (map, list, detail, rental timeline; submit waits for the registration API) |
 | `/become-partner` | public | `AppLayout` | Flow 2 | stub |
 | `/cart` | public | `AppLayout` | Flow 8, 9 | stub |
 | `/vouchers` | public | `AppLayout` | Flow 6, 7 | stub |

@@ -26,6 +26,7 @@ export interface Stock {
   id: string;
   stallId: string | null;
   stallName: string | null;
+  stallAddress: string | null;
   stockQuantity: number;
   isActive: boolean;
 }
@@ -44,6 +45,8 @@ export interface ProductItem {
 }
 
 export interface Product {
+  organizerBusinessInfo: string | null;
+  organizerContactPhone: string | null;
   id: string;
   organizerId: string;
   organizerBrandName: string;
@@ -55,6 +58,7 @@ export interface Product {
 export interface ProductListParams extends ListParams {
   categoryId?: string;
   fillingId?: string;
+  organizerId?: string;
 }
 
 export interface ShippingFeePayload {

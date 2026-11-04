@@ -5,6 +5,13 @@ export interface Credentials {
   password: string;
 }
 
+export interface RegisterPayload extends Credentials {
+  fullName: string;
+  phone: string;
+  address: string;
+  confirmPassword: string;
+}
+
 export interface CurrentUser {
   id: string;
   fullName: string;

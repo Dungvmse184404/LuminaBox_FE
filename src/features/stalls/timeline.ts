@@ -83,6 +83,18 @@ export const spanDays = (span: Span) => span.to - span.from + 1;
 export const edgePct = (span: Span, num: number) => Math.round(((num - span.from) / spanDays(span)) * 100000) / 1000;
 export const widthPct = (span: Span, days: number) => Math.round((days / spanDays(span)) * 100000) / 1000;
 
+export interface Ext {
+  left: number;
+  width: number;
+}
+
+export function buildExts(applied: Span, view: Span) {
+  const exts: Ext[] = [];
+  if (view.from < applied.from) exts.push({ left: 0, width: widthPct(view, applied.from - view.from) });
+  if (view.to > applied.to) exts.push({ left: edgePct(view, applied.to + 1), width: widthPct(view, view.to - applied.to) });
+  return exts;
+}
+
 const knownMoons = () => Object.keys(MOON_DATES).map((year) => moonNum(Number(year)));
 
 export const moonsIn = (span: Span) => knownMoons().filter((moon) => moon >= span.from && moon <= span.to);

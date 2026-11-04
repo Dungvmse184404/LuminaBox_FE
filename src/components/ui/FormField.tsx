@@ -1,7 +1,7 @@
 import { forwardRef, useId, type InputHTMLAttributes, type ReactNode, type SelectHTMLAttributes, type TextareaHTMLAttributes } from "react";
 import { cn } from "@/lib/cn";
 
-const CONTROL =
+export const CONTROL =
   "w-full rounded-lg border bg-card/70 px-3.5 py-2.5 text-sm outline-none transition placeholder:text-ink-muted focus:border-primary focus:bg-card focus:ring-2 focus:ring-primary/15 disabled:cursor-not-allowed disabled:opacity-60";
 
 interface FieldProps {
@@ -17,7 +17,7 @@ interface ShellProps extends FieldProps {
   children: ReactNode;
 }
 
-function Shell({ id, label, error, hint, required, className, children }: ShellProps) {
+export function FieldShell({ id, label, error, hint, required, className, children }: ShellProps) {
   return (
     <div className={className}>
       {label && (
@@ -38,9 +38,9 @@ export const Input = forwardRef<HTMLInputElement, FieldProps & InputHTMLAttribut
 ) {
   const id = useId();
   return (
-    <Shell id={id} label={label} error={error} hint={hint} required={required} className={className}>
+    <FieldShell id={id} label={label} error={error} hint={hint} required={required} className={className}>
       <input id={id} ref={ref} aria-invalid={error ? true : undefined} className={cn(CONTROL, error ? "border-primary" : "border-line")} {...rest} />
-    </Shell>
+    </FieldShell>
   );
 });
 
@@ -50,9 +50,9 @@ export const Textarea = forwardRef<HTMLTextAreaElement, FieldProps & TextareaHTM
 ) {
   const id = useId();
   return (
-    <Shell id={id} label={label} error={error} hint={hint} required={required} className={className}>
+    <FieldShell id={id} label={label} error={error} hint={hint} required={required} className={className}>
       <textarea id={id} ref={ref} rows={rows} aria-invalid={error ? true : undefined} className={cn(CONTROL, error ? "border-primary" : "border-line")} {...rest} />
-    </Shell>
+    </FieldShell>
   );
 });
 
@@ -62,10 +62,10 @@ export const Select = forwardRef<HTMLSelectElement, FieldProps & SelectHTMLAttri
 ) {
   const id = useId();
   return (
-    <Shell id={id} label={label} error={error} hint={hint} required={required} className={className}>
+    <FieldShell id={id} label={label} error={error} hint={hint} required={required} className={className}>
       <select id={id} ref={ref} aria-invalid={error ? true : undefined} className={cn(CONTROL, error ? "border-primary" : "border-line")} {...rest}>
         {children}
       </select>
-    </Shell>
+    </FieldShell>
   );
 });

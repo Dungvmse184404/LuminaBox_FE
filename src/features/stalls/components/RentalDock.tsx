@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { ChevronDown, ChevronLeft, ChevronRight, ChevronUp, Link2, RotateCcw, X } from "lucide-react";
 import type { RentalPlan } from "../hooks/useRentalPlan";
 import {
+  buildExts,
   buildLines,
   buildMarks,
   buildSegs,
@@ -19,6 +20,7 @@ import {
   shortDate,
   widthPct,
   type DayRange,
+  type Ext,
   type Line,
   type Mark,
 } from "../timeline";
@@ -45,9 +47,12 @@ function Icon({ path, size }: { path: string; size: number }) {
 
 const shortName = (name: string) => name.replace(/^Gian\s+/i, "");
 
-function TrackLines({ lines, soft, halos }: { lines: Line[]; soft?: boolean; halos: number[] }) {
+function TrackLines({ lines, soft, halos, exts }: { lines: Line[]; soft?: boolean; halos: number[]; exts: Ext[] }) {
   return (
     <>
+      {exts.map((ext) => (
+        <span key={ext.left} className="tl-ext" style={{ left: `${ext.left}%`, width: `${ext.width}%` }} />
+      ))}
       {halos.map((pct) => (
         <span key={pct} className={soft ? "halo halo-soft" : "halo"} style={{ left: `${pct}%` }} />
       ))}
@@ -67,6 +72,7 @@ function StallRow({
   lines,
   marks,
   halos,
+  exts,
   onHover,
   onFocus,
 }: {
@@ -78,6 +84,7 @@ function StallRow({
   lines: Line[];
   marks: Mark[];
   halos: number[];
+  exts: Ext[];
   onHover: (id: string | null) => void;
   onFocus: (id: string) => void;
 }) {
@@ -104,7 +111,7 @@ function StallRow({
       </div>
       <div className="track" onPointerDown={(e) => plan.onTrackDown(stall.id, e)} onPointerMove={plan.onAxisMove} onPointerLeave={plan.onAxisLeave}>
         <div className="track-in">
-          <TrackLines lines={lines} halos={halos} soft />
+          <TrackLines lines={lines} halos={halos} exts={exts} soft />
         </div>
         <div
           className={`bar${custom ? "" : " bar-linked"}${isOn ? " bar-on" : ""}`}
@@ -162,6 +169,7 @@ export function RentalDock({ plan, stalls, hoverId, onHover, onFocus, onSubmit }
   const segs = useMemo(() => buildSegs(span), [span]);
   const marks = useMemo(() => buildMarks(span), [span]);
   const halos = useMemo(() => moonsIn(span).map((moon) => edgePct(span, moon)), [span]);
+  const exts = useMemo(() => buildExts(state.span, span), [state.span, span]);
 
   const rows = items.flatMap((item) => {
     const stall = stalls.find((s) => s.id === item.id);
@@ -284,7 +292,7 @@ export function RentalDock({ plan, stalls, hoverId, onHover, onFocus, onSubmit }
                       <span>{seg.label}</span>
                     </div>
                   ))}
-                  <TrackLines lines={lines} halos={halos} />
+                  <TrackLines lines={lines} halos={halos} exts={exts} />
                   {marks.map((mark) => (
                     <span key={mark.name} className={mark.moon ? "tl-mark-line tl-mark-moon" : "tl-mark-line"} style={{ left: `${mark.pct}%` }} />
                   ))}
@@ -338,7 +346,7 @@ export function RentalDock({ plan, stalls, hoverId, onHover, onFocus, onSubmit }
                 </button>
                 <div className="track">
                   <div className="track-in">
-                    <TrackLines lines={lines} halos={halos} soft />
+                    <TrackLines lines={lines} halos={halos} exts={exts} soft />
                   </div>
                   <div className="bar bar-linked" style={{ left: `${edgePct(span, master.start)}%`, width: `${widthPct(span, rentalDays(master))}%`, pointerEvents: "none" }}>
                     <div className="bar-fill" />
@@ -367,6 +375,7 @@ export function RentalDock({ plan, stalls, hoverId, onHover, onFocus, onSubmit }
                 lines={lines}
                 marks={marks}
                 halos={halos}
+                exts={exts}
                 onHover={onHover}
                 onFocus={onFocus}
               />

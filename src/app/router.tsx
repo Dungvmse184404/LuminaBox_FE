@@ -15,6 +15,7 @@ import { RouteErrorPage } from "@/pages/errors/RouteErrorPage";
 import { ServerErrorPage } from "@/pages/errors/ServerErrorPage";
 import { UnauthorizedPage } from "@/pages/errors/UnauthorizedPage";
 import { LoginPage } from "@/pages/LoginPage";
+import { RegisterPage } from "@/pages/RegisterPage";
 import { PlaceholderPage } from "@/pages/PlaceholderPage";
 
 export const router = createBrowserRouter([
@@ -27,6 +28,7 @@ export const router = createBrowserRouter([
         children: [
           { index: true, element: <HomePage /> },
           { path: "login", element: <LoginPage /> },
+          { path: "register", element: <RegisterPage /> },
           {
             path: "stalls",
             lazy: async () => ({ Component: (await import("@/features/stalls/pages/StallsPage")).StallsPage }),

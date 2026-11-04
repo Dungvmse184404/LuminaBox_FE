@@ -1,10 +1,14 @@
 import { request, type Tokens } from "@/lib/api";
-import type { CurrentUser, Credentials } from "../types";
+import type { CurrentUser, Credentials, RegisterPayload } from "../types";
 
 export const authApi = {
   login: async (credentials: Credentials) => {
     const { data } = await request<Tokens>("/auth/login", { method: "POST", body: credentials });
     return data!;
+  },
+
+  register: async (payload: RegisterPayload) => {
+    await request("/auth/register", { method: "POST", body: payload });
   },
 
   me: async () => {

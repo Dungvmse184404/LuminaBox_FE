@@ -11,6 +11,10 @@ related: [architecture.md, ../AGENTS.md, ../../LuminaBox_BE/docs/CONTRIBUTING.md
 - **Everything in code is English:** identifiers, file names, routes, enum values, test names. Routes are kebab-case (`/store/pickup-addresses`).
 - Only text shown to the user is Vietnamese.
 
+## UI text
+- **No usage instructions on screen** unless the user asks for them: no "click here to…", keyboard tips or notes that explain how a control works.
+- Labels, validation errors, status text and the reason a field is locked are fine. Never show the same rule twice at once.
+
 ## Comments
 - **No comments in code.** Name things so they read well.
 - Write a comment only where a mistake would be dangerous (security, data loss). Example: `RequireRole` is a UI guard and never a security boundary.

@@ -1,4 +1,5 @@
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { useBlocker, useSearchParams } from "react-router-dom";
 import { Maximize, Minus, Plus } from "lucide-react";
 import { useToast } from "@/components/ui/Toast";
 import { RentalDock } from "../components/RentalDock";
@@ -10,6 +11,7 @@ import type { Stall } from "../types";
 import "../stalls.css";
 
 const PANEL_EDGE = 424;
+const DRAWER_CLOSE_MS = 640;
 const NO_STALLS: Stall[] = [];
 
 function normalize(text: string) {
@@ -33,6 +35,18 @@ export function StallsPage() {
   const [filter, setFilter] = useState<StatusFilter>("all");
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [hoverId, setHoverId] = useState<string | null>(null);
+  const [params] = useSearchParams();
+  const linkedId = params.get("stall");
+
+  const blocker = useBlocker(({ currentLocation, nextLocation }) => currentLocation.pathname !== nextLocation.pathname);
+  const closing = blocker.state === "blocked";
+
+  useEffect(() => {
+    if (blocker.state !== "blocked") return;
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const timer = window.setTimeout(() => blocker.proceed(), reduced ? 0 : DRAWER_CLOSE_MS);
+    return () => window.clearTimeout(timer);
+  }, [blocker]);
 
   const found = useMemo(() => stalls.filter((stall) => matches(stall, query)), [stalls, query]);
   const visible = useMemo(() => found.filter((stall) => filter === "all" || stall.status === filter), [found, filter]);
@@ -47,9 +61,14 @@ export function StallsPage() {
     if (stall) mapRef.current?.focus(stall);
   };
 
+  useEffect(() => {
+    if (linkedId && stalls.some((stall) => stall.id === linkedId)) pick(linkedId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [linkedId, stalls]);
+
   return (
     <div className="stalls-page">
-      <div className="stalls-sheet">
+      <div className={closing ? "stalls-sheet is-closing" : "stalls-sheet"}>
         <StallMap
           ref={mapRef}
           stalls={stalls}
@@ -80,6 +99,7 @@ export function StallsPage() {
           onFilter={(value) => {
             setFilter(value);
             setSelectedId(null);
+            mapRef.current?.show(found.filter((stall) => value === "all" || stall.status === value));
           }}
           onPick={pick}
           onHover={setHoverId}

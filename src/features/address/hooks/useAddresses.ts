@@ -10,24 +10,25 @@ export const addressKeys = {
 export const useAddresses = (type: AddressType, enabled = true) =>
   useQuery({ queryKey: addressKeys.mine(type), queryFn: () => addressApi.mine(type), enabled });
 
-export const useProvinces = () =>
-  useQuery({ queryKey: ["locations", "provinces"], queryFn: addressApi.provinces, staleTime: Infinity });
-
-export const useDistricts = (provinceId: string) =>
-  useQuery({
+export const locationQueries = {
+  provinces: () => ({ queryKey: ["locations", "provinces"], queryFn: addressApi.provinces, staleTime: Infinity }),
+  districts: (provinceId: string) => ({
     queryKey: ["locations", "districts", provinceId],
     queryFn: () => addressApi.districts(provinceId),
-    enabled: Boolean(provinceId),
     staleTime: Infinity,
-  });
-
-export const useWards = (districtId: string) =>
-  useQuery({
+  }),
+  wards: (districtId: string) => ({
     queryKey: ["locations", "wards", districtId],
     queryFn: () => addressApi.wards(districtId),
-    enabled: Boolean(districtId),
     staleTime: Infinity,
-  });
+  }),
+};
+
+export const useProvinces = () => useQuery(locationQueries.provinces());
+
+export const useDistricts = (provinceId: string) => useQuery({ ...locationQueries.districts(provinceId), enabled: Boolean(provinceId) });
+
+export const useWards = (districtId: string) => useQuery({ ...locationQueries.wards(districtId), enabled: Boolean(districtId) });
 
 export function useSaveAddress() {
   const queryClient = useQueryClient();

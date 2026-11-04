@@ -19,9 +19,10 @@ type FormValues = z.infer<typeof schema>;
 interface Props {
   credentials: Credentials;
   onBack: () => void;
+  onVerified?: () => Promise<void>;
 }
 
-export function VerifyOtpForm({ credentials, onBack }: Props) {
+export function VerifyOtpForm({ credentials, onBack, onVerified }: Props) {
   const toast = useToast();
   const verify = useVerifyOtp();
   const resend = useResendOtp();
@@ -47,7 +48,10 @@ export function VerifyOtpForm({ credentials, onBack }: Props) {
       await login.mutateAsync(credentials);
     } catch (error) {
       setFormError(errorMessage(error, "Không thể đăng nhập."));
+      return;
     }
+
+    await onVerified?.();
   });
 
   const onResend = async () => {

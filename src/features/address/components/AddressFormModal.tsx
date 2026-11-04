@@ -3,17 +3,17 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Button } from "@/components/ui/Button";
-import { Input, Select } from "@/components/ui/FormField";
+import { Input } from "@/components/ui/FormField";
 import { Modal } from "@/components/ui/Modal";
 import { useToast } from "@/components/ui/Toast";
 import { errorMessage } from "@/lib/errors";
-import { useDistricts, useProvinces, useSaveAddress, useWards } from "../hooks/useAddresses";
+import { useSaveAddress } from "../hooks/useAddresses";
 import type { Address, AddressType } from "../types";
+import { AddressFields, EMPTY_ADDRESS, validateAddress, type AddressErrors, type AddressValue } from "./AddressFields";
 
 const schema = z.object({
   contactName: z.string().trim().min(1, "Vui lòng nhập tên liên hệ").max(100, "Tối đa 100 ký tự"),
   phone: z.string().trim().regex(/^(0|\+84)(3|5|7|8|9)\d{8}$/, "Số điện thoại không hợp lệ"),
-  addressLine: z.string().trim().min(1, "Vui lòng nhập số nhà, tên đường").max(255, "Tối đa 255 ký tự"),
   isDefault: z.boolean(),
 });
 
@@ -29,14 +29,8 @@ interface Props {
 export function AddressFormModal({ open, type, address, onClose }: Props) {
   const toast = useToast();
   const save = useSaveAddress();
-  const [provinceId, setProvinceId] = useState("");
-  const [districtId, setDistrictId] = useState("");
-  const [wardId, setWardId] = useState("");
-  const [wardError, setWardError] = useState("");
-
-  const provinces = useProvinces();
-  const districts = useDistricts(provinceId);
-  const wards = useWards(districtId);
+  const [location, setLocation] = useState<AddressValue>(EMPTY_ADDRESS);
+  const [locationErrors, setLocationErrors] = useState<AddressErrors | null>(null);
 
   const {
     register,
@@ -50,22 +44,31 @@ export function AddressFormModal({ open, type, address, onClose }: Props) {
     reset({
       contactName: address?.contactName ?? "",
       phone: address?.phone ?? "",
-      addressLine: address?.addressLine ?? "",
       isDefault: address?.isDefault ?? false,
     });
-    setProvinceId(address?.provinceId ?? "");
-    setDistrictId(address?.districtId ?? "");
-    setWardId(address?.wardId ?? "");
-    setWardError("");
+    setLocation(
+      address
+        ? {
+            provinceId: address.provinceId,
+            districtId: address.districtId,
+            wardId: address.wardId,
+            addressLine: address.addressLine,
+            latitude: address.latitude,
+            longitude: address.longitude,
+          }
+        : EMPTY_ADDRESS,
+    );
+    setLocationErrors(null);
   }, [open, address, reset]);
 
   const onSubmit = handleSubmit(async (values) => {
-    if (!wardId) {
-      setWardError("Vui lòng chọn đủ tỉnh, quận, phường");
-      return;
-    }
+    const invalid = validateAddress(location);
+    setLocationErrors(invalid);
+    if (invalid) return;
+
+    const { wardId, addressLine, latitude, longitude } = location;
     try {
-      await save.mutateAsync({ id: address?.id, payload: { ...values, type, wardId } });
+      await save.mutateAsync({ id: address?.id, payload: { ...values, type, wardId, addressLine: addressLine.trim(), latitude, longitude } });
       toast.success(address ? "Đã cập nhật địa chỉ." : "Đã thêm địa chỉ.");
       onClose();
     } catch (error) {
@@ -94,59 +97,7 @@ export function AddressFormModal({ open, type, address, onClose }: Props) {
           <Input label="Tên liên hệ" required error={errors.contactName?.message} {...register("contactName")} />
           <Input label="Số điện thoại" required inputMode="tel" error={errors.phone?.message} {...register("phone")} />
         </div>
-        <Select
-          label="Tỉnh / thành"
-          required
-          value={provinceId}
-          onChange={(event) => {
-            setProvinceId(event.target.value);
-            setDistrictId("");
-            setWardId("");
-          }}
-        >
-          <option value="">Chọn tỉnh / thành</option>
-          {provinces.data?.map((province) => (
-            <option key={province.id} value={province.id}>
-              {province.name}
-            </option>
-          ))}
-        </Select>
-        <Select
-          label="Quận / huyện"
-          required
-          disabled={!provinceId}
-          value={districtId}
-          onChange={(event) => {
-            setDistrictId(event.target.value);
-            setWardId("");
-          }}
-        >
-          <option value="">Chọn quận / huyện</option>
-          {districts.data?.map((district) => (
-            <option key={district.id} value={district.id}>
-              {district.name}
-            </option>
-          ))}
-        </Select>
-        <Select
-          label="Phường / xã"
-          required
-          disabled={!districtId}
-          value={wardId}
-          error={wardError}
-          onChange={(event) => {
-            setWardId(event.target.value);
-            setWardError("");
-          }}
-        >
-          <option value="">Chọn phường / xã</option>
-          {wards.data?.map((ward) => (
-            <option key={ward.id} value={ward.id}>
-              {ward.name}
-            </option>
-          ))}
-        </Select>
-        <Input label="Số nhà, tên đường" required error={errors.addressLine?.message} {...register("addressLine")} />
+        {open && <AddressFields withMap value={location} errors={locationErrors} onChange={setLocation} />}
         {!address && (
           <label className="flex items-center gap-2 text-sm text-ink-soft">
             <input type="checkbox" {...register("isDefault")} />

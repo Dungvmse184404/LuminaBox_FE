@@ -1,11 +1,11 @@
 import { forwardRef, useEffect, useImperativeHandle, useRef } from "react";
-import { LngLatBounds, Map as MapLibre, Marker, setWorkerUrl, type StyleSpecification } from "maplibre-gl";
-import workerUrl from "maplibre-gl/dist/maplibre-gl-worker.mjs?url";
-import { env } from "@/lib/env";
+import { LngLatBounds, Map as MapLibre, Marker } from "maplibre-gl";
+import { vietmapStyle } from "@/lib/vietmapStyle";
 import type { Stall } from "../types";
 
 export interface StallMapHandle {
   fit: () => void;
+  show: (stalls: Stall[]) => void;
   focus: (stall: Stall) => void;
   zoomIn: () => void;
   zoomOut: () => void;
@@ -22,31 +22,17 @@ interface Props {
   onHover: (id: string | null) => void;
 }
 
-setWorkerUrl(workerUrl);
-
 const VIETNAM: [number, number] = [106.7, 16.2];
+const FIT_DURATION = 1200;
+const FOCUS_DURATION = 1600;
+const ZOOM_BUTTON_DURATION = 700;
+const WHEEL_ZOOM_RATE = 1 / 1400;
+const TRACKPAD_ZOOM_RATE = 1 / 400;
+const FLASH_DURATION = 1000;
 const STORE_ICON =
   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 10l1.5-5h13L20 10M5 10v9h14v-9M4 10a2.7 2.7 0 0 0 5.3 0 2.7 2.7 0 0 0 5.4 0 2.7 2.7 0 0 0 5.3 0M10 19v-5h4v5"/></svg>';
 
 const hasPosition = (stall: Stall) => stall.latitude !== null && stall.longitude !== null;
-
-function mapStyle(): StyleSpecification {
-  const land = { id: "land", type: "background", paint: { "background-color": "#f6ecdd" } } as const;
-  if (!env.vietmapTilemapKey) return { version: 8, sources: {}, layers: [land] };
-
-  return {
-    version: 8,
-    sources: {
-      vietmap: {
-        type: "raster",
-        tiles: [`https://maps.vietmap.vn/maps/tiles/tm/{z}/{x}/{y}@2x.png?apikey=${env.vietmapTilemapKey}`],
-        tileSize: 256,
-        attribution: "© VietMap",
-      },
-    },
-    layers: [land, { id: "vietmap", type: "raster", source: "vietmap" }],
-  };
-}
 
 export const StallMap = forwardRef<StallMapHandle, Props>(function StallMap(
   { stalls, selectedId, hoverId, visibleIds, plannedIds, padding, onPick, onHover },
@@ -62,28 +48,60 @@ export const StallMap = forwardRef<StallMapHandle, Props>(function StallMap(
 
   const mapPadding = () => ({ top: 60, right: 60, left: paddingRef.current.left + 40, bottom: paddingRef.current.bottom + 40 });
 
-  const fit = () => {
+  const flash = (ids: string[]) => {
+    ids.forEach((id) => {
+      const element = markersRef.current.get(id)?.marker.getElement();
+      if (!element) return;
+      element.classList.remove("pin-flash");
+      void element.offsetWidth;
+      element.classList.add("pin-flash");
+      window.setTimeout(() => element.classList.remove("pin-flash"), FLASH_DURATION);
+    });
+  };
+
+  const afterMove = (duration: number, action: () => void) => {
+    let done = false;
+    const run = () => {
+      if (done) return;
+      done = true;
+      action();
+    };
+    mapRef.current?.once("moveend", run);
+    window.setTimeout(run, duration + 200);
+  };
+
+  const fitTo = (list: Stall[]) => {
     const map = mapRef.current;
-    const placed = stalls.filter(hasPosition);
-    if (!map || placed.length === 0) return;
+    const placed = list.filter(hasPosition);
+    if (!map || placed.length === 0) return [];
     const bounds = new LngLatBounds();
     placed.forEach((stall) => bounds.extend([stall.longitude!, stall.latitude!]));
-    map.fitBounds(bounds, { padding: mapPadding(), maxZoom: 13, duration: 650 });
+    map.fitBounds(bounds, { padding: mapPadding(), maxZoom: 13, duration: FIT_DURATION });
+    return placed;
   };
 
   useImperativeHandle(ref, () => ({
-    fit,
+    fit: () => {
+      fitTo(stalls);
+    },
+    show: (list) => {
+      const placed = fitTo(list);
+      if (placed.length > 0) afterMove(FIT_DURATION, () => flash(placed.map((stall) => stall.id)));
+    },
     focus: (stall) => {
       if (!hasPosition(stall)) return;
-      mapRef.current?.flyTo({ center: [stall.longitude!, stall.latitude!], zoom: 14, padding: mapPadding(), duration: 650 });
+      mapRef.current?.flyTo({ center: [stall.longitude!, stall.latitude!], zoom: 14, padding: mapPadding(), duration: FOCUS_DURATION });
+      afterMove(FOCUS_DURATION, () => flash([stall.id]));
     },
-    zoomIn: () => mapRef.current?.zoomIn(),
-    zoomOut: () => mapRef.current?.zoomOut(),
+    zoomIn: () => mapRef.current?.zoomIn({ duration: ZOOM_BUTTON_DURATION }),
+    zoomOut: () => mapRef.current?.zoomOut({ duration: ZOOM_BUTTON_DURATION }),
   }));
 
   useEffect(() => {
     if (!containerRef.current) return;
-    const map = new MapLibre({ container: containerRef.current, style: mapStyle(), center: VIETNAM, zoom: 5, attributionControl: { compact: true } });
+    const map = new MapLibre({ container: containerRef.current, style: vietmapStyle(), center: VIETNAM, zoom: 5, attributionControl: { compact: true } });
+    map.scrollZoom.setWheelZoomRate(WHEEL_ZOOM_RATE);
+    map.scrollZoom.setZoomRate(TRACKPAD_ZOOM_RATE);
     mapRef.current = map;
     const markers = markersRef.current;
     return () => {
@@ -128,7 +146,7 @@ export const StallMap = forwardRef<StallMapHandle, Props>(function StallMap(
       markers.set(stall.id, { marker, pin, tag });
     });
 
-    fit();
+    fitTo(stalls);
     // Fitting again on every hover or filter change would move the map under the pointer.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [stalls]);
