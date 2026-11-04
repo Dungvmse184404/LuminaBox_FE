@@ -56,6 +56,11 @@ Focus ring on `:focus-visible`, text selection color, pointer cursor on enabled 
 
 Every animation is disabled under `prefers-reduced-motion`.
 
+## Scrollbars
+`lib/scrollFade.ts` follows FengDesk: it hides the native scrollbar and draws a 2px bar in the primary color. The bar shows while scrolling, stays 400 ms after the scroll stops, then fades out in 500 ms. The width lives in `THUMB_SIZE` and `.lb-scroll-thumb--y`, `.lb-scroll-thumb--x`.
+
+The page and every element with an `overflow-*-auto` class get it automatically. A scroll area styled in plain CSS must be added to `SCROLLERS`. A native scrollbar cannot fade, so do not restyle it with `::-webkit-scrollbar`.
+
 ## Background effects
 `components/ambient/AmbientBackground.tsx` draws drifting clouds (CSS) and an ASCII fluid on a canvas (`lib/asciiFluid.ts`). The fluid runs in the free margins beside the content rail (`--page-max`) and is skipped under the rail. It is only active with a fine pointer (mouse) and without `prefers-reduced-motion`. Click in a margin to start or stop the cursor trail.
 

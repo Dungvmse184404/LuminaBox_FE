@@ -35,6 +35,7 @@ This repo documents the **frontend only**. Product, data model, API and shared d
 
 ## Conventions (summary – see `docs/conventions.md`)
 - Code, identifiers, file names and routes **100% English** (routes kebab-case); text shown to the user is Vietnamese.
+- **No usage instructions on screen** (how-to notes, keyboard tips) unless the user asks for them. See `docs/conventions.md`.
 - **No code comments** unless a mistake would be dangerous (security, data loss). Prefer clear names.
 - Call the BE only through `src/features/<module>/api/*.ts` (`request()`); never `fetch` inside components.
 - Colors, shadows and radii come from tokens in `src/index.css`; do not hard-code them.

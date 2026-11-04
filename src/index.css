@@ -44,6 +44,10 @@
 }
 
 @layer base {
+  [data-scroll-fade] {
+    position: relative;
+  }
+
   html {
     font-size: 15px;
     scroll-behavior: smooth;
@@ -90,6 +94,88 @@
 @utility lb-scrollbar {
   scrollbar-width: thin;
   scrollbar-color: var(--color-line) transparent;
+}
+
+[data-scroll-fade] {
+  scrollbar-width: none !important;
+}
+
+[data-scroll-fade]::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+.lb-scroll-thumb {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 20;
+  border-radius: 9999px;
+  background-color: var(--color-primary);
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    opacity 500ms ease,
+    transform 180ms cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+}
+
+.lb-scroll-thumb::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+}
+
+.lb-scroll-thumb--y {
+  width: 2px;
+}
+
+.lb-scroll-thumb--y::before {
+  inset: -4px 0 -4px -8px;
+}
+
+.lb-scroll-thumb--x {
+  height: 2px;
+}
+
+.lb-scroll-thumb--x::before {
+  inset: -8px 0 0;
+}
+
+.lb-scroll-thumb--fixed {
+  position: fixed;
+  top: auto;
+  left: auto;
+  z-index: 45;
+}
+
+.lb-scroll-thumb--fixed.lb-scroll-thumb--y {
+  top: 0;
+  right: 2px;
+}
+
+.lb-scroll-thumb--fixed.lb-scroll-thumb--x {
+  bottom: 2px;
+  left: 0;
+}
+
+.lb-scroll-thumb[data-visible="true"] {
+  opacity: 1;
+  pointer-events: auto;
+  transition:
+    opacity 120ms ease,
+    transform 180ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.lb-scroll-thumb[data-dragging="true"] {
+  background-color: var(--color-primary-dark);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lb-scroll-thumb,
+  .lb-scroll-thumb[data-visible="true"] {
+    transition: none;
+  }
 }
 
 @utility lb-card {

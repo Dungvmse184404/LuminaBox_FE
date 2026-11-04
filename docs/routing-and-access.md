@@ -13,19 +13,19 @@ Roles come from the BE (`Role` claim): `User`, `Organization` (Organizer), `Mana
 | Route | Role | Layout | Flow (BE docs) | Status |
 |---|---|---|---|---|
 | `/` | public | `AppLayout` | – | built |
-| `/login` | public | `AppLayout` | Flow 1 | stub |
-| `/products` | public | `AppLayout` | Flow 8 | stub |
+| `/login`, `/register` | public | `AppLayout` | Flow 1 | built (login, register, OTP; forgot password not yet) |
+| `/products`, `/products/:id` | public | `AppLayout` | Flow 8 | built (list, detail; the GHN fee is shown at checkout only) |
 | `/cake-sets` | public | `AppLayout` | Flow 8, 9 | stub |
-| `/stalls` | public | `AppLayout` | Flow 4 | stub |
+| `/stalls`, `/stalls?stall=<id>` | public | `AppLayout`, full screen with a compact footer | Flow 4 | built (map, list, detail, rental timeline; submit waits for the registration API) |
 | `/become-partner` | public | `AppLayout` | Flow 2 | stub |
 | `/cart` | public | `AppLayout` | Flow 8, 9 | stub |
 | `/vouchers` | public | `AppLayout` | Flow 6, 7 | stub |
 | `/help/ordering`, `/policies/returns`, `/policies/commission` | public | `AppLayout` | – | stub |
-| `/account/addresses` | signed in | `AppLayout` | Flow 16 | stub |
+| `/account/addresses` | signed in | `AppLayout` | Flow 16 | built |
 | `/store` | `Organization` | `StoreLayout` | – | stub |
 | `/store/products` | `Organization` | `StoreLayout` | Flow 5 | stub |
 | `/store/boxes` | `Organization` | `StoreLayout` | Flow 5 | stub |
-| `/store/pickup-addresses` | `Organization` | `StoreLayout` | Flow 16 | stub |
+| `/store/pickup-addresses` | `Organization` | `StoreLayout` | Flow 16 | built |
 | `/admin` | `Manager` | `AdminLayout` | – | stub |
 | `/admin/catalog` | `Manager` | `AdminLayout` | Flow 5 (FR-5.1) | reference implementation (mock only) |
 | `/admin/stalls` | `Manager` | `AdminLayout` | Flow 4 | stub |

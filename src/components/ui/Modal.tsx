@@ -1,4 +1,5 @@
 import { useEffect, type ReactNode } from "react";
+import { createPortal } from "react-dom";
 import { X } from "lucide-react";
 
 interface Props {
@@ -19,8 +20,8 @@ export function Modal({ open, title, onClose, children, footer }: Props) {
 
   if (!open) return null;
 
-  return (
-    <div className="fixed inset-0 z-50 grid place-items-center bg-ink/40 p-4" onMouseDown={onClose}>
+  return createPortal(
+    <div className="fixed inset-0 z-50 grid place-items-center overflow-y-auto bg-ink/40 p-4" onMouseDown={onClose}>
       <div
         role="dialog"
         aria-modal="true"
@@ -37,6 +38,7 @@ export function Modal({ open, title, onClose, children, footer }: Props) {
         <div>{children}</div>
         {footer && <div className="mt-5 flex justify-end gap-2">{footer}</div>}
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }
