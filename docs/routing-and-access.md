@@ -15,7 +15,7 @@ Roles come from the BE (`Role` claim): `User`, `Organization` (Organizer), `Mana
 | `/` | public | `AppLayout` | – | built |
 | `/login`, `/register` | public | `AppLayout` | Flow 1 | built (login, register, OTP; forgot password not yet) |
 | `/products`, `/products/:id` | public | `AppLayout` | Flow 8 | built (list with hover and pin filter, tag search, suggestions; detail; the GHN fee is shown at checkout only) |
-| `/cake-sets` | public | `AppLayout` | Flow 8, 9 | built (list, add to cart; cakes are picked at checkout) |
+| `/cake-sets` | public | `AppLayout` | Flow 8, 9 | built (boxes sold on their own: list, add to cart) |
 | `/stalls`, `/stalls?stall=<id>` | public | `AppLayout`, full screen with a compact footer | Flow 4 | built (map, list, detail, rental timeline; submit waits for the registration API) |
 | `/become-partner` | public | `AppLayout` | Flow 2 | stub |
 | `/cart` | signed in | `AppLayout` | Flow 8 | built |

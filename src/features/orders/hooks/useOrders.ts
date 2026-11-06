@@ -19,9 +19,6 @@ export const useStoreOrders = (params: OrderListParams) =>
 
 export const useOrder = (id: string) => useQuery({ queryKey: orderKeys.detail(id), queryFn: () => orderApi.detail(id) });
 
-export const useBoxCakes = (boxItemId: string, stallId: string | null) =>
-  useQuery({ queryKey: ["box-cakes", boxItemId, stallId], queryFn: () => orderApi.boxCakes(boxItemId, stallId) });
-
 export function usePlaceOrder() {
   const queryClient = useQueryClient();
   return useMutation({

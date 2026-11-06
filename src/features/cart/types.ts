@@ -52,7 +52,7 @@ export interface AddBoxPayload {
 export const cartItemName = (item: CartItem) => item.boxItemName ?? item.productName ?? "";
 
 export const cartItemDetail = (item: CartItem) =>
-  item.itemType === "Box" ? `Hộp ${item.boxCapacity} bánh` : item.productItemName ?? "";
+  item.itemType === "Box" ? `Đựng ${item.boxCapacity} bánh` : item.productItemName ?? "";
 
 export const groupLabel = (group: Pick<CartGroup, "organizerBrandName" | "stallName">) =>
   group.stallName ? `${group.organizerBrandName} · ${group.stallName}` : `${group.organizerBrandName} · Kho online`;

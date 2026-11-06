@@ -77,7 +77,7 @@ export const router = createBrowserRouter([
                   { path: "orders", element: <StoreOrdersPage /> },
                   { path: "orders/:id", element: <OrderDetailPage store /> },
                   { path: "products", element: <PlaceholderPage title="Sản phẩm của tôi" /> },
-                  { path: "boxes", element: <PlaceholderPage title="Hộp combo" /> },
+                  { path: "boxes", element: <PlaceholderPage title="Hộp" /> },
                   { path: "pickup-addresses", element: <AddressBookPage type="Pickup" /> },
                 ],
               },

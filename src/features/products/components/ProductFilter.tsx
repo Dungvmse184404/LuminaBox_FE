@@ -163,7 +163,7 @@ export function ProductFilter({ shops, categories, fillings, organizerId, catego
   return (
     <section aria-label="Bộ lọc" className="min-w-0 rounded-card border border-line bg-card px-4 py-3 shadow-card lg:sticky lg:top-36">
       <div className="mb-1 flex items-center gap-3">
-        <h2 className="mr-auto text-sm font-bold text-ink">Bộ lọc</h2>
+        <h2 className="mr-auto text-sm font-bold text-ink">Bạn đang tìm</h2>
         {hasFilter && (
           <button
             type="button"

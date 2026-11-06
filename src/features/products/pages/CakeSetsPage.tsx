@@ -44,10 +44,9 @@ function BoxCard({ box }: { box: BoxItem }) {
       <StorageImage src={box.images[0]?.url} alt={box.name} className="aspect-[4/3] w-full object-cover" />
       <div className="flex flex-1 flex-col gap-2 p-3">
         <h2 className="line-clamp-2 break-words text-sm font-semibold text-ink">{box.name}</h2>
-        <p className="truncate text-xs text-ink-muted">
-          {box.organizerBrandName} · {box.capacity} bánh
-        </p>
+        <p className="truncate text-xs text-ink-muted">{box.organizerBrandName}</p>
         <p className="font-bold text-primary">{formatPrice(box.price)}</p>
+        <p className="text-xs text-ink-muted">Đựng {box.capacity} bánh, chưa gồm bánh</p>
         {sellable.length > 1 && (
           <Select aria-label="Mua tại" value={stock?.stallId ?? ONLINE} onChange={(event) => setSource(event.target.value)}>
             {sellable.map((s) => (
@@ -72,7 +71,7 @@ export function CakeSetsPage() {
 
   return (
     <>
-      <PageHeader title="Bánh & hộp Trung thu" />
+      <PageHeader title="Hộp Trung thu" />
       {isLoading ? (
         <SkeletonRows />
       ) : isError ? (

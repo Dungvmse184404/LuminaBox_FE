@@ -7,29 +7,24 @@ import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Select, Textarea } from "@/components/ui/FormField";
 import { EmptyState, ErrorState, SkeletonRows } from "@/components/ui/States";
+import { StorageImage } from "@/components/ui/StorageImage";
 import { useToast } from "@/components/ui/Toast";
 import { useAddresses } from "@/features/address/hooks/useAddresses";
 import { fullAddress } from "@/features/address/types";
 import { useCart } from "@/features/cart/hooks/useCart";
-import { cartItemDetail, cartItemName, groupLabel, type CartGroup } from "@/features/cart/types";
+import { cartItemDetail, cartItemName, groupLabel, type CartGroup, type CartItem } from "@/features/cart/types";
 import { productApi } from "@/features/products/api/productApi";
 import { formatDiscount, formatPrice } from "@/features/products/types";
 import { useClaimedVouchers } from "@/features/vouchers/hooks/useVouchers";
 import { voucherDiscount } from "@/features/vouchers/types";
 import { cn } from "@/lib/cn";
 import { errorMessage } from "@/lib/errors";
-import { BoxCakePicker } from "../components/BoxCakePicker";
 import { usePayOrder, usePlaceOrder } from "../hooks/useOrders";
 import type { PaymentMethod } from "../types";
 
-type Picks = Record<string, Record<string, number>>;
-
 const groupKey = (group: CartGroup) => `${group.organizerId}-${group.stallId ?? "online"}`;
 
-const picksOf = (picks: Picks, cartItemId: string) =>
-  Object.entries(picks[cartItemId] ?? {})
-    .filter(([, quantity]) => quantity > 0)
-    .map(([productItemId, quantity]) => ({ productItemId, quantity }));
+const sumOf = (items: CartItem[]) => items.reduce((sum, item) => sum + item.subtotal, 0);
 
 export function CheckoutPage() {
   const navigate = useNavigate();
@@ -43,7 +38,6 @@ export function CheckoutPage() {
 
   const [method, setMethod] = useState<PaymentMethod>("CashOnDelivery");
   const [note, setNote] = useState("");
-  const [picks, setPicks] = useState<Picks>({});
   const [platformVoucherId, setPlatformVoucherId] = useState("");
   const [shopVoucherIds, setShopVoucherIds] = useState<Record<string, string>>({});
 
@@ -54,32 +48,32 @@ export function CheckoutPage() {
       (cart?.groups ?? [])
         .map((group) => {
           const items = group.items.filter((item) => ids.has(item.id));
-          return { ...group, items, groupSubtotal: items.reduce((sum, item) => sum + item.subtotal, 0) };
+          return {
+            ...group,
+            items,
+            cakes: items.filter((item) => item.itemType === "Product"),
+            boxes: items.filter((item) => item.itemType === "Box"),
+            groupSubtotal: sumOf(items),
+          };
         })
         .filter((group) => group.items.length > 0),
     [cart, ids],
   );
 
   const address = addresses.data?.find((a) => a.isDefault) ?? addresses.data?.[0];
-  const boxLines = groups.flatMap((group) => group.items.filter((item) => item.itemType === "Box"));
-  const boxesReady = boxLines.every((line) => picksOf(picks, line.id).reduce((sum, p) => sum + p.quantity, 0) === line.boxCapacity);
 
   const fees = useQueries({
     queries: groups.map((group) => ({
-      queryKey: ["shipping-fee", groupKey(group), address?.id, group.items.map((i) => [i.id, i.quantity]), picks],
-      enabled: Boolean(address) && boxesReady,
+      queryKey: ["shipping-fee", groupKey(group), address?.id, group.items.map((i) => [i.id, i.quantity])],
+      enabled: Boolean(address),
       retry: false,
       queryFn: () =>
         productApi.shippingFee({
           organizerId: group.organizerId,
           stallId: group.stallId,
           addressId: address!.id,
-          items: group.items
-            .filter((item) => item.itemType === "Product")
-            .map((item) => ({ productItemId: item.productItemId!, quantity: item.quantity })),
-          boxes: group.items
-            .filter((item) => item.itemType === "Box")
-            .flatMap((item) => Array.from({ length: item.quantity }, () => ({ boxItemId: item.boxItemId!, selections: picksOf(picks, item.id) }))),
+          items: group.cakes.map((item) => ({ productItemId: item.productItemId!, quantity: item.quantity })),
+          boxes: group.boxes.map((item) => ({ boxItemId: item.boxItemId!, quantity: item.quantity })),
         }),
     })),
   });
@@ -98,11 +92,13 @@ export function CheckoutPage() {
     return { shopDiscount, platformDiscount, fee, total: group.groupSubtotal - shopDiscount - platformDiscount + fee };
   });
 
+  const cakeTotal = groups.reduce((sum, group) => sum + sumOf(group.cakes), 0);
+  const boxTotal = groups.reduce((sum, group) => sum + sumOf(group.boxes), 0);
   const grandTotal = totals.reduce((sum, t) => sum + t.total, 0);
   const feeError = fees.find((fee) => fee.isError)?.error;
   const stripeLocked = groups.length > 1;
   const paymentMethod: PaymentMethod = stripeLocked ? "CashOnDelivery" : method;
-  const canSubmit = Boolean(address) && boxesReady && !feeError && !fees.some((fee) => fee.isPending);
+  const canSubmit = Boolean(address) && !feeError && !fees.some((fee) => fee.isPending);
 
   const submit = async () => {
     try {
@@ -110,7 +106,6 @@ export function CheckoutPage() {
         paymentMethod,
         note: note.trim() || undefined,
         cartItemIds: groups.flatMap((group) => group.items.map((item) => item.id)),
-        boxItems: boxLines.map((line) => ({ cartItemId: line.id, selections: picksOf(picks, line.id) })),
         voucherIds: [platformVoucherId, ...groups.map((group) => shopVoucherIds[group.organizerId])].filter(Boolean),
       });
 
@@ -170,21 +165,11 @@ export function CheckoutPage() {
           </Card>
 
           {groups.map((group, index) => (
-            <Card key={groupKey(group)} className="grid gap-3">
+            <Card key={groupKey(group)} className="grid min-w-0 gap-4">
               <h2 className="font-semibold text-ink">{groupLabel(group)}</h2>
-              {group.items.map((item) => (
-                <div key={item.id} className="grid gap-2">
-                  <div className="flex items-start justify-between gap-3 text-sm">
-                    <span className="min-w-0 break-words text-ink-soft">
-                      {cartItemName(item)} · {cartItemDetail(item)} × {item.quantity}
-                    </span>
-                    <span className="shrink-0 font-medium text-ink">{formatPrice(item.subtotal)}</span>
-                  </div>
-                  {item.itemType === "Box" && (
-                    <BoxCakePicker line={item} value={picks[item.id] ?? {}} onChange={(value) => setPicks((current) => ({ ...current, [item.id]: value }))} />
-                  )}
-                </div>
-              ))}
+
+              <LineSection title="Bánh" items={group.cakes} />
+              <LineSection title="Hộp" items={group.boxes} />
 
               {shopVouchers(group.organizerId).length > 0 && (
                 <Select
@@ -203,15 +188,7 @@ export function CheckoutPage() {
 
               <div className="flex justify-between border-t border-line pt-2 text-sm text-ink-soft">
                 <span>Phí giao hàng</span>
-                <span>
-                  {!boxesReady
-                    ? "Chọn đủ bánh để tính"
-                    : fees[index]?.isPending
-                      ? "Đang tính..."
-                      : fees[index]?.isError
-                        ? "Không tính được"
-                        : formatPrice(totals[index].fee)}
-                </span>
+                <span>{fees[index]?.isPending ? "Đang tính..." : fees[index]?.isError ? "Không tính được" : formatPrice(totals[index].fee)}</span>
               </div>
             </Card>
           ))}
@@ -254,7 +231,8 @@ export function CheckoutPage() {
           )}
 
           <div className="grid gap-1 border-t border-line pt-3 text-sm text-ink-soft">
-            <Row label="Tiền hàng" value={formatPrice(groups.reduce((sum, g) => sum + g.groupSubtotal, 0))} />
+            {cakeTotal > 0 && <Row label="Tiền bánh" value={formatPrice(cakeTotal)} />}
+            {boxTotal > 0 && <Row label="Tiền hộp" value={formatPrice(boxTotal)} />}
             <Row label="Giảm giá" value={formatDiscount(totals.reduce((sum, t) => sum + t.shopDiscount + t.platformDiscount, 0))} />
             <Row label="Phí giao hàng" value={formatPrice(totals.reduce((sum, t) => sum + t.fee, 0))} />
           </div>
@@ -271,6 +249,28 @@ export function CheckoutPage() {
         </Card>
       </div>
     </>
+  );
+}
+
+function LineSection({ title, items }: { title: string; items: CartItem[] }) {
+  if (items.length === 0) return null;
+
+  return (
+    <section aria-label={title} className="grid min-w-0 gap-2">
+      <h3 className="text-xs font-semibold text-ink-muted">{title}</h3>
+      {items.map((item) => (
+        <div key={item.id} className="flex min-w-0 items-center gap-3">
+          <StorageImage src={item.imageUrl} alt={cartItemName(item)} className="size-12 shrink-0 rounded-lg" />
+          <div className="min-w-0 flex-1">
+            <p className="line-clamp-2 break-words text-sm font-medium text-ink">{cartItemName(item)}</p>
+            <p className="line-clamp-1 break-words text-xs text-ink-muted">
+              {cartItemDetail(item)} · {formatPrice(item.unitPrice)} × {item.quantity}
+            </p>
+          </div>
+          <span className="shrink-0 text-sm font-semibold text-ink">{formatPrice(item.subtotal)}</span>
+        </div>
+      ))}
+    </section>
   );
 }
 

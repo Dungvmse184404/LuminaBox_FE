@@ -12,7 +12,7 @@ export function RequireRole({ roles = [] }: Props) {
   const { user, hasRole } = useAuth();
   const location = useLocation();
 
-  if (!user) return <Navigate to="/login" replace state={{ from: location.pathname }} />;
+  if (!user) return <Navigate to="/login" replace state={{ from: location.pathname + location.search }} />;
   if (roles.length > 0 && !hasRole(...roles)) return <ForbiddenPage />;
   return <Outlet />;
 }

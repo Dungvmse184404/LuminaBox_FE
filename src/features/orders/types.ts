@@ -73,24 +73,11 @@ export interface OrderListParams extends ListParams {
   status?: OrderStatus;
 }
 
-export interface BoxSelectionPayload {
-  productItemId: string;
-  quantity: number;
-}
-
 export interface CheckoutPayload {
   paymentMethod: PaymentMethod;
   note?: string;
   cartItemIds: string[];
-  boxItems: { cartItemId: string; selections: BoxSelectionPayload[] }[];
   voucherIds: string[];
-}
-
-export interface BoxCake {
-  productItemId: string;
-  productName: string;
-  name: string;
-  stockQuantity: number;
 }
 
 export const ORDER_STATUS_LABEL: Record<OrderStatus, string> = {

@@ -1,6 +1,6 @@
 import { request } from "@/lib/api";
 import type { Paged } from "@/types/api";
-import type { BoxCake, CheckoutPayload, Order, OrderListParams, OrderSummary } from "../types";
+import type { CheckoutPayload, Order, OrderListParams, OrderSummary } from "../types";
 
 export const orderApi = {
   mine: async (params: OrderListParams) => {
@@ -38,10 +38,5 @@ export const orderApi = {
 
   advance: async (id: string, step: "confirm" | "ship" | "mark-delivered") => {
     await request(`/orders/${id}/${step}`, { method: "PUT", auth: true });
-  },
-
-  boxCakes: async (boxItemId: string, stallId: string | null) => {
-    const { data } = await request<BoxCake[]>(`/box-items/${boxItemId}/available-products`, { query: { stallId } });
-    return data ?? [];
   },
 };

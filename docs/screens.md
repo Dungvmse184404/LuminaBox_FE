@@ -15,7 +15,7 @@ This page only maps a screen to the BE flow and endpoints it needs. Request / re
 | Product list and detail (`/products`) | `catalog.md`, `cart.md` (Flow 8) | `GET api/products`, `GET api/products/{id}`, `GET api/cake-categories`, `GET api/fillings`, `POST api/carts/items/product` |
 | Cake sets (`/cake-sets`) | `cart.md` (Flow 8, 9) | `GET api/box-items`, `POST api/carts/items/box` |
 | Cart (`/cart`) | `cart.md` | `api/carts/me`, `api/carts/items/...` |
-| Checkout (`/checkout`) | Flow 9, 10 | `api/carts/me`, `api/addresses/me`, `api/vouchers/my`, `api/shipping/fee-estimate`, `GET api/box-items/{id}/available-products`, `POST api/orders/from-cart`, `POST api/payments/checkout` |
+| Checkout (`/checkout`) | Flow 9, 10 | `api/carts/me`, `api/addresses/me`, `api/vouchers/my`, `api/shipping/fee-estimate`, `POST api/orders/from-cart`, `POST api/payments/checkout` |
 | My orders (`/orders`) | Flow 9, 11 | `GET api/orders/me`, `GET api/orders/{id}`, `PUT api/orders/{id}/cancel`, `POST api/payments/checkout` |
 | Store orders (`/store/orders`) | Flow 11 | `GET api/orders/organizer/me`, `GET api/orders/{id}`, `PUT api/orders/{id}/confirm`, `reject`, `cancel`, `ship`, `mark-delivered` |
 | Public stalls (`/stalls`) | `stall-rental.md` (Flow 4), `organizer.md` (Flow 2) | `GET api/stalls`, `GET api/stalls/{id}` |

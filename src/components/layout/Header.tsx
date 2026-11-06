@@ -13,7 +13,7 @@ import { HeaderSearch } from "./HeaderSearch";
 
 const NAV_ITEMS = [
   { to: "/", label: "Trang chủ", end: true },
-  { to: "/cake-sets", label: "Bánh & hộp Trung thu" },
+  { to: "/cake-sets", label: "Hộp Trung thu" },
   { to: "/products", label: "Sản phẩm" },
   { to: "/stalls", label: "Gian hàng" },
   { to: "/become-partner", label: "Trở thành đối tác" },

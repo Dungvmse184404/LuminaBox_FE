@@ -88,7 +88,7 @@ export interface ShippingFeePayload {
   stallId: string | null;
   addressId: string;
   items: { productItemId: string; quantity: number }[];
-  boxes: { boxItemId: string; selections: { productItemId: string; quantity: number }[] }[];
+  boxes: { boxItemId: string; quantity: number }[];
 }
 
 export interface ShippingFee {
