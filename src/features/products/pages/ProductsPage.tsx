@@ -1,17 +1,17 @@
+import { useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Pager } from "@/components/ui/Pager";
 import { SearchInput } from "@/components/ui/SearchInput";
 import { ErrorState, SkeletonRows } from "@/components/ui/States";
 import { useCategories } from "@/features/catalog/hooks/useCategories";
 import { ProductCard } from "../components/ProductCard";
+import { ProductFilter } from "../components/ProductFilter";
+import { SuggestedProducts } from "../components/SuggestedProducts";
 import { useFillings, useProducts } from "../hooks/useProducts";
+import type { FilterShop } from "../types";
 
 const CATEGORY_QUERY = { pageSize: 50, sortBy: "name", isDescending: false };
-
-const chip = (active: boolean) =>
-  `rounded-full border px-4 py-1.5 text-sm font-medium transition ${
-    active ? "border-primary bg-primary text-white" : "border-line bg-card text-ink-soft hover:border-primary hover:text-primary"
-  }`;
+const SHOP_QUERY = { pageSize: 50 };
 
 export function ProductsPage() {
   const [params, setParams] = useSearchParams();
@@ -24,6 +24,7 @@ export function ProductsPage() {
 
   const categories = useCategories(CATEGORY_QUERY);
   const fillings = useFillings();
+  const catalog = useProducts(SHOP_QUERY);
   const { data, isLoading, isError, refetch } = useProducts({
     search,
     page,
@@ -32,6 +33,13 @@ export function ProductsPage() {
     fillingId: fillingId || undefined,
     organizerId: organizerId || undefined,
   });
+
+  const shops = useMemo(() => {
+    const found = new Map<string, FilterShop>();
+    catalog.data?.items.forEach((product) => found.set(product.organizerId, { id: product.organizerId, name: product.organizerBrandName }));
+    if (organizerId && brand && !found.has(organizerId)) found.set(organizerId, { id: organizerId, name: brand });
+    return [...found.values()].sort((a, b) => a.name.localeCompare(b.name, "vi"));
+  }, [catalog.data, organizerId, brand]);
 
   const update = (changes: Record<string, string>) => {
     const next = new URLSearchParams(params);
@@ -42,54 +50,51 @@ export function ProductsPage() {
     setParams(next);
   };
 
+  const filtering = Boolean(organizerId || categoryId || fillingId || search);
+  const shopName = shops.find((shop) => shop.id === organizerId)?.name ?? brand;
+
   return (
     <>
-      <h1 className="font-serif text-2xl font-black text-primary-dark">{organizerId && brand ? `Sản phẩm của ${brand}` : "Sản phẩm"}</h1>
-      {organizerId && (
-        <button type="button" onClick={() => update({ organizerId: "", brand: "" })} className="mt-1 text-sm font-semibold text-primary hover:underline">
-          Xem sản phẩm của mọi gian hàng
-        </button>
-      )}
+      <h1 className="font-serif text-2xl font-black text-primary-dark">{organizerId && shopName ? `Sản phẩm của ${shopName}` : "Sản phẩm"}</h1>
 
       <SearchInput value={search} onChange={(q) => update({ q })} placeholder="Tìm theo tên bánh" className="mt-4 max-w-xl" />
 
-      <div className="mt-4 flex flex-wrap gap-2">
-        <button type="button" className={chip(!categoryId)} aria-pressed={!categoryId} onClick={() => update({ categoryId: "" })}>
-          Tất cả
-        </button>
-        {categories.data?.items.map((category) => (
-          <button key={category.id} type="button" className={chip(categoryId === category.id)} aria-pressed={categoryId === category.id} onClick={() => update({ categoryId: category.id })}>
-            {category.name}
-          </button>
-        ))}
-      </div>
+      <div className="mt-4 grid items-start gap-6 lg:grid-cols-[17rem_minmax(0,1fr)]">
+        <ProductFilter
+          shops={shops}
+          categories={categories.data?.items ?? []}
+          fillings={fillings.data ?? []}
+          organizerId={organizerId}
+          categoryId={categoryId}
+          fillingId={fillingId}
+          onChange={update}
+        />
 
-      <div className="mt-2 flex flex-wrap gap-2">
-        <button type="button" className={chip(!fillingId)} aria-pressed={!fillingId} onClick={() => update({ fillingId: "" })}>
-          Mọi loại nhân
-        </button>
-        {fillings.data?.map((filling) => (
-          <button key={filling.id} type="button" className={chip(fillingId === filling.id)} aria-pressed={fillingId === filling.id} onClick={() => update({ fillingId: filling.id })}>
-            {filling.name}
-          </button>
-        ))}
-      </div>
+        <div className="min-w-0">
+          {isLoading ? (
+            <SkeletonRows />
+          ) : isError ? (
+            <ErrorState message="Không tải được sản phẩm." onRetry={() => refetch()} />
+          ) : data?.items.length === 0 ? (
+            <p className="rounded-xl border border-dashed border-line px-6 py-12 text-center text-sm text-ink-muted">Không tìm thấy sản phẩm phù hợp.</p>
+          ) : (
+            <div className="grid grid-cols-2 gap-4 xl:grid-cols-4">
+              {data?.items.map((product) => (
+                <ProductCard key={product.id} product={product} />
+              ))}
+            </div>
+          )}
+          {data && <Pager page={data} onChange={(next) => update({ page: String(next) })} />}
 
-      <div className="mt-6">
-        {isLoading ? (
-          <SkeletonRows />
-        ) : isError ? (
-          <ErrorState message="Không tải được sản phẩm." onRetry={() => refetch()} />
-        ) : data?.items.length === 0 ? (
-          <p className="rounded-xl border border-dashed border-line px-6 py-12 text-center text-sm text-ink-muted">Không tìm thấy sản phẩm phù hợp.</p>
-        ) : (
-          <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-            {data?.items.map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))}
-          </div>
-        )}
-        {data && <Pager page={data} onChange={(next) => update({ page: String(next) })} />}
+          {filtering && !isLoading && (
+            <SuggestedProducts
+              categoryId={categoryId}
+              fillingId={fillingId}
+              organizerId={organizerId}
+              shownIds={data?.items.map((product) => product.id) ?? []}
+            />
+          )}
+        </div>
       </div>
     </>
   );

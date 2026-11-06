@@ -1,0 +1,480 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>LuminaBox · bộ lọc sản phẩm</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Merriweather:wght@700;900&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --cream: #f3e4d3; --cream-dark: #e7d4bb; --card: #fbf5ea;
+    --primary: #a3262b; --primary-dark: #7d2a2d; --primary-soft: #f4dcc6;
+    --gold: #f2c744; --gold-deep: #c49a1c;
+    --chrome: #7d2a2d; --chrome-light: #8c3336; --chrome-deep: #341618;
+    --ink: #241c1a; --ink-soft: #554a40; --ink-muted: #8c7f6c; --line: #e2d2bc;
+    --ease: cubic-bezier(.4, 0, .2, 1);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { font-size: 15px; }
+  body { font-family: "Inter", system-ui, sans-serif; color: var(--ink); background: linear-gradient(120deg, #f1d6c8, var(--cream) 45%, #f4e3c0); min-height: 100vh; }
+  button, input { font: inherit; color: inherit; }
+  button { cursor: pointer; background: none; border: 0; }
+  :focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+
+  .chrome { background: linear-gradient(var(--chrome), var(--chrome-light)); color: #fff; padding: 12px 24px; border-bottom: 2px solid var(--gold); }
+  .chrome strong { font-family: "Merriweather", Georgia, serif; font-size: 1.25rem; font-weight: 900; }
+
+  .review { width: calc(100% - 32px); max-width: 74rem; margin: 16px auto 0; padding: 10px 14px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px; background: #fff8; border: 1px dashed var(--gold-deep); border-radius: 12px; font-size: .8rem; color: var(--ink-soft); }
+  .review b { color: var(--ink); margin-right: 2px; }
+  .review .sep { width: 1px; height: 18px; background: var(--line); margin: 0 4px; }
+  .review button { padding: 4px 10px; border-radius: 999px; border: 1px solid var(--line); background: var(--card); color: var(--ink-soft); }
+  .review button:hover { border-color: var(--primary); color: var(--primary); }
+  .review button[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: #fff; }
+
+  .page { max-width: 76rem; margin: 0 auto; padding: 20px 16px 48px; }
+  h1 { font-family: "Merriweather", Georgia, serif; font-size: 1.7rem; font-weight: 900; color: var(--primary-dark); margin-bottom: 14px; }
+  .cake-search { width: 100%; max-width: 34rem; height: 42px; padding: 0 14px; border: 1px solid var(--line); border-radius: 10px; background: var(--card); outline: none; margin-bottom: 14px; }
+  .cake-search:focus { border-color: var(--primary); box-shadow: 0 0 0 3px #a3262b26; }
+
+  .shell { display: grid; gap: 18px; }
+  .page[data-layout="side"] .shell { grid-template-columns: 19rem minmax(0, 1fr); align-items: start; }
+  .page[data-layout="side"] .filter { position: sticky; top: 12px; }
+
+  .filter { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 12px 16px; box-shadow: 0 2px 10px #7d2a2d12; min-width: 0; }
+  .filter-head { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
+  .filter-head h2 { font-size: .95rem; font-weight: 700; margin-right: auto; }
+  .icon-btn { display: inline-flex; align-items: center; gap: 6px; padding: 5px 11px; border-radius: 999px; border: 1px solid var(--line); background: #fff6; font-size: .8rem; font-weight: 600; color: var(--ink-soft); transition: border-color .15s, color .15s, background .15s; }
+  .icon-btn:hover { border-color: var(--primary); color: var(--primary); }
+  .icon-btn[aria-pressed="true"] { background: var(--primary); border-color: var(--primary); color: #fff; }
+  .link-btn { font-size: .8rem; font-weight: 600; color: var(--primary); }
+  .link-btn:hover { text-decoration: underline; }
+  .link-btn[hidden] { display: none; }
+
+  .fold { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .3s var(--ease); }
+  .fold > div { overflow: hidden; min-height: 0; }
+  .fold.open { grid-template-rows: 1fr; }
+
+  .row { padding: 9px 0; border-top: 1px solid var(--line); }
+  .row:first-child { border-top: 0; }
+  .row-head { width: 100%; display: flex; justify-content: space-between; align-items: center; text-align: left; font-size: .8rem; font-weight: 600; color: var(--ink-soft); margin-bottom: 6px; }
+  .row-head span:last-child { font-weight: 500; color: var(--ink-muted); }
+  .row.pinned .row-head span:first-child { color: var(--primary); }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; padding: 1px 1px 3px; }
+  .chip { padding: 5px 12px; border-radius: 999px; border: 1px solid var(--line); background: #fff8; font-size: .82rem; font-weight: 500; color: var(--ink-soft); transition: border-color .15s, color .15s, background .15s; }
+  .chip:hover { border-color: var(--primary); color: var(--primary); }
+  .chip[aria-pressed="true"], .chip.on { background: var(--primary); border-color: var(--primary); color: #fff; }
+  .chip.own { border-style: dashed; border-color: var(--gold-deep); }
+  .chip.own[aria-pressed="true"], .chip.own.on { background: var(--primary-dark); border-style: solid; border-color: var(--primary-dark); color: #fff; }
+  .own-title { margin: 8px 0 5px; font-size: .74rem; font-weight: 600; color: var(--gold-deep); }
+  .all-text { font-size: .82rem; color: var(--ink-muted); padding-bottom: 2px; }
+
+  .tag-search { display: flex; align-items: center; gap: 8px; height: 38px; padding: 0 12px; margin: 8px 1px; border: 1px solid var(--line); border-radius: 10px; background: #fff9; }
+  .tag-search:focus-within { border-color: var(--primary); box-shadow: 0 0 0 3px #a3262b26; }
+  .tag-search input { flex: 1; min-width: 0; border: 0; outline: 0; background: none; font-size: .88rem; }
+  .hits { display: grid; grid-template-columns: repeat(auto-fill, minmax(11.5rem, 1fr)); gap: 6px; padding: 1px 1px 6px; max-height: 15rem; overflow-y: auto; }
+  .hit { min-width: 0; text-align: left; padding: 6px 10px; border-radius: 10px; border: 1px solid var(--line); background: #fff8; transition: border-color .15s, background .15s; }
+  .hit:hover { border-color: var(--primary); }
+  .hit[aria-pressed="true"] { background: var(--primary); border-color: var(--primary); color: #fff; }
+  .hit b { display: block; font-size: .84rem; font-weight: 600; overflow-wrap: anywhere; }
+  .hit small { display: block; font-size: .7rem; color: var(--ink-muted); overflow-wrap: anywhere; }
+  .hit[aria-pressed="true"] small { color: var(--primary-soft); }
+  .hit mark { background: var(--gold); color: var(--ink); border-radius: 3px; }
+  .no-hit { font-size: .84rem; color: var(--ink-muted); padding: 4px 2px 8px; }
+
+  .results { min-width: 0; }
+  .section-title { display: flex; align-items: baseline; gap: 8px; margin-bottom: 10px; font-family: "Merriweather", Georgia, serif; font-size: 1.05rem; font-weight: 700; color: var(--ink); }
+  .section-title small { font-family: "Inter", sans-serif; font-size: .8rem; font-weight: 500; color: var(--ink-muted); }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(12.5rem, 1fr)); gap: 12px; }
+  .card { min-width: 0; overflow: hidden; border: 1px solid var(--line); border-radius: 12px; background: var(--card); transition: box-shadow .15s; }
+  .card:hover { box-shadow: 0 6px 18px #7d2a2d22; }
+  .thumb { aspect-ratio: 4 / 3; display: grid; place-items: center; padding: 10px; color: #fbf5ea; font-family: "Merriweather", Georgia, serif; font-size: .95rem; font-weight: 700; text-align: center; }
+  .card-body { padding: 10px 12px 12px; }
+  .card h3 { font-size: .88rem; font-weight: 600; overflow-wrap: anywhere; }
+  .card p { font-size: .74rem; color: var(--ink-muted); margin-top: 2px; }
+  .card strong { display: block; margin-top: 6px; color: var(--primary); }
+  .empty { padding: 26px; text-align: center; border: 1px dashed var(--line); border-radius: 12px; background: #fff5; color: var(--ink-muted); font-size: .88rem; }
+  .suggest { margin-top: 26px; padding-top: 16px; border-top: 1px solid var(--line); }
+  .suggest[hidden] { display: none; }
+
+  @media (max-width: 900px) {
+    .page[data-layout="side"] .shell { grid-template-columns: minmax(0, 1fr); }
+    .page[data-layout="side"] .filter { position: static; }
+    .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (prefers-reduced-motion: reduce) { .fold { transition: none; } }
+</style>
+</head>
+<body>
+<header class="chrome"><strong>LuminaBox</strong></header>
+
+<div class="review" aria-label="Công cụ xem bản mẫu">
+  <b>Xem nhanh</b>
+  <button type="button" data-scene="default">Mặc định</button>
+  <button type="button" data-scene="shop">Chọn shop</button>
+  <button type="button" data-scene="own">Nhãn riêng + đề xuất</button>
+  <button type="button" data-scene="search">Tìm "trứng muối"</button>
+  <span class="sep"></span>
+  <b>Bố cục</b>
+  <button type="button" data-layout="top" aria-pressed="true">Bộ lọc trên</button>
+  <button type="button" data-layout="side" aria-pressed="false">Cột trái</button>
+</div>
+
+<main class="page" id="page" data-layout="top">
+  <h1>Sản phẩm</h1>
+  <input class="cake-search" id="cakeSearch" type="search" placeholder="Tìm theo tên bánh" aria-label="Tìm theo tên bánh" />
+
+  <div class="shell">
+    <section class="filter" aria-label="Bộ lọc">
+      <div class="filter-head">
+        <h2>Bộ lọc</h2>
+        <button class="link-btn" id="clear" type="button" hidden>Xóa lọc</button>
+        <button class="icon-btn" id="searchToggle" type="button" aria-pressed="false">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+          Tìm nhãn
+        </button>
+      </div>
+
+      <div class="fold open" id="rowsPane"><div id="rows"></div></div>
+
+      <div class="fold" id="searchPane"><div>
+        <label class="tag-search">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+          <input id="tagQuery" type="text" placeholder="Tìm nhãn, gồm cả nhãn riêng của từng hãng" aria-label="Tìm nhãn" />
+        </label>
+        <div id="hits"></div>
+      </div></div>
+    </section>
+
+    <div class="results">
+      <h2 class="section-title" id="mainTitle"></h2>
+      <div id="main"></div>
+      <section class="suggest" id="suggest">
+        <h2 class="section-title">Có thể bạn cũng thích...</h2>
+        <div class="grid" id="suggestGrid"></div>
+      </section>
+    </div>
+  </div>
+</main>
+
+<script>
+const SHOPS = {
+  moon: "Moonlight Bakery",
+  luna: "Luna Online Cakes",
+  trang: "Trăng Vàng Heritage",
+  sen: "Hoa Sen Patisserie",
+  may: "Mây Trà Artisan",
+};
+
+const GENERAL = {
+  cat: ["Bánh Nướng", "Bánh Dẻo", "Bánh Hiện Đại", "Mini Cake", "Bánh Tinh Tế"],
+  fill: ["Đậu xanh", "Hạt sen", "Thập cẩm", "Chocolate", "Trà xanh", "Sầu riêng", "Khoai môn", "Trứng muối"],
+};
+
+const OWN = {
+  moon: { cat: ["Nướng Thủ Công", "Dòng Trăng Rằm"], fill: ["Trứng muối chảy", "Thập cẩm Hoàng Gia"] },
+  luna: { cat: ["Dòng Lava"], fill: ["Sầu riêng Ri6"] },
+  trang: { cat: ["Gia Truyền 1968"], fill: ["Trứng muối chảy", "Thập cẩm Hoàng Gia"] },
+  sen: { cat: ["Tạo Hình Hoa"], fill: ["Sen Huế"] },
+  may: { cat: ["Ít Ngọt"], fill: ["Trà Thái Nguyên"] },
+};
+
+const tagId = (kind, name, shop) => `${kind}|${shop ?? "all"}|${name}`;
+
+const TAGS = [
+  ...Object.entries(GENERAL).flatMap(([kind, names]) => names.map((name) => ({ id: tagId(kind, name), kind, name, shop: null }))),
+  ...Object.entries(OWN).flatMap(([shop, kinds]) =>
+    Object.entries(kinds).flatMap(([kind, names]) => names.map((name) => ({ id: tagId(kind, name, shop), kind, name, shop })))),
+];
+
+const cake = (shop, name, price, color, cat, fill, ownCat = [], ownFill = []) => ({
+  shop, name, price, color,
+  tags: new Set([
+    ...cat.map((n) => tagId("cat", n)), ...fill.map((n) => tagId("fill", n)),
+    ...ownCat.map((n) => tagId("cat", n, shop)), ...ownFill.map((n) => tagId("fill", n, shop)),
+  ]),
+});
+
+const CAKES = [
+  cake("moon", "Bánh Trung Thu Cổ Điển", 85000, "#a3262b", ["Bánh Nướng"], ["Đậu xanh", "Hạt sen", "Thập cẩm"], ["Nướng Thủ Công"], ["Thập cẩm Hoàng Gia"]),
+  cake("moon", "Bánh Nướng Trứng Muối Đặc Biệt", 110000, "#7d2a2d", ["Bánh Nướng"], ["Trứng muối"], ["Dòng Trăng Rằm"], ["Trứng muối chảy"]),
+  cake("moon", "Bánh Dẻo Sen Vàng", 70000, "#2f7d4f", ["Bánh Dẻo"], ["Hạt sen", "Đậu xanh"]),
+  cake("luna", "Bánh Hiện Đại Luna", 92000, "#5b3a29", ["Bánh Hiện Đại"], ["Chocolate", "Trà xanh"]),
+  cake("luna", "Mini Cake Luna", 42000, "#c49a1c", ["Mini Cake"], ["Chocolate", "Trà xanh", "Khoai môn"]),
+  cake("luna", "Bánh Lava Sầu Riêng", 130000, "#8a5a3c", ["Bánh Hiện Đại"], ["Sầu riêng"], ["Dòng Lava"], ["Sầu riêng Ri6"]),
+  cake("trang", "Bánh Nướng Thượng Hạng", 180000, "#341618", ["Bánh Tinh Tế"], ["Thập cẩm", "Hạt sen"], [], ["Thập cẩm Hoàng Gia"]),
+  cake("trang", "Bánh Nướng Gia Truyền", 95000, "#a3262b", ["Bánh Nướng"], ["Đậu xanh", "Khoai môn", "Trứng muối"], ["Gia Truyền 1968"], ["Trứng muối chảy"]),
+  cake("sen", "Bánh Dẻo Hoa Sen", 80000, "#4f9a70", ["Bánh Dẻo"], ["Hạt sen", "Trà xanh"], ["Tạo Hình Hoa"], ["Sen Huế"]),
+  cake("sen", "Bánh Dẻo Khoai Môn", 78000, "#2f7d4f", ["Bánh Dẻo"], ["Khoai môn"]),
+  cake("may", "Bánh Trà Xanh Mây", 48000, "#4f9a70", ["Bánh Hiện Đại", "Mini Cake"], ["Trà xanh"], ["Ít Ngọt"], ["Trà Thái Nguyên"]),
+  cake("may", "Bánh Chocolate Mây", 115000, "#5b3a29", ["Bánh Hiện Đại"], ["Chocolate"], ["Ít Ngọt"]),
+];
+
+const state = { shop: null, tags: new Set(), expanded: null, pinned: null, searching: false, query: "", cakeQuery: "" };
+
+const $ = (id) => document.getElementById(id);
+const fold = (text) => text.normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/đ/g, "d").replace(/Đ/g, "D").toLowerCase();
+const money = (value) => `${value.toLocaleString("vi-VN")} ₫`;
+const esc = (text) => text.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
+const tagById = (id) => TAGS.find((tag) => tag.id === id);
+
+const ROWS = [
+  { key: "shop", label: "Hãng" },
+  { key: "cat", label: "Loại bánh" },
+  { key: "fill", label: "Nhân" },
+];
+
+const HOVER_INTENT_MS = 180;
+let hoverTimer;
+
+function buildRows() {
+  $("rows").innerHTML = ROWS.map((row) => `
+    <div class="row" data-row="${row.key}">
+      <button class="row-head" type="button" data-toggle="${row.key}" aria-expanded="false">
+        <span>${row.label}</span><span data-count="${row.key}"></span>
+      </button>
+      <div class="fold" data-full="${row.key}"><div data-full-body="${row.key}"></div></div>
+      <div class="fold open" data-brief="${row.key}"><div data-brief-body="${row.key}"></div></div>
+    </div>`).join("");
+
+  document.querySelectorAll(".row").forEach((row) => {
+    const key = row.dataset.row;
+    row.addEventListener("mouseenter", () => {
+      clearTimeout(hoverTimer);
+      if (state.pinned && state.pinned !== key) hoverTimer = setTimeout(() => openRow(key), HOVER_INTENT_MS);
+      else openRow(key);
+    });
+    row.addEventListener("mouseleave", () => {
+      clearTimeout(hoverTimer);
+      if (!state.pinned && state.expanded === key) expand(null);
+    });
+    row.addEventListener("focusin", () => openRow(key));
+    row.addEventListener("focusout", (event) => {
+      if (event.relatedTarget && !row.contains(event.relatedTarget)) closeRows();
+    });
+  });
+}
+
+function expand(key) {
+  state.expanded = key;
+  ROWS.forEach((row) => {
+    const open = row.key === key;
+    document.querySelector(`[data-full="${row.key}"]`).classList.toggle("open", open);
+    document.querySelector(`[data-brief="${row.key}"]`).classList.toggle("open", !open);
+    document.querySelector(`[data-toggle="${row.key}"]`).setAttribute("aria-expanded", String(open));
+    document.querySelector(`[data-row="${row.key}"]`).classList.toggle("pinned", row.key === state.pinned);
+  });
+}
+
+function openRow(key) {
+  if (state.pinned !== key) state.pinned = null;
+  expand(key);
+}
+
+function pinRow(key) {
+  state.pinned = key;
+  expand(key);
+}
+
+function closeRows() {
+  clearTimeout(hoverTimer);
+  state.pinned = null;
+  expand(null);
+}
+
+const chip = (attrs, label, on, own) =>
+  `<button type="button" class="chip${own ? " own" : ""}" aria-pressed="${on}" ${attrs}>${esc(label)}</button>`;
+
+function tagChips(kind) {
+  const general = TAGS.filter((tag) => tag.kind === kind && !tag.shop);
+  const own = state.shop ? TAGS.filter((tag) => tag.kind === kind && tag.shop === state.shop) : [];
+  const list = (tags, isOwn) => tags.map((tag) => chip(`data-tag="${esc(tag.id)}"`, tag.name, state.tags.has(tag.id), isOwn)).join("");
+  return `<div class="chips">${list(general, false)}</div>` +
+    (own.length ? `<p class="own-title">Riêng của ${esc(SHOPS[state.shop])}</p><div class="chips">${list(own, true)}</div>` : "");
+}
+
+function renderRows() {
+  document.querySelector('[data-full-body="shop"]').innerHTML =
+    `<div class="chips">${Object.entries(SHOPS).map(([id, name]) => chip(`data-shop="${id}"`, name, state.shop === id)).join("")}</div>`;
+  document.querySelector('[data-full-body="cat"]').innerHTML = tagChips("cat");
+  document.querySelector('[data-full-body="fill"]').innerHTML = tagChips("fill");
+
+  const picked = (kind) => [...state.tags].map(tagById).filter((tag) => tag.kind === kind);
+  const brief = (items) => items.length
+    ? `<div class="chips">${items.map((item) => `<span class="chip on${item.own ? " own" : ""}">${esc(item.label)}</span>`).join("")}</div>`
+    : `<p class="all-text">Tất cả</p>`;
+
+  document.querySelector('[data-brief-body="shop"]').innerHTML = brief(state.shop ? [{ label: SHOPS[state.shop] }] : []);
+  ["cat", "fill"].forEach((kind) => {
+    const items = picked(kind);
+    document.querySelector(`[data-brief-body="${kind}"]`).innerHTML = brief(items.map((tag) => ({ label: tag.name, own: Boolean(tag.shop) })));
+    document.querySelector(`[data-count="${kind}"]`).textContent = items.length ? `${items.length} đã chọn` : "";
+  });
+  document.querySelector('[data-count="shop"]').textContent = state.shop ? "1 đã chọn" : "";
+}
+
+function renderSearch() {
+  const query = fold(state.query.trim());
+  const hits = TAGS
+    .filter((tag) => !query || fold(tag.name).includes(query))
+    .sort((a, b) => fold(a.name).localeCompare(fold(b.name)) || Number(Boolean(a.shop)) - Number(Boolean(b.shop)));
+
+  const mark = (name) => {
+    const at = query ? fold(name).indexOf(query) : -1;
+    if (at < 0) return esc(name);
+    return `${esc(name.slice(0, at))}<mark>${esc(name.slice(at, at + query.length))}</mark>${esc(name.slice(at + query.length))}`;
+  };
+
+  $("hits").innerHTML = hits.length
+    ? `<div class="hits">${hits.map((tag) => `
+        <button type="button" class="hit" data-tag="${esc(tag.id)}" aria-pressed="${state.tags.has(tag.id)}">
+          <b>${mark(tag.name)}</b>
+          <small>${tag.kind === "cat" ? "Loại bánh" : "Nhân"} · ${tag.shop ? esc(SHOPS[tag.shop]) : "Nhãn chung"}</small>
+        </button>`).join("")}</div>`
+    : `<p class="no-hit">Không có nhãn khớp</p>`;
+}
+
+const matches = (item) => {
+  const groups = ["cat", "fill"].map((kind) => [...state.tags].filter((id) => tagById(id).kind === kind));
+  return (!state.shop || item.shop === state.shop)
+    && groups.every((ids) => ids.length === 0 || ids.some((id) => item.tags.has(id)))
+    && (!state.cakeQuery || fold(item.name).includes(fold(state.cakeQuery)));
+};
+
+const cardHtml = (item) => `
+  <article class="card">
+    <div class="thumb" style="background:${item.color}">${esc(item.name)}</div>
+    <div class="card-body">
+      <h3>${esc(item.name)}</h3>
+      <p>${esc(SHOPS[item.shop])}</p>
+      <strong>${money(item.price)}</strong>
+    </div>
+  </article>`;
+
+function renderResults() {
+  const filtering = Boolean(state.shop || state.tags.size || state.cakeQuery);
+  const found = CAKES.filter(matches);
+  const others = CAKES.filter((item) => !matches(item));
+
+  const pickedNames = [...state.tags].map((id) => fold(tagById(id).name));
+  const related = (item) => [...item.tags].filter((id) => pickedNames.includes(fold(tagById(id).name))).length;
+
+  const title = state.shop ? SHOPS[state.shop] : filtering ? "Sản phẩm phù hợp" : "Tất cả sản phẩm";
+  $("mainTitle").innerHTML = `${esc(title)} <small>${found.length} sản phẩm</small>`;
+  $("main").innerHTML = found.length
+    ? `<div class="grid">${found.map(cardHtml).join("")}</div>`
+    : `<div class="empty">Không có bánh khớp bộ lọc</div>`;
+
+  $("suggest").hidden = !filtering;
+  $("suggestGrid").innerHTML = others
+    .sort((a, b) => related(b) - related(a))
+    .slice(0, 4)
+    .map(cardHtml)
+    .join("");
+  $("clear").hidden = !(state.shop || state.tags.size);
+}
+
+function render() {
+  const focused = document.activeElement;
+  const scope = focused?.closest?.("#rows, #hits");
+  const refocus = focused?.dataset?.tag
+    ? `[data-tag="${CSS.escape(focused.dataset.tag)}"]`
+    : focused?.dataset?.shop ? `[data-shop="${focused.dataset.shop}"]` : null;
+
+  renderRows();
+  renderSearch();
+  renderResults();
+
+  if (scope && refocus) scope.querySelector(refocus)?.focus({ preventScroll: true });
+}
+
+function pickShop(shop) {
+  state.shop = state.shop === shop ? null : shop;
+  [...state.tags].forEach((id) => {
+    const tag = tagById(id);
+    if (tag.shop && tag.shop !== state.shop) state.tags.delete(id);
+  });
+  render();
+}
+
+function pickTag(id) {
+  const tag = tagById(id);
+  if (state.tags.has(id)) {
+    state.tags.delete(id);
+  } else {
+    state.tags.add(id);
+    if (tag.shop && tag.shop !== state.shop) {
+      state.shop = tag.shop;
+      [...state.tags].forEach((other) => {
+        const otherTag = tagById(other);
+        if (otherTag.shop && otherTag.shop !== tag.shop) state.tags.delete(other);
+      });
+    }
+  }
+  render();
+}
+
+function setSearching(on) {
+  state.searching = on;
+  if (on) closeRows();
+  $("searchToggle").setAttribute("aria-pressed", String(on));
+  $("rowsPane").classList.toggle("open", !on);
+  $("searchPane").classList.toggle("open", on);
+  if (on) setTimeout(() => $("tagQuery").focus(), 60);
+}
+
+function reset() {
+  Object.assign(state, { shop: null, tags: new Set(), query: "", cakeQuery: "" });
+  $("tagQuery").value = "";
+  $("cakeSearch").value = "";
+  setSearching(false);
+  closeRows();
+  render();
+}
+
+const SCENES = {
+  default: reset,
+  shop: () => { reset(); pickShop("moon"); pinRow("cat"); },
+  own: () => { reset(); pickShop("moon"); pickTag(tagId("fill", "Trứng muối chảy", "moon")); },
+  search: () => { reset(); setSearching(true); $("tagQuery").value = "trứng muối"; state.query = "trứng muối"; render(); },
+};
+
+document.addEventListener("click", (event) => {
+  const target = event.target.closest("[data-shop],[data-tag],[data-toggle],[data-scene],[data-layout]");
+  if (!target) return;
+  const rowKey = target.closest(".row")?.dataset.row;
+  if (target.dataset.shop) pickShop(target.dataset.shop);
+  if (target.dataset.tag) pickTag(target.dataset.tag);
+  if ((target.dataset.shop || target.dataset.tag) && rowKey) pinRow(rowKey);
+  if (target.dataset.toggle) {
+    if (state.pinned === target.dataset.toggle) closeRows();
+    else pinRow(target.dataset.toggle);
+  }
+  if (target.dataset.scene) SCENES[target.dataset.scene]();
+  if (target.dataset.layout && target.tagName === "BUTTON") {
+    $("page").dataset.layout = target.dataset.layout;
+    document.querySelectorAll("button[data-layout]").forEach((button) => button.setAttribute("aria-pressed", String(button === target)));
+  }
+});
+
+document.addEventListener("pointerdown", (event) => {
+  if (state.pinned && !event.target.closest(`[data-row="${state.pinned}"]`)) closeRows();
+});
+
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape" && state.pinned) closeRows();
+});
+
+$("searchToggle").addEventListener("click", () => setSearching(!state.searching));
+$("clear").addEventListener("click", () => { state.shop = null; state.tags.clear(); render(); });
+$("tagQuery").addEventListener("input", (event) => { state.query = event.target.value; renderSearch(); });
+$("tagQuery").addEventListener("keydown", (event) => { if (event.key === "Escape") setSearching(false); });
+$("cakeSearch").addEventListener("input", (event) => { state.cakeQuery = event.target.value.trim(); renderResults(); });
+
+buildRows();
+expand(null);
+render();
+</script>
+</body>
+</html>

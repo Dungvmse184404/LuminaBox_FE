@@ -55,6 +55,28 @@ export interface Product {
   items: ProductItem[];
 }
 
+export interface FilterTag {
+  id: string;
+  name: string;
+  organizerId?: string | null;
+  organizerBrandName?: string | null;
+}
+
+export interface FilterShop {
+  id: string;
+  name: string;
+}
+
+export interface BoxItem {
+  id: string;
+  organizerBrandName: string;
+  name: string;
+  capacity: number;
+  price: number;
+  images: ProductImage[];
+  stocks: Stock[];
+}
+
 export interface ProductListParams extends ListParams {
   categoryId?: string;
   fillingId?: string;
@@ -66,7 +88,7 @@ export interface ShippingFeePayload {
   stallId: string | null;
   addressId: string;
   items: { productItemId: string; quantity: number }[];
-  boxes: [];
+  boxes: { boxItemId: string; selections: { productItemId: string; quantity: number }[] }[];
 }
 
 export interface ShippingFee {
@@ -75,6 +97,8 @@ export interface ShippingFee {
 }
 
 export const formatPrice = (value: number) => `${value.toLocaleString("vi-VN")} ₫`;
+
+export const formatDiscount = (value: number) => (value > 0 ? `-${formatPrice(value)}` : formatPrice(0));
 
 export function unitPrice(item: ProductItem, quantity: number) {
   const tier = [...item.priceTiers].reverse().find((t) => quantity >= t.minQuantity);

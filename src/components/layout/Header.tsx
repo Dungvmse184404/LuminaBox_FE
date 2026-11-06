@@ -2,6 +2,8 @@ import { useRef, useState, type ReactNode } from "react";
 import { Link, NavLink } from "react-router-dom";
 import { ChevronDown, Menu, Moon, ShoppingCart, Truck, Undo2, X } from "lucide-react";
 import { GlowHairline } from "@/components/ui/GlowHairline";
+import { useAuth } from "@/features/auth/AuthContext";
+import { useCart } from "@/features/cart/hooks/useCart";
 import { useCategories } from "@/features/catalog/hooks/useCategories";
 import { cn } from "@/lib/cn";
 import { AccountMenu } from "./AccountMenu";
@@ -23,6 +25,8 @@ const ACTIVE_NAV_SELECTOR = '[aria-current="page"]:not([href*="#"])';
 
 export function Header() {
   const { data: categories } = useCategories(CATEGORY_QUERY);
+  const { user } = useAuth();
+  const { data: cart } = useCart(Boolean(user));
   const navRef = useRef<HTMLElement>(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const [categoriesOpen, setCategoriesOpen] = useState(false);
@@ -60,7 +64,7 @@ export function Header() {
         <div className="ml-auto flex items-center gap-1 sm:ml-0">
           <EffectSettingsMenu />
           <AccountMenu />
-          <IconLink to="/cart" icon={<ShoppingCart size={20} />} label="Giỏ hàng" />
+          <IconLink to="/cart" icon={<ShoppingCart size={20} />} label="Giỏ hàng" count={user ? cart?.totalItems : 0} />
         </div>
       </Container>
 
@@ -125,10 +129,13 @@ export function Header() {
   );
 }
 
-function IconLink({ to, icon, label }: { to: string; icon: ReactNode; label: string }) {
+function IconLink({ to, icon, label, count = 0 }: { to: string; icon: ReactNode; label: string; count?: number }) {
   return (
-    <Link to={to} className="flex flex-col items-center gap-0.5 rounded-lg px-3 py-1 text-primary-soft transition hover:text-white">
+    <Link to={to} className="relative flex flex-col items-center gap-0.5 rounded-lg px-3 py-1 text-primary-soft transition hover:text-white">
       {icon}
+      {count > 0 && (
+        <span className="absolute right-1 top-0 grid min-w-4 place-items-center rounded-full bg-gold px-1 text-[10px] font-bold text-chrome-deep">{count}</span>
+      )}
       <span className="hidden text-[11px] sm:block">{label}</span>
     </Link>
   );

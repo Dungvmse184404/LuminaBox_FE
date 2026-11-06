@@ -1,9 +1,14 @@
 import { useMemo, useState } from "react";
-import { Link, useParams } from "react-router-dom";
-import { ChevronLeft, Minus, Plus } from "lucide-react";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
+import { ChevronLeft, Minus, Plus, ShoppingCart } from "lucide-react";
+import { Button } from "@/components/ui/Button";
 import { EmptyState, ErrorState, SkeletonRows } from "@/components/ui/States";
 import { StorageImage } from "@/components/ui/StorageImage";
+import { useToast } from "@/components/ui/Toast";
+import { useAuth } from "@/features/auth/AuthContext";
+import { useAddProductToCart } from "@/features/cart/hooks/useCart";
 import { cn } from "@/lib/cn";
+import { errorMessage } from "@/lib/errors";
 import { CommitmentBar, DescriptionCard, RelatedProducts, SellerCard, shopLink, WhereToBuyCard } from "../components/ProductInfoSections";
 import { useProduct } from "../hooks/useProducts";
 import { formatPrice, unitPrice } from "../types";
@@ -23,6 +28,11 @@ export function ProductDetailPage() {
   const [source, setSource] = useState("");
   const [quantity, setQuantity] = useState(1);
   const [imageIndex, setImageIndex] = useState(0);
+  const { user } = useAuth();
+  const toast = useToast();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const addToCart = useAddProductToCart();
 
   const item = product?.items.find((i) => i.id === itemId) ?? product?.items[0];
   const sellable = useMemo(() => item?.stocks.filter((stock) => stock.isActive && stock.stockQuantity > 0) ?? [], [item]);
@@ -35,6 +45,19 @@ export function ProductDetailPage() {
   const image = item.images[imageIndex] ?? item.images[0];
   const price = unitPrice(item, quantity);
   const maxQuantity = stock?.stockQuantity ?? 1;
+
+  const add = async () => {
+    if (!user) {
+      navigate("/login", { state: { from: location.pathname } });
+      return;
+    }
+    try {
+      await addToCart.mutateAsync({ productItemId: item.id, quantity, stallId: stock?.stallId ?? null });
+      toast.success("Đã thêm vào giỏ hàng.");
+    } catch (error) {
+      toast.error(errorMessage(error, "Không thêm được vào giỏ hàng."));
+    }
+  };
 
   return (
     <>
@@ -167,6 +190,11 @@ export function ProductDetailPage() {
                   Thành tiền <span className="font-bold text-primary">{formatPrice(price * quantity)}</span>
                 </span>
               </div>
+
+              <Button className="w-full sm:w-auto" loading={addToCart.isPending} onClick={add}>
+                <ShoppingCart size={16} />
+                Thêm vào giỏ
+              </Button>
             </>
           )}
         </div>
