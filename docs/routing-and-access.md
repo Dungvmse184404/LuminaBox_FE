@@ -21,7 +21,7 @@ Roles come from the BE (`Role` claim): `User`, `Organization` (Organizer), `Mana
 | `/cart` | signed in | `AppLayout` | Flow 8 | built |
 | `/checkout?items=<ids>` | signed in | `AppLayout` | Flow 9, 10 | built |
 | `/orders`, `/orders/:id` | signed in | `AppLayout` | Flow 9, 11 | built |
-| `/payment/result` | signed in | `AppLayout` | Flow 10 | built |
+| `/payment/result` | public | `AppLayout` | Flow 10 | built |
 | `/vouchers` | signed in | `AppLayout` | Flow 6, 7 | built |
 | `/help/ordering`, `/policies/returns`, `/policies/commission` | public | `AppLayout` | – | stub |
 | `/account/addresses` | signed in | `AppLayout` | Flow 16 | built |

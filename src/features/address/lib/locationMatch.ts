@@ -1,13 +1,9 @@
+import { foldText } from "@/lib/text";
+
 const UNIT_PREFIX = /^(thanh pho|tinh|tp|quan|huyen|thi xa|thi tran|phuong|xa)\s+/;
 const NUMBER = /^\d+$/;
 
-export const fold = (value: string) =>
-  value
-    .normalize("NFD")
-    .replace(/[̀-ͯ]/g, "")
-    .replace(/đ/g, "d")
-    .replace(/Đ/g, "D")
-    .toLowerCase();
+export const fold = foldText;
 
 export const coreName = (folded: string) => folded.replace(UNIT_PREFIX, "").replace(/^0+(?=\d)/, "");
 

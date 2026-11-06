@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { Search } from "lucide-react";
+import { Autocomplete } from "@/components/ui/Autocomplete";
 import { cn } from "@/lib/cn";
 import { foldText } from "@/lib/text";
 import { useFilterRows, type FilterRowKey } from "../hooks/useFilterRows";
@@ -70,6 +71,12 @@ export function ProductFilter({ shops, categories, fillings, organizerId, catego
       .filter(({ tag }) => foldText(tag.name).includes(folded))
       .sort((a, b) => foldText(a.tag.name).localeCompare(foldText(b.tag.name)));
   }, [query, categories, fillings]);
+
+  const tagOptions = useMemo(() => {
+    const byName = new Map<string, { id: string; name: string }>();
+    [...categories, ...fillings].forEach((tag) => byName.set(foldText(tag.name), { id: tag.id, name: tag.name }));
+    return [...byName.values()];
+  }, [categories, fillings]);
 
   const pickShop = (next: FilterShop) => {
     const selected = organizerId === next.id;
@@ -208,21 +215,31 @@ export function ProductFilter({ shops, categories, fillings, organizerId, catego
 
       <Fold open={searching}>
         <div className="p-px">
-          <label className="mb-2 mt-2 flex items-center gap-2 rounded-lg border border-line bg-card/70 px-3 py-2 focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/15">
+          <div
+            className="mb-2 mt-2 flex items-center gap-2 rounded-lg border border-line bg-card/70 px-3 py-2 focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/15"
+            onKeyDown={(event) => {
+              if (event.key === "Escape") setSearching(false);
+            }}
+          >
             <Search size={14} className="shrink-0 text-ink-muted" />
-            <input
+            <Autocomplete
               ref={searchRef}
-              value={query}
-              aria-label="Tìm nhãn"
+              freeText
+              filterOptions
+              hideList
+              ariaLabel="Tìm nhãn"
               placeholder="Tìm nhãn của mọi hãng"
               tabIndex={searching ? 0 : -1}
-              onChange={(event) => setQuery(event.target.value)}
-              onKeyDown={(event) => {
-                if (event.key === "Escape") setSearching(false);
-              }}
-              className="min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-ink-muted"
+              options={tagOptions}
+              text={query}
+              onTextChange={setQuery}
+              onPick={(option) => option && setQuery(option.name)}
+              onSubmit={setQuery}
+              className="min-w-0 flex-1"
+              inputClassName="w-full bg-transparent text-sm outline-none placeholder:text-ink-muted"
+              ghostClassName="text-sm"
             />
-          </label>
+          </div>
 
           {searching && (hits.length > 0 ? (
             <div className="lb-scrollbar grid max-h-64 gap-1.5 overflow-y-auto pb-1">

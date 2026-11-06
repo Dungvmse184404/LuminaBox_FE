@@ -7,7 +7,7 @@ import { useCategories } from "@/features/catalog/hooks/useCategories";
 import { ProductCard } from "../components/ProductCard";
 import { ProductFilter } from "../components/ProductFilter";
 import { SuggestedProducts } from "../components/SuggestedProducts";
-import { useFillings, useProducts } from "../hooks/useProducts";
+import { useFillings, useProductSuggestions, useProducts } from "../hooks/useProducts";
 import type { FilterShop } from "../types";
 
 const CATEGORY_QUERY = { pageSize: 50, sortBy: "name", isDescending: false };
@@ -25,6 +25,7 @@ export function ProductsPage() {
   const categories = useCategories(CATEGORY_QUERY);
   const fillings = useFillings();
   const catalog = useProducts(SHOP_QUERY);
+  const suggestions = useProductSuggestions();
   const { data, isLoading, isError, refetch } = useProducts({
     search,
     page,
@@ -57,7 +58,7 @@ export function ProductsPage() {
     <>
       <h1 className="font-serif text-2xl font-black text-primary-dark">{organizerId && shopName ? `Sản phẩm của ${shopName}` : "Sản phẩm"}</h1>
 
-      <SearchInput value={search} onChange={(q) => update({ q })} placeholder="Tìm theo tên bánh" className="mt-4 max-w-xl" />
+      <SearchInput value={search} onChange={(q) => update({ q })} placeholder="Tìm theo tên bánh" className="mt-4 max-w-xl" suggestions={suggestions} />
 
       <div className="mt-4 grid items-start gap-6 lg:grid-cols-[17rem_minmax(0,1fr)]">
         <ProductFilter

@@ -1,5 +1,6 @@
 import { useRef, useEffect } from "react";
 import { Check, ChevronLeft, MapPin, Plus, Search, X } from "lucide-react";
+import { Autocomplete } from "@/components/ui/Autocomplete";
 import { priceText } from "../timeline";
 import type { Stall, StallStatus } from "../types";
 
@@ -101,15 +102,29 @@ export function StallPanel({ stalls, found, visible, selected, isLoading, isErro
   return (
     <aside className="panel panel-glass stalls-overlay" aria-label="Danh sách gian hàng">
       <div style={{ flex: "none", display: "flex", flexDirection: "column", gap: 10, padding: "12px 12px 8px" }}>
-        <label className="search">
+        <div className="search">
           <Search size={18} aria-hidden="true" />
-          <input type="search" placeholder="Tìm theo tên, mã hoặc khu vực" aria-label="Tìm gian hàng" value={query} onChange={(e) => onQuery(e.target.value)} />
+          <Autocomplete
+            freeText
+            filterOptions
+            limit={6}
+            ariaLabel="Tìm gian hàng"
+            placeholder="Tìm theo tên, mã hoặc khu vực"
+            options={stalls.map((stall) => ({ id: stall.id, name: stall.name, hint: `${stall.code} · ${stall.districtName}` }))}
+            text={query}
+            onTextChange={onQuery}
+            onPick={(option) => option && onQuery(option.name)}
+            onSubmit={onQuery}
+            className="min-w-0 flex-1"
+            inputClassName="w-full text-sm"
+            ghostClassName="text-sm"
+          />
           {query && (
             <button type="button" className="icon-btn" aria-label="Xoá từ khoá" onClick={() => onQuery("")}>
               <X size={16} />
             </button>
           )}
-        </label>
+        </div>
         <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
           {chips.map((chip) => (
             <button key={chip.id} type="button" className="chip" aria-pressed={filter === chip.id} onClick={() => onFilter(chip.id)}>

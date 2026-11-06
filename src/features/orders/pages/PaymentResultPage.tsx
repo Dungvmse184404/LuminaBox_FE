@@ -8,6 +8,7 @@ import { orderKeys } from "../hooks/useOrders";
 const COPY: Record<string, string> = {
   success: "Thanh toán thành công",
   cancelled: "Bạn đã hủy thanh toán",
+  refunded: "Đơn đã hủy, tiền đã được hoàn lại",
   failed: "Không xác nhận được thanh toán",
 };
 
