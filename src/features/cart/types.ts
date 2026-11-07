@@ -54,5 +54,10 @@ export const cartItemName = (item: CartItem) => item.boxItemName ?? item.product
 export const cartItemDetail = (item: CartItem) =>
   item.itemType === "Box" ? `Đựng ${item.boxCapacity} bánh` : item.productItemName ?? "";
 
+export const checkoutPath = (cart: Cart, isLine: (item: CartItem) => boolean) => {
+  const line = cart.groups.flatMap((group) => group.items).find(isLine);
+  return line ? `/checkout?items=${line.id}` : "/cart";
+};
+
 export const groupLabel = (group: Pick<CartGroup, "organizerBrandName" | "stallName">) =>
   group.stallName ? `${group.organizerBrandName} · ${group.stallName}` : `${group.organizerBrandName} · Kho online`;

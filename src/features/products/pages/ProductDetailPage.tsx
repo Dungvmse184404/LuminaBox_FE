@@ -7,6 +7,7 @@ import { StorageImage } from "@/components/ui/StorageImage";
 import { useToast } from "@/components/ui/Toast";
 import { useAuth } from "@/features/auth/AuthContext";
 import { useAddProductToCart } from "@/features/cart/hooks/useCart";
+import { checkoutPath } from "@/features/cart/types";
 import { cn } from "@/lib/cn";
 import { errorMessage } from "@/lib/errors";
 import { CommitmentBar, DescriptionCard, RelatedProducts, SellerCard, shopLink, WhereToBuyCard } from "../components/ProductInfoSections";
@@ -33,6 +34,7 @@ export function ProductDetailPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const addToCart = useAddProductToCart();
+  const buyNow = useAddProductToCart();
 
   const item = product?.items.find((i) => i.id === itemId) ?? product?.items[0];
   const sellable = useMemo(() => item?.stocks.filter((stock) => stock.isActive && stock.stockQuantity > 0) ?? [], [item]);
@@ -56,6 +58,20 @@ export function ProductDetailPage() {
       toast.success("Đã thêm vào giỏ hàng.");
     } catch (error) {
       toast.error(errorMessage(error, "Không thêm được vào giỏ hàng."));
+    }
+  };
+
+  const buy = async () => {
+    if (!user) {
+      navigate("/login", { state: { from: location.pathname } });
+      return;
+    }
+    const stallId = stock?.stallId ?? null;
+    try {
+      const cart = await buyNow.mutateAsync({ productItemId: item.id, quantity, stallId });
+      navigate(checkoutPath(cart, (line) => line.productItemId === item.id && line.stallId === stallId));
+    } catch (error) {
+      toast.error(errorMessage(error, "Không mua ngay được sản phẩm này."));
     }
   };
 
@@ -191,10 +207,15 @@ export function ProductDetailPage() {
                 </span>
               </div>
 
-              <Button className="w-full sm:w-auto" loading={addToCart.isPending} onClick={add}>
-                <ShoppingCart size={16} />
-                Thêm vào giỏ
-              </Button>
+              <div className="flex flex-col gap-2 sm:flex-row">
+                <Button variant="outline" disabled={buyNow.isPending} loading={addToCart.isPending} onClick={add}>
+                  <ShoppingCart size={16} />
+                  Thêm vào giỏ
+                </Button>
+                <Button disabled={addToCart.isPending} loading={buyNow.isPending} onClick={buy}>
+                  Mua ngay
+                </Button>
+              </div>
             </>
           )}
         </div>

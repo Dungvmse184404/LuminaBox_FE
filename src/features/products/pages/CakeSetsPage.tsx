@@ -10,6 +10,7 @@ import { StorageImage } from "@/components/ui/StorageImage";
 import { useToast } from "@/components/ui/Toast";
 import { useAuth } from "@/features/auth/AuthContext";
 import { useAddBoxToCart } from "@/features/cart/hooks/useCart";
+import { checkoutPath } from "@/features/cart/types";
 import { errorMessage } from "@/lib/errors";
 import { useBoxes } from "../hooks/useProducts";
 import { formatPrice, type BoxItem } from "../types";
@@ -22,6 +23,7 @@ function BoxCard({ box }: { box: BoxItem }) {
   const navigate = useNavigate();
   const location = useLocation();
   const addBox = useAddBoxToCart();
+  const buyNow = useAddBoxToCart();
   const sellable = box.stocks.filter((stock) => stock.isActive && stock.stockQuantity > 0);
   const [source, setSource] = useState("");
   const stock = sellable.find((s) => (s.stallId ?? ONLINE) === source) ?? sellable[0];
@@ -36,6 +38,20 @@ function BoxCard({ box }: { box: BoxItem }) {
       toast.success("Đã thêm vào giỏ hàng.");
     } catch (error) {
       toast.error(errorMessage(error, "Không thêm được vào giỏ hàng."));
+    }
+  };
+
+  const buy = async () => {
+    if (!user) {
+      navigate("/login", { state: { from: location.pathname } });
+      return;
+    }
+    const stallId = stock?.stallId ?? null;
+    try {
+      const cart = await buyNow.mutateAsync({ boxItemId: box.id, quantity: 1, stallId });
+      navigate(checkoutPath(cart, (line) => line.boxItemId === box.id && line.stallId === stallId));
+    } catch (error) {
+      toast.error(errorMessage(error, "Không mua ngay được hộp này."));
     }
   };
 
@@ -56,10 +72,17 @@ function BoxCard({ box }: { box: BoxItem }) {
             ))}
           </Select>
         )}
-        <Button className="mt-auto" size="sm" disabled={sellable.length === 0} loading={addBox.isPending} onClick={add}>
-          <ShoppingCart size={14} />
-          {sellable.length === 0 ? "Tạm hết hàng" : "Thêm vào giỏ"}
-        </Button>
+        <div className="mt-auto grid gap-2">
+          <Button variant="outline" size="sm" disabled={sellable.length === 0 || buyNow.isPending} loading={addBox.isPending} onClick={add}>
+            <ShoppingCart size={14} />
+            {sellable.length === 0 ? "Tạm hết hàng" : "Thêm vào giỏ"}
+          </Button>
+          {sellable.length > 0 && (
+            <Button size="sm" disabled={addBox.isPending} loading={buyNow.isPending} onClick={buy}>
+              Mua ngay
+            </Button>
+          )}
+        </div>
       </div>
     </div>
   );
