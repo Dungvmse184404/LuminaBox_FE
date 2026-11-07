@@ -1,10 +1,12 @@
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { SearchInput } from "@/components/ui/SearchInput";
+import { useProductSuggestions } from "@/features/products/hooks/useProducts";
 
 export function HeaderSearch({ className }: { className?: string }) {
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const [params] = useSearchParams();
+  const suggestions = useProductSuggestions();
   const onProducts = pathname === "/products";
   const current = onProducts ? (params.get("q") ?? "") : "";
 
@@ -18,5 +20,5 @@ export function HeaderSearch({ className }: { className?: string }) {
     navigate(`/products${search ? `?${search}` : ""}`, { replace: onProducts });
   };
 
-  return <SearchInput value={current} onChange={onSearch} placeholder="Bạn cần tìm bánh gì?" className={className} />;
+  return <SearchInput value={current} onChange={onSearch} placeholder="Bạn cần tìm bánh gì?" className={className} suggestions={suggestions} />;
 }

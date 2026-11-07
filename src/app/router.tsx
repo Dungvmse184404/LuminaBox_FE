@@ -4,6 +4,13 @@ import { AppLayout } from "@/components/layout/AppLayout";
 import { ContentLayout } from "@/components/layout/ContentLayout";
 import { StoreLayout } from "@/components/layout/StoreLayout";
 import { AddressBookPage } from "@/features/address/pages/AddressBookPage";
+import { CartPage } from "@/features/cart/pages/CartPage";
+import { CheckoutPage } from "@/features/orders/pages/CheckoutPage";
+import { OrderDetailPage } from "@/features/orders/pages/OrderDetailPage";
+import { OrdersPage, StoreOrdersPage } from "@/features/orders/pages/OrdersPage";
+import { PaymentResultPage } from "@/features/orders/pages/PaymentResultPage";
+import { CakeSetsPage } from "@/features/products/pages/CakeSetsPage";
+import { VouchersPage } from "@/features/vouchers/pages/VouchersPage";
 import { RequireRole } from "@/features/auth/RequireRole";
 import { AdminCatalogPage } from "@/features/catalog/pages/AdminCatalogPage";
 import { HomePage } from "@/features/home/pages/HomePage";
@@ -39,16 +46,22 @@ export const router = createBrowserRouter([
             children: [
               { path: "products", element: <ProductsPage /> },
               { path: "products/:id", element: <ProductDetailPage /> },
-              { path: "cake-sets", element: <PlaceholderPage title="Bánh & hộp Trung thu" /> },
+              { path: "cake-sets", element: <CakeSetsPage /> },
               { path: "become-partner", element: <PlaceholderPage title="Trở thành đối tác" /> },
-              { path: "cart", element: <PlaceholderPage title="Giỏ hàng" /> },
-              { path: "vouchers", element: <PlaceholderPage title="Voucher và khuyến mãi" /> },
+              { path: "payment/result", element: <PaymentResultPage /> },
               { path: "help/ordering", element: <PlaceholderPage title="Hướng dẫn đặt hàng" /> },
               { path: "policies/returns", element: <PlaceholderPage title="Chính sách đổi trả" /> },
               { path: "policies/commission", element: <PlaceholderPage title="Chính sách hoa hồng" /> },
               {
                 element: <RequireRole />,
-                children: [{ path: "account/addresses", element: <AddressBookPage /> }],
+                children: [
+                  { path: "account/addresses", element: <AddressBookPage /> },
+                  { path: "cart", element: <CartPage /> },
+                  { path: "checkout", element: <CheckoutPage /> },
+                  { path: "orders", element: <OrdersPage /> },
+                  { path: "orders/:id", element: <OrderDetailPage /> },
+                  { path: "vouchers", element: <VouchersPage /> },
+                ],
               },
             ],
           },
@@ -61,8 +74,10 @@ export const router = createBrowserRouter([
                 element: <StoreLayout />,
                 children: [
                   { index: true, element: <PlaceholderPage title="Tổng quan cửa hàng" /> },
+                  { path: "orders", element: <StoreOrdersPage /> },
+                  { path: "orders/:id", element: <OrderDetailPage store /> },
                   { path: "products", element: <PlaceholderPage title="Sản phẩm của tôi" /> },
-                  { path: "boxes", element: <PlaceholderPage title="Hộp combo" /> },
+                  { path: "boxes", element: <PlaceholderPage title="Hộp" /> },
                   { path: "pickup-addresses", element: <AddressBookPage type="Pickup" /> },
                 ],
               },

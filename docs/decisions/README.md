@@ -17,3 +17,4 @@ Format: [MADR](https://adr.github.io/madr/). File name `FE-NNNN-kebab-title.md`,
 | [FE-0002](./FE-0002-docs-live-in-backend-repo.md) | Shared docs live in the BE repo | Accepted |
 | [FE-0003](./FE-0003-vietmap-raster-tiles.md) | MapLibre with VietMap raster tiles | Accepted |
 | [FE-0004](./FE-0004-shared-address-fields.md) | One shared address input with VietMap suggestions | Accepted |
+| [FE-0005](./FE-0005-shared-autocomplete.md) | One shared autocomplete for address and search inputs | Accepted |

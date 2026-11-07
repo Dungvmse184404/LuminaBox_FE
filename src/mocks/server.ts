@@ -41,7 +41,7 @@ export function paginate<T>(all: T[], query: URLSearchParams): Paged<T> {
   return {
     items: all.slice(start, start + pageSize),
     totalCount: all.length,
-    pageIndex,
+    currentPage: pageIndex,
     pageSize,
     totalPages: Math.max(1, Math.ceil(all.length / pageSize)),
   };

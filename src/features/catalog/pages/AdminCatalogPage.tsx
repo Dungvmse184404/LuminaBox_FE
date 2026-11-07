@@ -9,11 +9,14 @@ import { EmptyState, ErrorState, SkeletonRows } from "@/components/ui/States";
 import { CategoryFormModal } from "../components/CategoryFormModal";
 import { useCategories } from "../hooks/useCategories";
 
+const SUGGESTION_QUERY = { pageSize: 50, sortBy: "name", isDescending: false };
+
 export function AdminCatalogPage() {
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
   const [creating, setCreating] = useState(false);
   const { data, isLoading, isError, refetch } = useCategories({ search, page, pageSize: 5, sortBy: "name", isDescending: false });
+  const allCategories = useCategories(SUGGESTION_QUERY);
 
   return (
     <>
@@ -36,6 +39,7 @@ export function AdminCatalogPage() {
             setPage(1);
           }}
           placeholder="Tìm loại bánh..."
+          suggestions={allCategories.data?.items.map(({ id, name }) => ({ id, name }))}
         />
       </div>
 

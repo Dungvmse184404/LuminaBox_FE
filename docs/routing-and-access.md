@@ -14,15 +14,19 @@ Roles come from the BE (`Role` claim): `User`, `Organization` (Organizer), `Mana
 |---|---|---|---|---|
 | `/` | public | `AppLayout` | – | built |
 | `/login`, `/register` | public | `AppLayout` | Flow 1 | built (login, register, OTP; forgot password not yet) |
-| `/products`, `/products/:id` | public | `AppLayout` | Flow 8 | built (list, detail; the GHN fee is shown at checkout only) |
-| `/cake-sets` | public | `AppLayout` | Flow 8, 9 | stub |
+| `/products`, `/products/:id` | public | `AppLayout` | Flow 8 | built (list with hover and pin filter, tag search, suggestions; detail; the GHN fee is shown at checkout only) |
+| `/cake-sets` | public | `AppLayout` | Flow 8, 9 | built (boxes sold on their own: list, add to cart) |
 | `/stalls`, `/stalls?stall=<id>` | public | `AppLayout`, full screen with a compact footer | Flow 4 | built (map, list, detail, rental timeline; submit waits for the registration API) |
 | `/become-partner` | public | `AppLayout` | Flow 2 | stub |
-| `/cart` | public | `AppLayout` | Flow 8, 9 | stub |
-| `/vouchers` | public | `AppLayout` | Flow 6, 7 | stub |
+| `/cart` | signed in | `AppLayout` | Flow 8 | built |
+| `/checkout?items=<ids>` | signed in | `AppLayout` | Flow 9, 10 | built |
+| `/orders`, `/orders/:id` | signed in | `AppLayout` | Flow 9, 11 | built |
+| `/payment/result` | public | `AppLayout` | Flow 10 | built |
+| `/vouchers` | signed in | `AppLayout` | Flow 6, 7 | built |
 | `/help/ordering`, `/policies/returns`, `/policies/commission` | public | `AppLayout` | – | stub |
 | `/account/addresses` | signed in | `AppLayout` | Flow 16 | built |
 | `/store` | `Organization` | `StoreLayout` | – | stub |
+| `/store/orders`, `/store/orders/:id` | `Organization` | `StoreLayout` | Flow 11 | built |
 | `/store/products` | `Organization` | `StoreLayout` | Flow 5 | stub |
 | `/store/boxes` | `Organization` | `StoreLayout` | Flow 5 | stub |
 | `/store/pickup-addresses` | `Organization` | `StoreLayout` | Flow 16 | built |

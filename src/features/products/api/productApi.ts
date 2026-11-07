@@ -1,6 +1,6 @@
 import { request } from "@/lib/api";
-import type { Paged } from "@/types/api";
-import type { Product, ProductListParams, ProductSummary, ShippingFee, ShippingFeePayload } from "../types";
+import type { ListParams, Paged } from "@/types/api";
+import type { BoxItem, Product, ProductListParams, ProductSummary, ShippingFee, ShippingFeePayload } from "../types";
 
 export const productApi = {
   list: async (params: ProductListParams) => {
@@ -10,6 +10,11 @@ export const productApi = {
 
   detail: async (id: string) => {
     const { data } = await request<Product>(`/products/${id}`);
+    return data!;
+  },
+
+  boxes: async (params: ListParams) => {
+    const { data } = await request<Paged<BoxItem>>("/box-items", { query: { ...params } });
     return data!;
   },
 

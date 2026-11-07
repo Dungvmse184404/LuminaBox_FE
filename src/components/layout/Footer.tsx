@@ -51,7 +51,7 @@ export function Footer({ compact = false }: { compact?: boolean }) {
             <Moon size={20} /> LuminaBox
           </div>
           <p className="mt-3 max-w-sm text-sm leading-relaxed text-primary-soft/80">
-            Sàn thương mại bánh Trung thu nhiều gian hàng. LuminaBox kết nối các gian hàng đối tác để khách mua bánh lẻ và hộp combo trong một lần thanh toán.
+            Sàn thương mại bánh Trung thu nhiều gian hàng. LuminaBox kết nối các gian hàng đối tác để khách mua bánh và hộp trong một lần thanh toán.
           </p>
         </div>
         <LinkColumn title="Dành cho khách hàng" links={CUSTOMER_LINKS} />

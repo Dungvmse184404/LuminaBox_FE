@@ -1,7 +1,7 @@
 export interface Paged<T> {
   items: T[];
   totalCount: number;
-  pageIndex: number;
+  currentPage: number;
   pageSize: number;
   totalPages: number;
 }

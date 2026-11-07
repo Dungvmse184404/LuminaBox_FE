@@ -110,9 +110,9 @@ export function FeatureTiles() {
         <TileImage path={IMAGES.giftbox} restOpacity="opacity-45" />
         <div className="absolute inset-0 bg-gradient-to-t from-chrome-deep/85 via-chrome-deep/25 to-transparent" />        <div className="relative">
           <h3 className="font-serif text-2xl font-black">Bộ sưu tập hộp quà</h3>
-          <p className="mt-2 max-w-lg text-sm text-white/85">Chọn từng chiếc bánh nướng, bánh dẻo hoặc tự phối hộp quà theo khẩu vị của gia đình bạn.</p>
+          <p className="mt-2 max-w-lg text-sm text-white/85">Hộp đựng bánh Trung thu đủ kiểu, mua riêng cùng bánh bạn chọn.</p>
           <span className="mt-4 inline-flex w-fit items-center gap-2 rounded-full bg-primary-soft px-4 py-2 text-sm font-semibold text-primary-dark transition-all group-hover:gap-3">
-            Chọn bánh và hộp bánh <ArrowRight size={16} />
+            Xem hộp Trung thu <ArrowRight size={16} />
           </span>
         </div>
       </Link>
