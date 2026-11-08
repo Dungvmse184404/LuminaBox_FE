@@ -19,7 +19,8 @@ This page only maps a screen to the BE flow and endpoints it needs. Request / re
 | My orders (`/orders`) | Flow 9, 11 | `GET api/orders/me`, `GET api/orders/{id}`, `PUT api/orders/{id}/cancel`, `POST api/payments/checkout` |
 | Store orders (`/store/orders`) | Flow 11 | `GET api/orders/organizer/me`, `GET api/orders/{id}`, `PUT api/orders/{id}/confirm`, `reject`, `cancel`, `ship`, `mark-delivered` |
 | Public stalls (`/stalls`) | `stall-rental.md` (Flow 4), `organizer.md` (Flow 2) | `GET api/stalls`, `GET api/stalls/{id}` |
-| Become a partner (`/become-partner`) | `organizer.md` (Flow 2) | `api/organizer-registrations` |
+| Become a partner (`/become-partner`) | `organizer.md` (Flow 2) | `POST api/organizer-registrations`, `GET api/organizer-registrations/me`, `PUT api/organizer-registrations/{id}/confirm`, `PUT api/organizer-registrations/{id}/cancel`, `POST api/organizer-registrations/additional-stalls`, `POST api/organizer-registrations/additional-online` |
+| Partner registrations management (`/admin/registrations`) | `organizer.md` (Flow 2) | `GET api/organizer-registrations`, `GET api/organizer-registrations/{id}`, `PUT api/organizer-registrations/{id}/approve`, `PUT api/organizer-registrations/{id}/reject` |
 | Vouchers (`/vouchers`) | `voucher.md` | `GET api/vouchers/available`, `POST api/vouchers/{id}/claim`, `GET api/vouchers/my`, `DELETE api/vouchers/my/{id}` |
 | My products (`/store/products`) | `catalog.md` (Flow 5) | `api/products/me`, `api/products`, `api/products/{id}/items`, `api/product-items/{id}` (+ `images`, `price-tiers`, `stocks`), `api/products/{id}/status` |
 | Combo boxes (`/store/boxes`) | `catalog.md` (Flow 5) | `api/box-items/me`, `api/box-items`, `api/box-items/{id}` (+ `status`, `price-tiers`) |
