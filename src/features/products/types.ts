@@ -81,6 +81,7 @@ export interface ProductListParams extends ListParams {
   categoryId?: string;
   fillingId?: string;
   organizerId?: string;
+  stallId?: string;
 }
 
 export interface ShippingFeePayload {

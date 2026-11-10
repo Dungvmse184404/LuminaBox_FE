@@ -21,6 +21,8 @@ export function ProductsPage() {
   const page = Number(params.get("page") ?? 1) || 1;
   const organizerId = params.get("organizerId") ?? "";
   const brand = params.get("brand") ?? "";
+  const stallId = params.get("stallId") ?? "";
+  const stallName = params.get("stall") ?? "";
 
   const categories = useCategories(CATEGORY_QUERY);
   const fillings = useFillings();
@@ -33,6 +35,7 @@ export function ProductsPage() {
     categoryId: categoryId || undefined,
     fillingId: fillingId || undefined,
     organizerId: organizerId || undefined,
+    stallId: stallId || undefined,
   });
 
   const shops = useMemo(() => {
@@ -51,12 +54,12 @@ export function ProductsPage() {
     setParams(next);
   };
 
-  const filtering = Boolean(organizerId || categoryId || fillingId || search);
+  const filtering = Boolean(organizerId || categoryId || fillingId || search || stallId);
   const shopName = shops.find((shop) => shop.id === organizerId)?.name ?? brand;
 
   return (
     <>
-      <h1 className="font-serif text-2xl font-black text-primary-dark">{organizerId && shopName ? `Sản phẩm của ${shopName}` : "Sản phẩm"}</h1>
+      <h1 className="font-serif text-2xl font-black text-primary-dark">{stallId && stallName ? `Bánh tại ${stallName}` : organizerId && shopName ? `Sản phẩm của ${shopName}` : "Sản phẩm"}</h1>
 
       <SearchInput value={search} onChange={(q) => update({ q })} placeholder="Tìm theo tên bánh" className="mt-4 max-w-xl" suggestions={suggestions} />
 

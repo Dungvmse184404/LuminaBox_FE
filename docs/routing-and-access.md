@@ -16,8 +16,10 @@ Roles come from the BE (`Role` claim): `User`, `Organization` (Organizer), `Mana
 | `/login`, `/register` | public | `AppLayout` | Flow 1 | built (login, register, OTP; forgot password not yet) |
 | `/products`, `/products/:id` | public | `AppLayout` | Flow 8 | built (list with hover and pin filter, tag search, suggestions; detail; the GHN fee is shown at checkout only) |
 | `/cake-sets` | public | `AppLayout` | Flow 8, 9 | built (boxes sold on their own: list, add to cart) |
-| `/stalls`, `/stalls?stall=<id>` | public | `AppLayout`, full screen with a compact footer | Flow 4 | built (map, list, detail, rental timeline; submit waits for the registration API) |
-| `/become-partner` | public | `AppLayout` | Flow 2 | stub |
+| `/stalls`, `/stalls?stall=<id>` | public | `AppLayout`, full screen with a compact footer | Flow 4 | built ("Điểm bán": open stalls on the map and the cakes sold at each; renting lives in `/become-partner/stalls`) |
+| `/become-partner`, `?type=stall`, `?type=online`, `?tab=requests` | public; sending needs a login | `AppLayout` > `ContentLayout` | Flow 2 | built (choice, shop details, pickup address, my requests; FE-0006) |
+| `/become-partner/stalls` | public, needs a draft with stalls | `AppLayout`, full screen with a compact footer | Flow 2, 4 | built (shared `RentalMap`) |
+| `/become-partner/confirm` | signed in | `AppLayout` > `ContentLayout` | Flow 2 | built (summary, sends each request, retries failed ones) |
 | `/cart` | signed in | `AppLayout` | Flow 8 | built |
 | `/checkout?items=<ids>` | signed in | `AppLayout` | Flow 9, 10 | built |
 | `/orders`, `/orders/:id` | signed in | `AppLayout` | Flow 9, 11 | built |

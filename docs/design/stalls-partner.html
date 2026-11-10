@@ -1,0 +1,348 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>LuminaBox · Gian hàng và Đối tác</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Merriweather:wght@700;900&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --cream: #f3e4d3; --cream-dark: #e7d4bb; --card: #fbf5ea;
+    --primary: #a3262b; --primary-dark: #7d2a2d; --primary-soft: #f4dcc6;
+    --gold: #f2c744; --gold-deep: #c49a1c;
+    --chrome: #7d2a2d; --chrome-light: #8c3336;
+    --ink: #241c1a; --ink-soft: #554a40; --ink-muted: #8c7f6c; --line: #e2d2bc;
+    --success: #2f7d4f; --warning: #b7791f; --danger: #b42318; --info: #2b6cb0;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { font-size: 15px; }
+  body { font-family: "Inter", system-ui, sans-serif; color: var(--ink); background: linear-gradient(120deg, #f1d6c8, var(--cream) 45%, #f4e3c0); min-height: 100vh; }
+  button { font: inherit; color: inherit; cursor: pointer; background: none; border: 0; }
+  :focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+  h1, h2, h3 { font-family: "Merriweather", Georgia, serif; color: var(--primary-dark); }
+
+  .chrome { background: linear-gradient(var(--chrome), var(--chrome-light)); color: #fff; padding: 12px 24px; border-bottom: 2px solid var(--gold); }
+  .chrome strong { font-family: "Merriweather", Georgia, serif; font-size: 1.2rem; }
+  .wrap { max-width: 76rem; margin: 0 auto; padding: 24px 16px 64px; display: grid; gap: 22px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 20px; }
+  .muted { color: var(--ink-muted); font-size: .86rem; }
+  .soft { color: var(--ink-soft); }
+  h1 { font-size: 1.6rem; }
+  h2 { font-size: 1.15rem; margin-bottom: 10px; }
+  h3 { font-size: .98rem; margin-bottom: 6px; }
+
+  table { width: 100%; border-collapse: collapse; font-size: .87rem; }
+  th, td { text-align: left; padding: 9px 10px; border-top: 1px solid var(--line); vertical-align: top; }
+  th { color: var(--ink-muted); font-weight: 600; font-size: .78rem; text-transform: uppercase; letter-spacing: .03em; border-top: 0; }
+  .tag { display: inline-block; border-radius: 999px; padding: 2px 9px; font-size: .74rem; font-weight: 600; white-space: nowrap; }
+  .tag-red { background: #f7dcd8; color: var(--danger); }
+  .tag-gold { background: #fbefc6; color: #7a5b07; }
+  .tag-green { background: #dcefe3; color: var(--success); }
+  .tag-blue { background: #dbe8f6; color: var(--info); }
+
+  .tabs { display: flex; gap: 8px; flex-wrap: wrap; }
+  .tab { border: 1px solid var(--line); background: var(--card); border-radius: 12px; padding: 10px 14px; text-align: left; min-width: 0; flex: 1 1 14rem; }
+  .tab b { display: block; font-size: .95rem; }
+  .tab span { font-size: .8rem; color: var(--ink-muted); }
+  .tab[aria-selected="true"] { border-color: var(--primary); box-shadow: 0 0 0 2px var(--primary-soft); }
+  .option { display: none; gap: 18px; }
+  .option.is-active { display: grid; }
+
+  .idea { display: grid; gap: 6px; font-size: .9rem; }
+  .idea li { margin-left: 18px; color: var(--ink-soft); }
+  .screens { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr)); }
+  .screen { border: 1px solid var(--line); border-radius: 14px; overflow: hidden; background: #fff8ef; display: flex; flex-direction: column; min-width: 0; }
+  .screen-cap { padding: 8px 12px; font-size: .78rem; font-weight: 600; color: var(--ink-soft); background: var(--cream-dark); display: flex; justify-content: space-between; gap: 8px; }
+  .screen-cap code { font-weight: 500; color: var(--primary-dark); }
+  .bar { background: var(--chrome); color: #fde7d7; font-size: .7rem; padding: 7px 10px; display: flex; gap: 10px; flex-wrap: wrap; }
+  .bar .on { color: #fff; font-weight: 700; border-bottom: 2px solid var(--gold); }
+  .bar .new { color: var(--gold); font-weight: 700; }
+  .bar .gone { text-decoration: line-through; opacity: .55; }
+  .body { padding: 12px; display: grid; gap: 8px; flex: 1; }
+
+  .box { border: 1px dashed #cdb89c; border-radius: 10px; padding: 8px 10px; font-size: .78rem; color: var(--ink-soft); background: var(--card); }
+  .box b { color: var(--ink); }
+  .row { display: flex; gap: 8px; }
+  .row > * { flex: 1; min-width: 0; }
+  .map { position: relative; height: 150px; border-radius: 10px; background:
+      radial-gradient(circle at 30% 40%, #e9d9bf 0 18%, transparent 19%),
+      radial-gradient(circle at 70% 65%, #e3cfae 0 22%, transparent 23%),
+      linear-gradient(135deg, #efe2cc, #e6d4b6); border: 1px solid var(--line); overflow: hidden; }
+  .map .side { position: absolute; left: 8px; top: 8px; bottom: 8px; width: 42%; background: rgba(251,245,234,.94); border-radius: 8px; padding: 7px; font-size: .7rem; display: grid; gap: 4px; align-content: start; }
+  .map .side i { display: block; height: 7px; border-radius: 4px; background: var(--cream-dark); }
+  .pin { position: absolute; width: 13px; height: 13px; border-radius: 50%; border: 2px solid #fff; box-shadow: 0 1px 3px rgba(0,0,0,.3); }
+  .pin-red { background: var(--primary); }
+  .pin-white { background: #fff; border-color: #84796b; }
+  .pin-gold { background: var(--primary); box-shadow: 0 0 0 2px var(--gold); }
+  .dock { border-radius: 10px; background: var(--card); border: 1px solid var(--line); padding: 7px 9px; font-size: .72rem; display: grid; gap: 5px; }
+  .tl { height: 8px; border-radius: 4px; background: var(--cream-dark); position: relative; }
+  .tl::after { content: ""; position: absolute; left: var(--s); right: var(--e); top: 0; bottom: 0; border-radius: 4px; background: var(--primary); }
+  .btn { display: inline-flex; align-items: center; justify-content: center; border-radius: 8px; padding: 6px 10px; font-size: .74rem; font-weight: 700; background: var(--primary); color: #fff; }
+  .btn-o { background: var(--card); color: var(--ink-soft); border: 1px solid var(--line); }
+  .steps { display: flex; gap: 4px; font-size: .68rem; }
+  .steps span { flex: 1; text-align: center; padding: 4px 2px; border-radius: 6px; background: var(--cream-dark); color: var(--ink-muted); }
+  .steps .now { background: var(--primary); color: #fff; font-weight: 700; }
+  .steps .done { background: var(--primary-soft); color: var(--primary-dark); }
+  .ttabs { display: flex; gap: 10px; font-size: .72rem; border-bottom: 1px solid var(--line); }
+  .ttabs span { padding: 4px 0; color: var(--ink-muted); }
+  .ttabs .on { color: var(--primary); font-weight: 700; border-bottom: 2px solid var(--primary); }
+  .note { font-size: .74rem; border-left: 3px solid var(--gold-deep); background: #fbf1d6; padding: 6px 8px; border-radius: 0 8px 8px 0; color: #5d4708; }
+  .warn { border-left-color: var(--danger); background: #f9e3df; color: #7a1e16; }
+
+  .pros { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr)); font-size: .86rem; }
+  .pros ul { display: grid; gap: 4px; }
+  .pros li { margin-left: 16px; color: var(--ink-soft); }
+  .verdict { border: 2px solid var(--primary); }
+  .card { overflow-x: auto; }
+  .card > table { min-width: 34rem; }
+  @media (max-width: 640px) { .tab { flex-basis: 100%; } }
+</style>
+</head>
+<body>
+<header class="chrome"><strong>LuminaBox</strong> · sketch: Gian hàng và Trở thành đối tác</header>
+
+<main class="wrap">
+  <section class="card">
+    <h1>Hai trang đang làm trùng việc</h1>
+    <p class="muted" style="margin-top:6px">Đọc từ <code>StallsPage</code>, <code>RentalDock</code>, <code>BecomePartnerPage</code> và API <code>organizer-registrations</code> hiện tại.</p>
+    <table style="margin-top:14px">
+      <thead><tr><th>Việc</th><th>/stalls (Gian hàng)</th><th>/become-partner (Trở thành đối tác)</th></tr></thead>
+      <tbody>
+        <tr><td><b>Chọn gian để thuê</b></td><td>Bản đồ, chọn nhiều gian, nút gửi <span class="tag tag-red">chưa nối API</span></td><td>Đơn đầu: dropdown 1 gian. Đã là đối tác: modal tick nhiều gian</td></tr>
+        <tr><td><b>Chọn ngày thuê</b></td><td>Timeline kéo thả, mỗi gian có ngày riêng</td><td>2 ô ngày dùng chung cho mọi gian</td></tr>
+        <tr><td><b>Giá thuê, gian còn trống</b></td><td>Có, kèm lọc Đang trống / Đang thuê</td><td>Có, trong dropdown và modal</td></tr>
+        <tr><td><b>Người xem</b></td><td>Nằm trong menu chung nên người mua cũng thấy, nhưng nội dung là giá thuê mặt bằng</td><td>Người bán. Shop đã là đối tác vẫn thấy mục này trên menu</td></tr>
+        <tr><td><b>Theo dõi đơn đăng ký</b></td><td>Không có</td><td>Tab "Đơn đăng ký của tôi", nằm ngoài khu <code>/store</code></td></tr>
+      </tbody>
+    </table>
+    <p class="note" style="margin-top:12px">Ràng buộc BE cho mọi phương án: đơn đầu tiên chỉ gửi được <b>1 gian</b> (<code>POST organizer-registrations</code>). Thuê thêm gửi nhiều gian nhưng <b>chung một khoảng ngày</b> (<code>additional-stalls</code>). <code>StallResponse</code> chưa có shop đang thuê gian đó.</p>
+  </section>
+
+  <section class="card">
+    <h2>Flow bán hàng đã chốt</h2>
+    <table>
+      <thead><tr><th></th><th>Chỉ bán online</th><th>Chỉ thuê quầy</th><th>Cả hai</th></tr></thead>
+      <tbody>
+        <tr><td><b>Đăng ký</b></td><td>Đơn Online, chờ duyệt hoa hồng</td><td>Đơn thuê quầy, kèm ngày thuê</td><td>Gửi cả hai đơn, duyệt riêng từng đơn</td></tr>
+        <tr><td><b>Quản lý sản phẩm, hộp</b></td><td>Có</td><td>Có</td><td>Có</td></tr>
+        <tr><td><b>Tồn kho</b></td><td>Chỉ kho online</td><td>Chỉ theo từng quầy đang thuê: số lượng, loại bánh mỗi quầy</td><td>Kho online và từng quầy</td></tr>
+        <tr><td><b>Hiện ở Sản phẩm, Hộp Trung thu</b></td><td>Có</td><td><span class="tag tag-red">Không</span></td><td>Có</td></tr>
+        <tr><td><b>Khách đặt online</b></td><td>Từ kho online</td><td>Không, chỉ bán trực tiếp tại quầy</td><td>Từ kho online hoặc kho của quầy</td></tr>
+        <tr><td><b>Chi phí cho sàn</b></td><td>Hoa hồng trên đơn Stripe</td><td>Tiền thuê quầy</td><td>Cả hai</td></tr>
+      </tbody>
+    </table>
+    <h3 style="margin-top:16px">Code BE hiện tại lệch ở đâu</h3>
+    <table>
+      <thead><tr><th>Quy tắc</th><th>Hiện tại</th><th>Cần đổi</th></tr></thead>
+      <tbody>
+        <tr><td><b>Quyền quản lý sản phẩm</b></td><td><code>OrganizerAccessService</code> bắt buộc có đơn Online đã duyệt, nên shop chỉ thuê quầy bị 403 E5.1</td><td>Cho phép khi có đơn Online đã duyệt <b>hoặc</b> đang thuê ít nhất một quầy</td></tr>
+        <tr><td><b>Tồn kho online</b></td><td>Ai cũng nhập được kho online (<code>StallId = null</code>)</td><td>Chỉ shop có đơn Online đã duyệt mới nhập được kho online</td></tr>
+        <tr><td><b>Danh sách và chi tiết sản phẩm, hộp</b></td><td>Chỉ lọc sản phẩm Active và shop Active</td><td>Thêm điều kiện shop có đơn Online đã duyệt</td></tr>
+        <tr><td><b>Giỏ hàng, đặt hàng</b></td><td>Đã bắt buộc đơn Online, kể cả mua từ kho quầy</td><td><span class="tag tag-green">Đã đúng</span></td></tr>
+        <tr><td><b>Kho quầy</b></td><td>Chỉ nhập vào quầy đang thuê (E5.6), hết hạn thuê thì tắt</td><td><span class="tag tag-green">Đã đúng</span></td></tr>
+      </tbody>
+    </table>
+    <p class="note" style="margin-top:12px">Cần chốt: quầy của shop chỉ thuê quầy có hiện trên bản đồ Điểm bán không, kèm danh sách bánh đang có tại quầy, chỉ để xem, không đặt được.</p>
+  </section>
+
+  <div class="tabs" role="tablist" aria-label="Phương án">
+    <button class="tab" role="tab" aria-selected="true" data-opt="a"><b>A · Tách theo người dùng</b><span>Người mua xem điểm bán, người bán thuê trong luồng đăng ký</span></button>
+    <button class="tab" role="tab" aria-selected="false" data-opt="b"><b>B · Gộp thành Trung tâm đối tác</b><span>Một trang nhiều tab cho mọi việc của người bán</span></button>
+    <button class="tab" role="tab" aria-selected="false" data-opt="c"><b>C · Bản đồ là nơi thuê duy nhất</b><span>Giữ /stalls, thu gọn trang đối tác</span></button>
+  </div>
+
+  <!-- A -->
+  <section class="option is-active" id="opt-a">
+    <div class="card">
+      <h2>A · Tách theo người dùng <span class="tag tag-green">Đề xuất</span></h2>
+      <ul class="idea">
+        <li><b>/stalls đổi thành "Điểm bán"</b> cho người mua: bản đồ các quầy đang mở, shop nào ở đó, bánh bán tại quầy. Bỏ giá thuê và lịch thuê.</li>
+        <li><b>/become-partner thành luồng đăng ký 3 bước</b>. Bước chọn gian dùng lại chính bản đồ và lịch thuê, thay cho dropdown.</li>
+        <li><b>Shop đã là đối tác</b> không thấy "Trở thành đối tác" nữa. Thuê thêm, mở bán online và đơn đăng ký chuyển vào <code>/store/channels</code>.</li>
+      </ul>
+    </div>
+    <div class="screens">
+      <div class="screen">
+        <div class="screen-cap"><span>Người mua</span><code>/stalls</code></div>
+        <div class="bar"><span>Trang chủ</span><span>Hộp</span><span>Sản phẩm</span><span class="on">Điểm bán</span><span>Trở thành đối tác</span></div>
+        <div class="body">
+          <div class="map">
+            <div class="side"><b>Gian Bến Thành</b><span class="soft">Trăng Rằm Bakery</span><i></i><i style="width:70%"></i><span class="btn" style="justify-self:start">Xem bánh tại quầy</span></div>
+            <span class="pin pin-red" style="left:62%;top:38%"></span><span class="pin pin-red" style="left:78%;top:62%"></span><span class="pin pin-red" style="left:55%;top:72%"></span>
+          </div>
+          <div class="box"><b>Chỉ hiện quầy đang mở bán.</b> Shop có bán online: "Xem bánh tại quầy" mở <code>/products?stallId=…</code>. Shop chỉ thuê quầy: hiện danh sách bánh tại quầy, không có nút đặt.</div>
+          <p class="note warn">Cần BE: <code>StallResponse</code> thêm shop đang thuê (tên, id), hoặc endpoint "quầy đang mở".</p>
+        </div>
+      </div>
+      <div class="screen">
+        <div class="screen-cap"><span>Người chưa là đối tác</span><code>/become-partner</code></div>
+        <div class="bar"><span>Trang chủ</span><span>Sản phẩm</span><span>Điểm bán</span><span class="on">Trở thành đối tác</span></div>
+        <div class="body">
+          <div class="steps"><span class="done">1 · Hình thức</span><span class="now">2 · Chọn gian</span><span>3 · Thương hiệu</span></div>
+          <div class="row" style="font-size:.7rem"><span class="box" style="padding:5px">Online</span><span class="box" style="padding:5px">Quầy</span><span class="box" style="padding:5px;border:2px solid var(--primary);color:var(--primary)"><b>Cả hai</b></span></div>
+          <div class="map" style="height:120px">
+            <span class="pin pin-red" style="left:30%;top:40%"></span><span class="pin pin-gold" style="left:58%;top:52%"></span><span class="pin pin-white" style="left:74%;top:30%"></span>
+          </div>
+          <div class="dock"><b>Lịch thuê · Gian Sông Hàn</b><div class="tl" style="--s:18%;--e:30%"></div><span class="soft">01/09 → 30/09 · 700.000 ₫/tháng</span></div>
+          <div class="row"><span class="btn btn-o">Quay lại</span><span class="btn">Tiếp tục</span></div>
+          <p class="note">Đơn đầu chọn được 1 gian vì API. Chọn "Online" thì bỏ qua bước 2. Chọn "Cả hai" thì gửi 2 đơn: một đơn thuê quầy, một đơn Online.</p>
+        </div>
+      </div>
+      <div class="screen">
+        <div class="screen-cap"><span>Shop đã là đối tác</span><code>/store/channels</code></div>
+        <div class="bar"><span>Tổng quan</span><span>Đơn hàng</span><span>Sản phẩm</span><span class="new">Kênh bán</span></div>
+        <div class="body">
+          <div class="row">
+            <div class="box"><b>Gian đang thuê</b><br />Bến Thành · đến 15/10<br />Thảo Điền · đến 15/10</div>
+            <div class="box"><b>Bán online</b><br /><span class="tag tag-green">Đã duyệt</span> hoa hồng 8%</div>
+          </div>
+          <div class="box"><b>Đơn đăng ký</b><br /><span class="tag tag-gold">Chờ duyệt</span> Thuê thêm Gian Phú Mỹ Hưng</div>
+          <div class="row"><span class="btn">Thuê thêm gian</span><span class="btn btn-o">Đăng ký bán online</span></div>
+          <p class="note">"Thuê thêm gian" mở cùng bản đồ và lịch thuê, khóa ở lịch chung vì <code>additional-stalls</code> dùng một khoảng ngày.</p>
+        </div>
+      </div>
+      <div class="screen">
+        <div class="screen-cap"><span>Kho theo quầy</span><code>/store/products/:id</code></div>
+        <div class="bar"><span>Tổng quan</span><span>Đơn hàng</span><span class="on">Sản phẩm</span><span>Kênh bán</span></div>
+        <div class="body">
+          <table style="font-size:.72rem">
+            <thead><tr><th>Biến thể</th><th>Kho online</th><th>Bến Thành</th><th>Thảo Điền</th></tr></thead>
+            <tbody>
+              <tr><td>Đậu xanh 150g</td><td>200</td><td>120</td><td>50</td></tr>
+              <tr><td>Thập cẩm 180g</td><td>150</td><td>90</td><td>40</td></tr>
+              <tr><td>Thập cẩm 2 trứng</td><td>—</td><td>60</td><td><span class="muted">Tắt</span></td></tr>
+            </tbody>
+          </table>
+          <p class="note">Mỗi ô là tồn của một biến thể tại một nơi, có công tắc bật tắt. Shop chỉ thuê quầy không có cột Kho online; shop chỉ bán online chỉ có cột đó.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- B -->
+  <section class="option" id="opt-b">
+    <div class="card">
+      <h2>B · Gộp thành Trung tâm đối tác</h2>
+      <ul class="idea">
+        <li><b>Bỏ "Gian hàng" khỏi menu</b>. <code>/stalls</code> chuyển hướng tới <code>/partner?tab=map</code>.</li>
+        <li><b>Một trang <code>/partner</code></b> có các tab: Giới thiệu · Bản đồ gian · Bán online · Đơn của tôi.</li>
+        <li>Mục menu đổi theo vai trò: khách và người mua thấy "Trở thành đối tác", shop thấy "Đối tác".</li>
+      </ul>
+    </div>
+    <div class="screens">
+      <div class="screen">
+        <div class="screen-cap"><span>Tab Giới thiệu</span><code>/partner</code></div>
+        <div class="bar"><span>Trang chủ</span><span>Hộp</span><span>Sản phẩm</span><span class="gone">Gian hàng</span><span class="on">Trở thành đối tác</span></div>
+        <div class="body">
+          <div class="ttabs"><span class="on">Giới thiệu</span><span>Bản đồ gian</span><span>Bán online</span><span>Đơn của tôi</span></div>
+          <div class="row"><div class="box"><b>Thuê gian</b><br />Quầy thật ở 15 điểm</div><div class="box"><b>Bán online</b><br />Giao toàn quốc qua GHN</div></div>
+          <div class="box"><b>Quyền lợi · Quy trình 3 bước</b></div>
+          <div class="row"><span class="btn">Xem bản đồ gian</span><span class="btn btn-o">Đăng ký online</span></div>
+        </div>
+      </div>
+      <div class="screen">
+        <div class="screen-cap"><span>Tab Bản đồ gian</span><code>/partner?tab=map</code></div>
+        <div class="bar"><span>Trang chủ</span><span>Sản phẩm</span><span class="on">Trở thành đối tác</span></div>
+        <div class="body">
+          <div class="ttabs"><span>Giới thiệu</span><span class="on">Bản đồ gian</span><span>Bán online</span><span>Đơn của tôi</span></div>
+          <div class="map" style="height:120px">
+            <div class="side"><b>Đang trống · 7</b><i></i><i></i><i style="width:60%"></i></div>
+            <span class="pin pin-red" style="left:60%;top:40%"></span><span class="pin pin-gold" style="left:75%;top:60%"></span>
+          </div>
+          <div class="dock"><b>Lịch thuê (2 gian)</b><div class="tl" style="--s:10%;--e:40%"></div><div class="tl" style="--s:10%;--e:40%"></div></div>
+          <div class="row"><span class="btn">Gửi đăng ký (2)</span></div>
+          <p class="note">Bản đồ đang chiếm toàn màn hình, đặt trong tab sẽ phải bỏ hiệu ứng mở ngăn kéo.</p>
+        </div>
+      </div>
+      <div class="screen">
+        <div class="screen-cap"><span>Tab Đơn của tôi</span><code>/partner?tab=requests</code></div>
+        <div class="bar"><span>Trang chủ</span><span>Sản phẩm</span><span class="on">Đối tác</span></div>
+        <div class="body">
+          <div class="ttabs"><span>Giới thiệu</span><span>Bản đồ gian</span><span>Bán online</span><span class="on">Đơn của tôi</span></div>
+          <div class="box"><span class="tag tag-gold">Chờ bạn xác nhận</span> Bán online · hoa hồng 9% <span class="btn" style="float:right">Đồng ý</span></div>
+          <div class="box"><span class="tag tag-blue">Chờ duyệt</span> Thuê Gian Sông Hàn · 01/09 → 30/09</div>
+          <div class="box"><span class="tag tag-red">Từ chối</span> Thiếu giấy chứng nhận ATTP</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- C -->
+  <section class="option" id="opt-c">
+    <div class="card">
+      <h2>C · Bản đồ là nơi thuê duy nhất</h2>
+      <ul class="idea">
+        <li><b>Giữ <code>/stalls</code> như hiện tại</b> và nối nút "Gửi đăng ký" vào API thật. Đây là nơi duy nhất để chọn gian.</li>
+        <li>Người chưa là đối tác bấm gửi thì hiện thêm một khung nhập tên thương hiệu, số điện thoại, giới thiệu.</li>
+        <li><b><code>/become-partner</code> thu gọn</b> còn giới thiệu, đăng ký online và đơn của tôi. Bỏ dropdown và modal chọn gian.</li>
+      </ul>
+    </div>
+    <div class="screens">
+      <div class="screen">
+        <div class="screen-cap"><span>Chọn gian</span><code>/stalls</code></div>
+        <div class="bar"><span>Trang chủ</span><span>Sản phẩm</span><span class="on">Gian hàng</span><span>Trở thành đối tác</span></div>
+        <div class="body">
+          <div class="map">
+            <div class="side"><b>Gian Phú Mỹ Hưng</b><span class="soft">800.000 ₫/tháng · Đang trống</span><span class="btn" style="justify-self:start">Thêm vào lịch thuê</span></div>
+            <span class="pin pin-red" style="left:62%;top:38%"></span><span class="pin pin-gold" style="left:78%;top:62%"></span><span class="pin pin-white" style="left:55%;top:72%"></span>
+          </div>
+          <div class="dock"><b>Lịch thuê · 2 gian</b><div class="tl" style="--s:20%;--e:35%"></div><div class="tl" style="--s:20%;--e:35%"></div><span class="btn" style="justify-self:end">Gửi đăng ký (2)</span></div>
+        </div>
+      </div>
+      <div class="screen">
+        <div class="screen-cap"><span>Gửi lần đầu</span><code>/stalls</code> · khung xác nhận</div>
+        <div class="bar"><span>Trang chủ</span><span class="on">Gian hàng</span></div>
+        <div class="body">
+          <div class="box"><b>Thông tin thương hiệu</b><br />Tên tiệm · Số điện thoại · Giới thiệu</div>
+          <div class="box"><b>Gian sẽ gửi</b><br />Gian Phú Mỹ Hưng · 01/09 → 30/09</div>
+          <p class="note warn">Đơn đầu chỉ nhận 1 gian. Chọn nhiều gian thì phải gửi gian đầu trước, các gian còn lại gửi sau khi được duyệt, hoặc BE cho đơn đầu nhận nhiều gian.</p>
+          <div class="row"><span class="btn btn-o">Sửa lịch</span><span class="btn">Gửi</span></div>
+        </div>
+      </div>
+      <div class="screen">
+        <div class="screen-cap"><span>Trang đối tác thu gọn</span><code>/become-partner</code></div>
+        <div class="bar"><span>Trang chủ</span><span>Gian hàng</span><span class="on">Trở thành đối tác</span></div>
+        <div class="body">
+          <div class="row"><div class="box"><b>Thuê gian</b><br /><span class="btn" style="margin-top:4px">Mở bản đồ</span></div><div class="box"><b>Bán online</b><br /><span class="btn btn-o" style="margin-top:4px">Đăng ký</span></div></div>
+          <div class="box"><b>Đơn đăng ký của tôi</b> · 2</div>
+          <p class="note">Người mua vẫn thấy giá thuê trên menu "Gian hàng". Muốn tránh thì đổi tên mục thành "Thuê gian" và chỉ hiện cho khách chưa mua hoặc người bán.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>So sánh</h2>
+    <table>
+      <thead><tr><th></th><th>A · Tách theo người dùng</th><th>B · Trung tâm đối tác</th><th>C · Bản đồ là nơi thuê</th></tr></thead>
+      <tbody>
+        <tr><td><b>Người mua được gì</b></td><td>Bản đồ điểm bán, biết quầy bán bánh gì</td><td>Mất bản đồ</td><td>Như hiện tại, vẫn thấy giá thuê</td></tr>
+        <tr><td><b>Chọn gian</b></td><td>1 chỗ, nằm trong luồng đăng ký</td><td>1 chỗ, nằm trong tab</td><td>1 chỗ, ở /stalls</td></tr>
+        <tr><td><b>Cần sửa BE</b></td><td><span class="tag tag-gold">Có</span> shop đang thuê trên gian</td><td><span class="tag tag-green">Không</span></td><td><span class="tag tag-green">Không</span>, trừ khi muốn đơn đầu nhiều gian</td></tr>
+        <tr><td><b>Khối lượng FE</b></td><td>Lớn nhất: luồng đăng ký mới, trang Kênh bán, đổi /stalls</td><td>Vừa: dời bản đồ vào tab</td><td>Nhỏ nhất: nối nút gửi, bỏ form chọn gian</td></tr>
+        <tr><td><b>Shop đã là đối tác</b></td><td>Quản lý trong /store, hợp với khu người bán</td><td>Vẫn ở trang công khai</td><td>Vẫn ở trang công khai</td></tr>
+      </tbody>
+    </table>
+    <div class="pros" style="margin-top:16px">
+      <div class="card verdict">
+        <h3>Đề xuất: A</h3>
+        <ul><li>Mỗi trang phục vụ một nhóm người dùng.</li><li>Bản đồ đã làm vẫn dùng ở cả hai phía.</li><li>Việc của shop gom về <code>/store</code>.</li></ul>
+      </div>
+      <div class="card">
+        <h3>Nếu cần nhanh: C</h3>
+        <ul><li>Chỉ cần nối API và xóa phần trùng.</li><li>Có thể nâng lên A sau, vì bản đồ đã là nơi chọn gian.</li></ul>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script>
+  const tabs = document.querySelectorAll('[role="tab"]');
+  tabs.forEach((tab) => tab.addEventListener('click', () => {
+    tabs.forEach((t) => t.setAttribute('aria-selected', String(t === tab)));
+    document.querySelectorAll('.option').forEach((o) => o.classList.toggle('is-active', o.id === 'opt-' + tab.dataset.opt));
+  }));
+</script>
+</body>
+</html>

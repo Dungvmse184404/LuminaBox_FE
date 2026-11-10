@@ -15,7 +15,7 @@ const NAV_ITEMS = [
   { to: "/", label: "Trang chủ", end: true },
   { to: "/cake-sets", label: "Hộp Trung thu" },
   { to: "/products", label: "Sản phẩm" },
-  { to: "/stalls", label: "Gian hàng" },
+  { to: "/stalls", label: "Điểm bán" },
   { to: "/become-partner", label: "Trở thành đối tác" },
   { to: "/#about", label: "Giới thiệu" },
 ];

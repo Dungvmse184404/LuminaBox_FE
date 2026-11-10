@@ -11,6 +11,7 @@ import { OrdersPage, StoreOrdersPage } from "@/features/orders/pages/OrdersPage"
 import { PaymentResultPage } from "@/features/orders/pages/PaymentResultPage";
 import { AdminRegistrationsPage } from "@/features/partner/pages/AdminRegistrationsPage";
 import { BecomePartnerPage } from "@/features/partner/pages/BecomePartnerPage";
+import { PartnerConfirmPage } from "@/features/partner/pages/PartnerConfirmPage";
 import { CakeSetsPage } from "@/features/products/pages/CakeSetsPage";
 import { VouchersPage } from "@/features/vouchers/pages/VouchersPage";
 import { RequireRole } from "@/features/auth/RequireRole";
@@ -42,6 +43,10 @@ export const router = createBrowserRouter([
             path: "stalls",
             lazy: async () => ({ Component: (await import("@/features/stalls/pages/StallsPage")).StallsPage }),
           },
+          {
+            path: "become-partner/stalls",
+            lazy: async () => ({ Component: (await import("@/features/partner/pages/PartnerStallsPage")).PartnerStallsPage }),
+          },
 
           {
             element: <ContentLayout />,
@@ -50,6 +55,7 @@ export const router = createBrowserRouter([
               { path: "products/:id", element: <ProductDetailPage /> },
               { path: "cake-sets", element: <CakeSetsPage /> },
               { path: "become-partner", element: <BecomePartnerPage /> },
+              { path: "become-partner/confirm", element: <PartnerConfirmPage /> },
               { path: "payment/result", element: <PaymentResultPage /> },
               { path: "help/ordering", element: <PlaceholderPage title="Hướng dẫn đặt hàng" /> },
               { path: "policies/returns", element: <PlaceholderPage title="Chính sách đổi trả" /> },

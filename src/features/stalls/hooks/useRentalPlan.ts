@@ -1,28 +1,29 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type KeyboardEvent, type PointerEvent as ReactPointerEvent } from "react";
-import { clampDay, defaultMaster, fitSpan, moonNum, parseShort, seasonSpan, spanDays, type DayRange, type Span } from "../timeline";
+import { clampDay, defaultMaster, fitSpan, MIN_RENTAL_DAYS, moonNum, parseShort, seasonSpan, seasonYears, spanDays, type DayRange, type Span } from "../timeline";
 
-export interface PlanItem {
+const MIN_GAP = MIN_RENTAL_DAYS - 1;
+
+export interface PlanItem extends DayRange {
   id: string;
-  custom: boolean;
-  start?: number;
-  end?: number;
+}
+
+export interface PlanSnapshot {
+  year: number;
+  items: PlanItem[];
 }
 
 interface PlanState {
   year: number;
   span: Span;
-  master: DayRange;
   items: PlanItem[];
   spanText: { from?: string; to?: string };
   editing: string | null;
   cursor: { day: number; edge: number } | null;
-  confirming: boolean;
-  sent: boolean;
   open: boolean;
 }
 
 interface Drag {
-  id: string | null;
+  id: string;
   mode: "start" | "end" | "move";
   x: number;
   width: number;
@@ -30,22 +31,21 @@ interface Drag {
   end: number;
 }
 
-const FIRST_YEAR = 2027;
-const FRESH = { confirming: false, sent: false };
+const shiftItems = (items: PlanItem[], fromYear: number, toYear: number) => {
+  const shift = moonNum(toYear) - moonNum(fromYear);
+  return items.map(({ id, start, end }) => ({ id, start: start + shift, end: end + shift }));
+};
 
-export function useRentalPlan() {
-  const [state, setState] = useState<PlanState>({
-    year: FIRST_YEAR,
-    span: seasonSpan(FIRST_YEAR),
-    master: defaultMaster(FIRST_YEAR),
-    items: [],
-    spanText: {},
-    editing: null,
-    cursor: null,
-    confirming: false,
-    sent: false,
-    open: true,
-  });
+function initialState(years: number[], snapshot?: PlanSnapshot | null): PlanState {
+  const saved = snapshot?.year;
+  const year = saved !== undefined && years.includes(saved) ? saved : years[0];
+  const items = shiftItems(snapshot?.items ?? [], saved ?? year, year);
+  return { year, span: fitSpan(seasonSpan(year), items), items, spanText: {}, editing: null, cursor: null, open: true };
+}
+
+export function useRentalPlan(snapshot?: PlanSnapshot | null) {
+  const [years] = useState(seasonYears);
+  const [state, setState] = useState<PlanState>(() => initialState(years, snapshot));
 
   const stateRef = useRef(state);
   stateRef.current = state;
@@ -54,39 +54,26 @@ export function useRentalPlan() {
   const patch = useCallback((next: Partial<PlanState>) => setState((current) => ({ ...current, ...next })), []);
 
   const viewSpan = useMemo<Span>(() => {
-    const { span, spanText, year, items, master } = state;
+    const { span, spanText, year, items } = state;
     const from = parseShort(spanText.from, year);
     const to = parseShort(spanText.to, year);
     if (from === null && to === null) return span;
-    const ranges = [master, ...items.filter((item) => item.custom).map((item) => item as DayRange)];
     return {
-      from: from === null ? span.from : Math.min(from, ...ranges.map((r) => r.start)),
-      to: to === null ? span.to : Math.max(to, ...ranges.map((r) => r.end)),
+      from: from === null ? span.from : Math.min(from, ...items.map((item) => item.start)),
+      to: to === null ? span.to : Math.max(to, ...items.map((item) => item.end)),
     };
   }, [state]);
 
   const viewRef = useRef(viewSpan);
   viewRef.current = viewSpan;
 
-  const rangeOf = useCallback(
-    (item: PlanItem): DayRange => (item.custom ? { start: item.start!, end: item.end! } : stateRef.current.master),
-    [],
-  );
+  const rangeById = useCallback((id: string): DayRange => {
+    const item = stateRef.current.items.find((i) => i.id === id);
+    return item ?? defaultMaster(stateRef.current.year);
+  }, []);
 
-  const rangeById = useCallback(
-    (id: string | null) => {
-      const item = id === null ? undefined : stateRef.current.items.find((i) => i.id === id);
-      return item ? rangeOf(item) : stateRef.current.master;
-    },
-    [rangeOf],
-  );
-
-  const setRange = useCallback((id: string | null, start: number, end: number) => {
-    setState((current) => {
-      if (id === null) return { ...current, ...FRESH, master: { start, end } };
-      const custom = start !== current.master.start || end !== current.master.end;
-      return { ...current, ...FRESH, items: current.items.map((item) => (item.id === id ? { id, custom, start, end } : item)) };
-    });
+  const setRange = useCallback((id: string, start: number, end: number) => {
+    setState((current) => ({ ...current, items: current.items.map((item) => (item.id === id ? { id, start, end } : item)) }));
   }, []);
 
   const onWindowMove = useCallback(
@@ -96,11 +83,11 @@ export function useRentalPlan() {
       const span = viewRef.current;
       const delta = Math.round(((e.clientX - drag.x) / drag.width) * spanDays(span));
       if (drag.mode === "start") {
-        const start = clampDay(drag.start + delta, span.from, drag.end);
+        const start = clampDay(drag.start + delta, span.from, drag.end - MIN_GAP);
         setRange(drag.id, start, drag.end);
         patch({ cursor: { day: start, edge: start } });
       } else if (drag.mode === "end") {
-        const end = clampDay(drag.end + delta, drag.start, span.to);
+        const end = clampDay(drag.end + delta, drag.start + MIN_GAP, span.to);
         setRange(drag.id, drag.start, end);
         patch({ cursor: { day: end, edge: end + 1 } });
       } else {
@@ -129,12 +116,12 @@ export function useRentalPlan() {
   );
 
   const startDrag = useCallback(
-    (id: string | null, mode: Drag["mode"], e: ReactPointerEvent<HTMLElement>, range: DayRange) => {
+    (id: string, mode: Drag["mode"], e: ReactPointerEvent<HTMLElement>, range: DayRange) => {
       e.stopPropagation();
-      const track = e.currentTarget.closest(".track, .axis");
+      const track = e.currentTarget.closest(".track");
       if (!track) return;
       dragRef.current = { id, mode, x: e.clientX, width: track.getBoundingClientRect().width, start: range.start, end: range.end };
-      patch({ editing: id ?? "master" });
+      patch({ editing: id });
       window.addEventListener("pointermove", onWindowMove);
       window.addEventListener("pointerup", onWindowUp);
     },
@@ -173,18 +160,18 @@ export function useRentalPlan() {
   }, [patch]);
 
   const nudge = useCallback(
-    (id: string | null, which: "start" | "end", e: KeyboardEvent) => {
+    (id: string, which: "start" | "end", e: KeyboardEvent) => {
       const delta = e.key === "ArrowLeft" ? -1 : e.key === "ArrowRight" ? 1 : 0;
       if (delta === 0) return;
       e.preventDefault();
       const span = viewRef.current;
       const range = rangeById(id);
       if (which === "start") {
-        const start = clampDay(range.start + delta, span.from, range.end);
+        const start = clampDay(range.start + delta, span.from, range.end - MIN_GAP);
         setRange(id, start, range.end);
         patch({ cursor: { day: start, edge: start } });
       } else {
-        const end = clampDay(range.end + delta, range.start, span.to);
+        const end = clampDay(range.end + delta, range.start + MIN_GAP, span.to);
         setRange(id, range.start, end);
         patch({ cursor: { day: end, edge: end + 1 } });
       }
@@ -192,26 +179,20 @@ export function useRentalPlan() {
     [patch, rangeById, setRange],
   );
 
-  const toggle = useCallback((id: string) => {
+  const toggle = useCallback((id: string, preferred?: DayRange) => {
     setState((current) => {
-      const has = current.items.some((item) => item.id === id);
-      return has
-        ? { ...current, ...FRESH, items: current.items.filter((item) => item.id !== id), cursor: null }
-        : { ...current, ...FRESH, items: [...current.items, { id, custom: false }], open: true };
+      if (current.items.some((item) => item.id === id)) {
+        return { ...current, items: current.items.filter((item) => item.id !== id), cursor: null };
+      }
+      const range = preferred ?? defaultMaster(current.year);
+      return { ...current, items: [...current.items, { id, start: range.start, end: range.end }], open: true };
     });
-  }, []);
-
-  const relink = useCallback((id: string) => {
-    setState((current) => ({ ...current, ...FRESH, items: current.items.map((item) => (item.id === id ? { id, custom: false } : item)) }));
   }, []);
 
   const setYear = useCallback((year: number) => {
     setState((current) => {
-      const shift = moonNum(year) - moonNum(current.year);
-      const master = { start: current.master.start + shift, end: current.master.end + shift };
-      const items = current.items.map((item) => (item.custom ? { ...item, start: item.start! + shift, end: item.end! + shift } : item));
-      const customs = items.filter((item) => item.custom).map((item) => item as DayRange);
-      return { ...current, ...FRESH, year, cursor: null, spanText: {}, master, items, span: fitSpan(seasonSpan(year), [master, ...customs]) };
+      const items = shiftItems(current.items, current.year, year);
+      return { ...current, year, cursor: null, spanText: {}, items, span: fitSpan(seasonSpan(year), items) };
     });
   }, []);
 
@@ -221,27 +202,29 @@ export function useRentalPlan() {
       const clamp = (value: number) => clampDay(value, span.from, span.to);
       return {
         ...current,
-        ...FRESH,
         span,
         spanText: {},
         cursor: null,
-        master: defaultMaster(current.year),
-        items: current.items.map((item) => (item.custom ? { ...item, start: clamp(item.start!), end: clamp(item.end!) } : item)),
+        items: current.items.map((item) => ({ ...item, start: clamp(item.start), end: clamp(item.end) })),
       };
     });
   }, []);
 
-  const resetStalls = useCallback(() => {
-    setState((current) => ({ ...current, ...FRESH, items: current.items.map((item) => ({ id: item.id, custom: false })) }));
+  const linkAll = useCallback(() => {
+    setState((current) => {
+      const [first] = current.items;
+      if (!first) return current;
+      return { ...current, items: current.items.map((item) => ({ ...item, start: first.start, end: first.end })) };
+    });
   }, []);
 
   const applySpanText = useCallback(() => patch({ span: viewRef.current, spanText: {} }), [patch]);
 
   return {
     state,
+    years,
     viewSpan,
     patch,
-    rangeOf,
     setRange,
     startDrag,
     onTrackDown,
@@ -249,10 +232,9 @@ export function useRentalPlan() {
     onAxisLeave,
     nudge,
     toggle,
-    relink,
     setYear,
     resetTimeline,
-    resetStalls,
+    linkAll,
     applySpanText,
   };
 }
