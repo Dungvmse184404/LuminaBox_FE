@@ -9,7 +9,7 @@ const OPTIONS = [
     icon: Store,
     title: "Thuê gian hàng",
     desc: "Chọn gian hàng phù hợp, đăng ký thời gian thuê và bắt đầu bán bánh Trung thu ngay trong mùa lễ.",
-    cta: "Xem gian hàng",
+    cta: "Đăng ký thuê quầy",
   },
   {
     type: "online",
@@ -21,7 +21,7 @@ const OPTIONS = [
 ] as const;
 
 export function PartnerSection() {
-  const { user, hasRole } = useAuth();
+  const { hasRole } = useAuth();
   if (hasRole("Manager")) return null;
 
   const isOrganizer = hasRole("Organization");
@@ -42,7 +42,7 @@ export function PartnerSection() {
         {OPTIONS.map(({ type, icon: Icon, title, desc, cta }) => (
           <Link
             key={type}
-            to={type === "stall" && !user ? "/stalls" : `/become-partner?type=${type}`}
+            to={`/become-partner?type=${type}`}
             className="group rounded-xl bg-white/10 p-5 transition hover:bg-white/20"
           >
             <span className="grid size-10 place-items-center rounded-full bg-card/90 text-primary">

@@ -6,7 +6,7 @@ import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
 
 const PLAIN_SECTIONS = /^\/(store|admin)(\/|$)/;
-const FULL_SCREEN_PAGES = /^\/stalls\/?$/;
+const FULL_SCREEN_PAGES = /^\/(stalls|become-partner\/stalls)\/?$/;
 
 export function AppLayout() {
   const { pathname } = useLocation();

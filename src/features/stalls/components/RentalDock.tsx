@@ -1,12 +1,13 @@
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { ChevronDown, ChevronLeft, ChevronRight, ChevronUp, Link2, RotateCcw, X } from "lucide-react";
 import type { RentalPlan } from "../hooks/useRentalPlan";
 import {
   buildExts,
   buildLines,
   buildMarks,
-  buildSegs,
+  bookedRanges,
   buildTicks,
+  clashes,
   compactPrice,
   cursorLabel,
   edgePct,
@@ -16,7 +17,6 @@ import {
   moonSummary,
   priceText,
   rentalDays,
-  SEASON_YEARS,
   shortDate,
   widthPct,
   type DayRange,
@@ -26,12 +26,12 @@ import {
 } from "../timeline";
 import type { Stall } from "../types";
 
-const LINKED_GROUP_MIN = 4;
-
 interface Props {
   plan: RentalPlan;
   stalls: Stall[];
   hoverId: string | null;
+  submitLabel: string;
+  onBack?: () => void;
   onHover: (id: string | null) => void;
   onFocus: (id: string) => void;
   onSubmit: () => void;
@@ -46,6 +46,7 @@ function Icon({ path, size }: { path: string; size: number }) {
 }
 
 const shortName = (name: string) => name.replace(/^Gian\s+/i, "");
+const EDGE_CLEAR = 7;
 
 function TrackLines({ lines, soft, halos, exts }: { lines: Line[]; soft?: boolean; halos: number[]; exts: Ext[] }) {
   return (
@@ -63,23 +64,12 @@ function TrackLines({ lines, soft, halos, exts }: { lines: Line[]; soft?: boolea
   );
 }
 
-function StallRow({
-  plan,
-  stall,
-  range,
-  custom,
-  isOn,
-  lines,
-  marks,
-  halos,
-  exts,
-  onHover,
-  onFocus,
-}: {
+interface RowProps {
   plan: RentalPlan;
   stall: Stall;
   range: DayRange;
-  custom: boolean;
+  booked: DayRange[];
+  clash: boolean;
   isOn: boolean;
   lines: Line[];
   marks: Mark[];
@@ -87,7 +77,9 @@ function StallRow({
   exts: Ext[];
   onHover: (id: string | null) => void;
   onFocus: (id: string) => void;
-}) {
+}
+
+function StallRow({ plan, stall, range, booked, clash, isOn, lines, marks, halos, exts, onHover, onFocus }: RowProps) {
   const span = plan.viewSpan;
   const days = rentalDays(range);
   const cost = stall.rentalPrice * days;
@@ -97,14 +89,10 @@ function StallRow({
   return (
     <div className="tl-grid tl-row" onMouseEnter={() => onHover(stall.id)} onMouseLeave={() => onHover(null)}>
       <div className="tl-name">
-        <button type="button" className="tl-link" title={stall.name} onClick={() => onFocus(stall.id)}>
+        <button type="button" className="tl-link" title={clash ? `${stall.name}: trùng lịch đã có người thuê` : stall.name} onClick={() => onFocus(stall.id)}>
           {shortName(stall.name)}
+          {clash && <span className="tl-clash">Trùng lịch</span>}
         </button>
-        {custom && (
-          <button type="button" className="tl-remove" aria-label={`Cho ${stall.name} dùng lại lịch chung`} title="Dùng lại lịch chung" onClick={() => plan.relink(stall.id)}>
-            <Link2 size={14} />
-          </button>
-        )}
         <button type="button" className="tl-remove" aria-label={`Bỏ ${stall.name} khỏi lịch thuê`} onClick={() => plan.toggle(stall.id)}>
           <X size={13} />
         </button>
@@ -112,9 +100,23 @@ function StallRow({
       <div className="track" onPointerDown={(e) => plan.onTrackDown(stall.id, e)} onPointerMove={plan.onAxisMove} onPointerLeave={plan.onAxisLeave}>
         <div className="track-in">
           <TrackLines lines={lines} halos={halos} exts={exts} soft />
+          {booked
+            .filter((b) => b.end >= span.from && b.start <= span.to)
+            .map((b) => {
+              const start = Math.max(b.start, span.from);
+              const end = Math.min(b.end, span.to);
+              return (
+                <span
+                  key={b.start}
+                  className="tl-booked"
+                  title={`Đã có người thuê ${fullDate(b.start)} – ${b.end > span.to + 365 ? "chưa hẹn ngày" : fullDate(b.end)}`}
+                  style={{ left: `${edgePct(span, start)}%`, width: `${widthPct(span, end - start + 1)}%` }}
+                />
+              );
+            })}
         </div>
         <div
-          className={`bar${custom ? "" : " bar-linked"}${isOn ? " bar-on" : ""}`}
+          className={`bar${isOn ? " bar-on" : ""}${clash ? " bar-clash" : ""}`}
           style={{ left: `${edgePct(span, range.start)}%`, width: `${widthPct(span, days)}%` }}
           onPointerDown={(e) => plan.startDrag(stall.id, "move", e, range)}
         >
@@ -159,48 +161,46 @@ function StallRow({
   );
 }
 
-export function RentalDock({ plan, stalls, hoverId, onHover, onFocus, onSubmit }: Props) {
-  const { state, viewSpan: span } = plan;
-  const { items, master, cursor, editing, confirming, sent, open, year } = state;
-  const [linkedOpen, setLinkedOpen] = useState(false);
+export function RentalDock({ plan, stalls, hoverId, submitLabel, onBack, onHover, onFocus, onSubmit }: Props) {
+  const { state, years, viewSpan: span } = plan;
+  const { items, cursor, editing, open, year } = state;
 
   const lines = useMemo(() => buildLines(span), [span]);
   const ticks = useMemo(() => buildTicks(span), [span]);
-  const segs = useMemo(() => buildSegs(span), [span]);
   const marks = useMemo(() => buildMarks(span), [span]);
   const halos = useMemo(() => moonsIn(span).map((moon) => edgePct(span, moon)), [span]);
   const exts = useMemo(() => buildExts(state.span, span), [state.span, span]);
 
   const rows = items.flatMap((item) => {
     const stall = stalls.find((s) => s.id === item.id);
-    return stall ? [{ item, stall, range: plan.rangeOf(item) }] : [];
+    if (!stall) return [];
+    const booked = bookedRanges(stall.bookings);
+    return [{ item, stall, booked, clash: clashes(item, booked) }];
   });
-  const total = rows.reduce((sum, row) => sum + row.stall.rentalPrice * rentalDays(row.range), 0);
-  const linked = rows.filter((row) => !row.item.custom);
-  const grouped = linked.length >= LINKED_GROUP_MIN;
-  const shown = grouped && !linkedOpen ? rows.filter((row) => row.item.custom) : rows;
-  const yearIndex = SEASON_YEARS.indexOf(year);
+  const anyClash = rows.some((row) => row.clash);
+  const total = rows.reduce((sum, row) => sum + row.stall.rentalPrice * rentalDays(row.item), 0);
+  const yearIndex = years.indexOf(year);
   const onMark = marks.some((mark) => cursor?.day === mark.num);
-  const moon = moonSummary(master);
+  const sameDates = rows.every((row) => row.item.start === rows[0].item.start && row.item.end === rows[0].item.end);
 
-  const spanField = (which: "from" | "to", label: string) => {
+  const edgeField = (which: "from" | "to", label: string) => {
     const text = state.spanText[which];
     const value = which === "from" ? state.span.from : state.span.to;
     return (
       <input
-        className="tl-edge"
+        className={`tl-edge tl-edge-${which}`}
         type="text"
         inputMode="numeric"
         placeholder="dd/mm"
         aria-label={label}
+        title={label}
         value={text ?? fullDate(value).slice(0, 5)}
+        onPointerDown={(e) => e.stopPropagation()}
         onChange={(e) => plan.patch({ spanText: { ...state.spanText, [which]: e.target.value } })}
-        onBlur={() => state.spanText[which] !== undefined && plan.patch({ spanText: {} })}
+        onBlur={() => state.spanText[which] !== undefined && plan.applySpanText()}
         onKeyDown={(e) => {
-          if (e.key === "Enter") {
-            plan.applySpanText();
-            e.currentTarget.blur();
-          } else if (e.key === "Escape") {
+          if (e.key === "Enter") e.currentTarget.blur();
+          else if (e.key === "Escape") {
             plan.patch({ spanText: {} });
             e.currentTarget.blur();
           }
@@ -209,26 +209,16 @@ export function RentalDock({ plan, stalls, hoverId, onHover, onFocus, onSubmit }
     );
   };
 
-  const submit = () => {
-    if (sent) return;
-    if (!confirming) {
-      plan.patch({ confirming: true });
-      return;
-    }
-    plan.patch({ confirming: false });
-    onSubmit();
-  };
-
   return (
-    <section className={`dock dock-glass stalls-overlay${confirming ? " dock-confirm" : ""}`} aria-label="Lịch thuê">
+    <section className="dock dock-light dock-glass stalls-overlay" aria-label="Lịch thuê">
       <div className="dock-head">
         <h2 className="dock-title">Lịch thuê</h2>
         <div className="year">
-          <button type="button" className="year-btn" aria-label="Năm trước" disabled={yearIndex <= 0} onClick={() => plan.setYear(SEASON_YEARS[yearIndex - 1])}>
+          <button type="button" className="year-btn" aria-label="Năm trước" disabled={yearIndex <= 0} onClick={() => plan.setYear(years[yearIndex - 1])}>
             <ChevronLeft size={16} />
           </button>
           <span>{year}</span>
-          <button type="button" className="year-btn" aria-label="Năm sau" disabled={yearIndex >= SEASON_YEARS.length - 1} onClick={() => plan.setYear(SEASON_YEARS[yearIndex + 1])}>
+          <button type="button" className="year-btn" aria-label="Năm sau" disabled={yearIndex >= years.length - 1} onClick={() => plan.setYear(years[yearIndex + 1])}>
             <ChevronRight size={16} />
           </button>
         </div>
@@ -239,23 +229,23 @@ export function RentalDock({ plan, stalls, hoverId, onHover, onFocus, onSubmit }
           <button
             type="button"
             className="year-btn"
-            title="Đặt lại ngày các gian theo lịch chung"
-            aria-label="Đặt lại ngày các gian theo lịch chung"
-            disabled={!items.some((item) => item.custom)}
-            onClick={plan.resetStalls}
+            title="Dùng ngày của gian đầu cho tất cả"
+            aria-label="Dùng ngày của gian đầu cho tất cả"
+            disabled={rows.length < 2 || sameDates}
+            onClick={plan.linkAll}
           >
             <Link2 size={17} />
           </button>
           <span className="dock-total" title="Tổng giá thuê">
             {priceText(total)}
           </span>
-          <button
-            type="button"
-            className={`dock-cta${confirming ? " is-confirm" : ""}${sent ? " is-sent" : ""}`}
-            onClick={submit}
-            onBlur={() => confirming && plan.patch({ confirming: false })}
-          >
-            {sent ? "Đã gửi" : confirming ? "Xác nhận ?" : `Gửi đăng ký (${items.length})`}
+          {onBack && (
+            <button type="button" className="dock-back" onClick={onBack}>
+              Quay lại
+            </button>
+          )}
+          <button type="button" className="dock-cta" disabled={rows.length === 0 || anyClash} title={anyClash ? "Có gian trùng lịch đã có người thuê" : undefined} onClick={onSubmit}>
+            {submitLabel}
           </button>
           <button type="button" className="dock-toggle" aria-label={open ? "Thu gọn lịch thuê" : "Mở lịch thuê"} aria-expanded={open} onClick={() => plan.patch({ open: !open, cursor: null })}>
             {open ? <ChevronDown size={18} /> : <ChevronUp size={18} />}
@@ -266,10 +256,7 @@ export function RentalDock({ plan, stalls, hoverId, onHover, onFocus, onSubmit }
       {open && (
         <>
           <div className="tl-grid tl-axis-row">
-            <div className="axis-side">
-              <span className="tl-label">Lịch chung</span>
-              {spanField("from", "Ngày đầu timeline")}
-            </div>
+            <span />
             <div className="axis" onPointerMove={plan.onAxisMove} onPointerLeave={plan.onAxisLeave}>
               {marks.map((mark) => (
                 <span key={mark.name} className={`mark${mark.moon ? " mark-moon" : ""}${cursor?.day === mark.num ? " mark-on" : ""}`} style={{ left: `${mark.pct}%` }} aria-label={mark.name}>
@@ -280,98 +267,34 @@ export function RentalDock({ plan, stalls, hoverId, onHover, onFocus, onSubmit }
                   </span>
                 </span>
               ))}
-              {ticks.map((tick) => (
-                <span key={tick.pct} className={tick.month ? "tick tick-month" : "tick tick-week"} style={{ left: `${tick.pct}%` }}>
-                  {tick.label}
-                </span>
-              ))}
-              <div className="lane-box">
-                <div className="lane">
-                  {segs.map((seg) => (
-                    <div key={seg.left} className="seg" style={{ left: `${seg.left}%`, width: `${seg.width}%`, background: `rgba(var(--dk-glow), ${seg.alpha})` }}>
-                      <span>{seg.label}</span>
-                    </div>
-                  ))}
-                  <TrackLines lines={lines} halos={halos} exts={exts} />
-                  {marks.map((mark) => (
-                    <span key={mark.name} className={mark.moon ? "tl-mark-line tl-mark-moon" : "tl-mark-line"} style={{ left: `${mark.pct}%` }} />
-                  ))}
-                </div>
-                {cursor && <span className="tl-cursor" style={{ left: `${edgePct(span, cursor.edge)}%` }} />}
-              </div>
-              <div className={editing === "master" ? "knob-lane is-editing" : "knob-lane"}>
-                <div
-                  className="knob-band"
-                  style={{ left: `${edgePct(span, master.start)}%`, width: `${widthPct(span, rentalDays(master))}%` }}
-                  onPointerDown={(e) => plan.startDrag(null, "move", e, master)}
-                />
-                <button
-                  type="button"
-                  className="knob"
-                  style={{ left: `${edgePct(span, master.start)}%` }}
-                  aria-label="Ngày bắt đầu chung"
-                  onPointerDown={(e) => plan.startDrag(null, "start", e, master)}
-                  onKeyDown={(e) => plan.nudge(null, "start", e)}
-                >
-                  <span className="knob-hit" />
-                  <span className="knob-date knob-date-l">{shortDate(master.start)}</span>
-                </button>
-                <button
-                  type="button"
-                  className="knob"
-                  style={{ left: `${edgePct(span, master.end + 1)}%` }}
-                  aria-label="Ngày kết thúc chung"
-                  onPointerDown={(e) => plan.startDrag(null, "end", e, master)}
-                  onKeyDown={(e) => plan.nudge(null, "end", e)}
-                >
-                  <span className="knob-hit" />
-                  <span className="knob-date knob-date-r">{shortDate(master.end)}</span>
-                </button>
-              </div>
+              {ticks
+                .filter((tick) => tick.pct > EDGE_CLEAR && tick.pct < 100 - EDGE_CLEAR)
+                .map((tick) => (
+                  <span key={tick.pct} className={tick.month ? "tick tick-month" : "tick tick-week"} style={{ left: `${tick.pct}%` }}>
+                    {tick.label}
+                  </span>
+                ))}
+              {edgeField("from", "Ngày đầu timeline")}
+              {edgeField("to", "Ngày cuối timeline")}
               {cursor && !onMark && (
                 <span className="tl-tip" style={{ left: `${edgePct(span, cursor.edge)}%` }}>
                   {cursorLabel(cursor.day)}
                 </span>
               )}
             </div>
-            <div className="axis-side">{spanField("to", "Ngày cuối timeline")}</div>
+            <span />
           </div>
 
           <div className="tl-rows">
-            {grouped && (
-              <div className="tl-grid tl-row">
-                <button type="button" className="tl-group" aria-expanded={linkedOpen} onClick={() => setLinkedOpen((value) => !value)}>
-                  {linkedOpen ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
-                  {linked.length} gian theo lịch chung
-                </button>
-                <div className="track">
-                  <div className="track-in">
-                    <TrackLines lines={lines} halos={halos} exts={exts} soft />
-                  </div>
-                  <div className="bar bar-linked" style={{ left: `${edgePct(span, master.start)}%`, width: `${widthPct(span, rentalDays(master))}%`, pointerEvents: "none" }}>
-                    <div className="bar-fill" />
-                    <span className="bar-days">{rentalDays(master)}d</span>
-                  </div>
-                </div>
-                <div className="tl-side">
-                  <span className="tl-price">{compactPrice(linked.reduce((sum, row) => sum + row.stall.rentalPrice * rentalDays(row.range), 0))}</span>
-                  <span className="tl-sum" title={moon.title}>
-                    <span className={moon.covers ? "tl-moon-on" : "tl-moon-off"}>
-                      <Icon path={ICONS.moon} size={13} />
-                    </span>
-                    <span>{moon.offset}</span>
-                  </span>
-                </div>
-              </div>
-            )}
-            {shown.map((row) => (
+            {rows.map((row) => (
               <StallRow
                 key={row.item.id}
                 plan={plan}
                 stall={row.stall}
-                range={row.range}
-                custom={row.item.custom}
-                isOn={hoverId === row.item.id || editing === row.item.id || (editing === "master" && !row.item.custom)}
+                range={row.item}
+                booked={row.booked}
+                clash={row.clash}
+                isOn={hoverId === row.item.id || editing === row.item.id}
                 lines={lines}
                 marks={marks}
                 halos={halos}

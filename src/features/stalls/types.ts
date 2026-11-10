@@ -1,5 +1,10 @@
 export type StallStatus = "Available" | "Rented";
 
+export interface StallBooking {
+  startDate: string;
+  endDate: string | null;
+}
+
 export interface Stall {
   id: string;
   code: string;
@@ -13,4 +18,5 @@ export interface Stall {
   status: StallStatus;
   latitude: number | null;
   longitude: number | null;
+  bookings: StallBooking[];
 }

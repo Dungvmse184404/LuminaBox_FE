@@ -1,7 +1,7 @@
-import { useRef, useEffect } from "react";
-import { Check, ChevronLeft, MapPin, Plus, Search, X } from "lucide-react";
+import { useRef, useEffect, type ReactNode } from "react";
+import { Check, ChevronLeft, MapPin, Moon, Plus, Search, X } from "lucide-react";
 import { Autocomplete } from "@/components/ui/Autocomplete";
-import { priceText } from "../timeline";
+import { bookedRanges, moonTaken, priceText } from "../timeline";
 import type { Stall, StallStatus } from "../types";
 
 export type StatusFilter = "all" | StallStatus;
@@ -23,10 +23,18 @@ interface Props {
   onHover: (id: string | null) => void;
   onToggle: (id: string) => void;
   onRetry: () => void;
+  mode?: "rent" | "browse";
+  moonYear?: number;
+  renderDetail?: (stall: Stall) => ReactNode;
 }
 
-const statusText = (stall: Stall) => (stall.status === "Available" ? "Đang trống" : "Đang thuê");
-const statusClass = (stall: Stall) => (stall.status === "Available" ? "status status-free" : "status status-rented");
+const TEXT = {
+  rent: { Available: "Đang trống", Rented: "Đang thuê", all: "Tất cả" },
+  browse: { Available: "Chưa mở bán", Rented: "Đang mở bán", all: "Tất cả" },
+};
+
+const statusClass = (stall: Stall, mode: "rent" | "browse") =>
+  (stall.status === "Available") === (mode === "rent") ? "status status-free" : "status status-rented";
 const location = (stall: Stall) => `${stall.wardName}, ${stall.districtName}, ${stall.provinceName}`;
 const dayPrice = (value: number) => `${priceText(value)}/ngày`;
 
@@ -39,17 +47,49 @@ function distanceKm(a: Stall, b: Stall) {
   return 2 * 6371 * Math.asin(Math.sqrt(h));
 }
 
-export function StallPanel({ stalls, found, visible, selected, isLoading, isError, query, filter, hoverId, plannedIds, onQuery, onFilter, onPick, onHover, onToggle, onRetry }: Props) {
+export function StallPanel({
+  stalls,
+  found,
+  visible,
+  selected,
+  isLoading,
+  isError,
+  query,
+  filter,
+  hoverId,
+  plannedIds,
+  onQuery,
+  onFilter,
+  onPick,
+  onHover,
+  onToggle,
+  onRetry,
+  mode = "rent",
+  moonYear,
+  renderDetail,
+}: Props) {
   const scrollRef = useRef<HTMLDivElement>(null);
+  const text = TEXT[mode];
+  const statusText = (stall: Stall) => text[stall.status];
+  const renting = mode === "rent";
+  const moonFor = (stall: Stall) => {
+    if (!renting || moonYear === undefined) return null;
+    const taken = moonTaken(bookedRanges(stall.bookings), moonYear);
+    return (
+      <span className={taken ? "row-moon is-taken" : "row-moon"} title={taken ? "Ngày Trung thu đã có người thuê" : "Còn trống ngày Trung thu"}>
+        <Moon size={14} aria-hidden="true" />
+      </span>
+    );
+  };
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: 0 });
   }, [selected]);
 
   const chips: { id: StatusFilter; label: string; count: number }[] = [
-    { id: "all", label: "Tất cả", count: found.length },
-    { id: "Available", label: "Đang trống", count: found.filter((s) => s.status === "Available").length },
-    { id: "Rented", label: "Đang thuê", count: found.filter((s) => s.status === "Rented").length },
+    { id: "all", label: text.all, count: found.length },
+    { id: renting ? "Available" : "Rented", label: renting ? text.Available : text.Rented, count: found.filter((s) => s.status === (renting ? "Available" : "Rented")).length },
+    { id: renting ? "Rented" : "Available", label: renting ? text.Rented : text.Available, count: found.filter((s) => s.status === (renting ? "Rented" : "Available")).length },
   ];
 
   const nearby = selected
@@ -80,11 +120,12 @@ export function StallPanel({ stalls, found, visible, selected, isLoading, isErro
             {location(stall)}
           </span>
           <span className="row-meta">
-            <span className="price">{dayPrice(stall.rentalPrice)}</span>
-            <span className={statusClass(stall)}>{statusText(stall)}</span>
+            {renting && <span className="price">{dayPrice(stall.rentalPrice)}</span>}
+            <span className={statusClass(stall, mode)}>{statusText(stall)}</span>
+            {moonFor(stall)}
           </span>
         </button>
-        {stall.status === "Available" && (
+        {renting && (
           <button
             type="button"
             className="row-add"
@@ -143,7 +184,7 @@ export function StallPanel({ stalls, found, visible, selected, isLoading, isErro
             </button>
             <section className="detail" aria-label="Chi tiết gian hàng" style={{ marginTop: 4 }}>
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
-                <span className={statusClass(selected)}>{statusText(selected)}</span>
+                <span className={statusClass(selected, mode)}>{statusText(selected)}</span>
                 <span className="row-code">{selected.code}</span>
               </div>
               <h2 className="break-words" style={{ margin: "8px 0 0", fontFamily: "Merriweather, Georgia, serif", fontSize: 20, lineHeight: 1.3, color: "var(--primary-dark)" }}>
@@ -158,21 +199,21 @@ export function StallPanel({ stalls, found, visible, selected, isLoading, isErro
               {(selected.latitude === null || selected.longitude === null) && (
                 <p style={{ margin: "6px 0 0 22px", fontSize: 12.5, color: "var(--ink-soft)" }}>Gian này chưa có vị trí trên bản đồ.</p>
               )}
-              <div style={{ marginTop: 12, paddingTop: 12, borderTop: "1px solid var(--line)" }}>
-                <div style={{ fontSize: 12.5, color: "var(--ink-soft)" }}>Giá thuê</div>
-                <div className="price" style={{ marginTop: 2, fontSize: 19 }}>
-                  {dayPrice(selected.rentalPrice)}
+              {renting && (
+                <div style={{ marginTop: 12, paddingTop: 12, borderTop: "1px solid var(--line)" }}>
+                  <div style={{ fontSize: 12.5, color: "var(--ink-soft)" }}>Giá thuê</div>
+                  <div className="price" style={{ marginTop: 2, fontSize: 19 }}>
+                    {dayPrice(selected.rentalPrice)}
+                  </div>
                 </div>
-              </div>
+              )}
               {selected.description && (
                 <p className="break-words" style={{ margin: "12px 0 0", fontSize: 13.5, lineHeight: 1.55, color: "var(--ink-soft)" }}>
                   {selected.description}
                 </p>
               )}
-              {selected.status === "Rented" ? (
-                <button type="button" className="cta" disabled>
-                  Đang có người thuê
-                </button>
+              {!renting ? (
+                renderDetail?.(selected)
               ) : plannedIds.has(selected.id) ? (
                 <button type="button" className="cta cta-ghost" onClick={() => onToggle(selected.id)}>
                   Bỏ khỏi lịch thuê
@@ -188,7 +229,7 @@ export function StallPanel({ stalls, found, visible, selected, isLoading, isErro
           </>
         ) : (
           <>
-            <p style={{ margin: "4px 4px 6px", fontSize: 13, color: "var(--ink-soft)" }}>{isLoading ? "Đang tải gian hàng..." : `${visible.length} gian hàng`}</p>
+            <p style={{ margin: "4px 4px 6px", fontSize: 13, color: "var(--ink-soft)" }}>{isLoading ? "Đang tải..." : `${visible.length} ${renting ? "gian hàng" : "điểm bán"}`}</p>
             {visible.map((stall) => row(stall, stall.code))}
             {isError && (
               <div style={{ padding: "28px 16px", textAlign: "center" }}>

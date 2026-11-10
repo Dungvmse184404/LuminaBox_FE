@@ -9,6 +9,9 @@ import { CheckoutPage } from "@/features/orders/pages/CheckoutPage";
 import { OrderDetailPage } from "@/features/orders/pages/OrderDetailPage";
 import { OrdersPage, StoreOrdersPage } from "@/features/orders/pages/OrdersPage";
 import { PaymentResultPage } from "@/features/orders/pages/PaymentResultPage";
+import { AdminRegistrationsPage } from "@/features/partner/pages/AdminRegistrationsPage";
+import { BecomePartnerPage } from "@/features/partner/pages/BecomePartnerPage";
+import { PartnerConfirmPage } from "@/features/partner/pages/PartnerConfirmPage";
 import { CakeSetsPage } from "@/features/products/pages/CakeSetsPage";
 import { VouchersPage } from "@/features/vouchers/pages/VouchersPage";
 import { RequireRole } from "@/features/auth/RequireRole";
@@ -40,6 +43,10 @@ export const router = createBrowserRouter([
             path: "stalls",
             lazy: async () => ({ Component: (await import("@/features/stalls/pages/StallsPage")).StallsPage }),
           },
+          {
+            path: "become-partner/stalls",
+            lazy: async () => ({ Component: (await import("@/features/partner/pages/PartnerStallsPage")).PartnerStallsPage }),
+          },
 
           {
             element: <ContentLayout />,
@@ -47,7 +54,8 @@ export const router = createBrowserRouter([
               { path: "products", element: <ProductsPage /> },
               { path: "products/:id", element: <ProductDetailPage /> },
               { path: "cake-sets", element: <CakeSetsPage /> },
-              { path: "become-partner", element: <PlaceholderPage title="Trở thành đối tác" /> },
+              { path: "become-partner", element: <BecomePartnerPage /> },
+              { path: "become-partner/confirm", element: <PartnerConfirmPage /> },
               { path: "payment/result", element: <PaymentResultPage /> },
               { path: "help/ordering", element: <PlaceholderPage title="Hướng dẫn đặt hàng" /> },
               { path: "policies/returns", element: <PlaceholderPage title="Chính sách đổi trả" /> },
@@ -93,6 +101,7 @@ export const router = createBrowserRouter([
                 children: [
                   { index: true, element: <PlaceholderPage title="Tổng quan quản trị" /> },
                   { path: "catalog", element: <AdminCatalogPage /> },
+                  { path: "registrations", element: <AdminRegistrationsPage /> },
                   { path: "stalls", element: <PlaceholderPage title="Gian hàng" /> },
                 ],
               },

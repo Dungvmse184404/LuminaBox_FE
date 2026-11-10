@@ -163,11 +163,11 @@ export function ProductFilter({ shops, categories, fillings, organizerId, catego
   return (
     <section aria-label="Bộ lọc" className="min-w-0 rounded-card border border-line bg-card px-4 py-3 shadow-card lg:sticky lg:top-36">
       <div className="mb-1 flex items-center gap-3">
-        <h2 className="mr-auto text-sm font-bold text-ink">Bạn đang tìm</h2>
+        <h2 className="mr-auto whitespace-nowrap text-sm font-bold text-ink">Bạn đang tìm</h2>
         {hasFilter && (
           <button
             type="button"
-            className="text-xs font-semibold text-primary hover:underline"
+            className="shrink-0 whitespace-nowrap text-xs font-semibold text-primary hover:underline"
             onClick={() => onChange({ organizerId: "", brand: "", categoryId: "", fillingId: "" })}
           >
             Xóa lọc
@@ -176,14 +176,15 @@ export function ProductFilter({ shops, categories, fillings, organizerId, catego
         <button
           type="button"
           aria-pressed={searching}
+          aria-label="Tìm nhãn"
+          title="Tìm nhãn"
           onClick={toggleSearch}
           className={cn(
-            "inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-semibold transition",
+            "grid size-8 shrink-0 place-items-center rounded-full border transition",
             searching ? "border-primary bg-primary text-white" : "border-line text-ink-soft hover:border-primary hover:text-primary",
           )}
         >
-          <Search size={13} />
-          Tìm nhãn
+          <Search size={15} />
         </button>
       </div>
 

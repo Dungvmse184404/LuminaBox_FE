@@ -1,3 +1,5 @@
+import { lunarToDayNum } from "./lunar";
+
 export interface Span {
   from: number;
   to: number;
@@ -8,10 +10,8 @@ export interface DayRange {
   end: number;
 }
 
-const MOON_DATES: Record<number, [number, number]> = { 2027: [8, 15], 2028: [9, 3], 2029: [8, 22], 2030: [8, 12], 2031: [9, 1] };
-const TET_DATES: Record<number, [number, number]> = { 2027: [1, 6], 2028: [0, 26], 2029: [1, 13], 2030: [1, 3], 2031: [0, 23] };
-
-export const SEASON_YEARS = [2027, 2028, 2029, 2030];
+const SEASON_YEAR_COUNT = 4;
+const VN_OFFSET_MS = 7 * 3600000;
 
 export const ICONS = {
   moon: "M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5z",
@@ -25,9 +25,19 @@ export const dayNum = (year: number, month: number, date: number) => Math.round(
 export const toDate = (num: number) => new Date(num * 86400000);
 export const clampDay = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
 
-export function moonNum(year: number) {
-  const [month, date] = MOON_DATES[year];
-  return dayNum(year, month, date);
+export const moonNum = (year: number) => lunarToDayNum(year, 8, 15);
+export const tetNum = (year: number) => lunarToDayNum(year, 1, 1);
+
+export const vnToday = () => Math.floor((Date.now() + VN_OFFSET_MS) / 86400000);
+
+export function firstSeasonYear(today = vnToday()) {
+  const year = toDate(today).getUTCFullYear();
+  return defaultMaster(year).start >= today ? year : year + 1;
+}
+
+export function seasonYears(today = vnToday()) {
+  const first = firstSeasonYear(today);
+  return Array.from({ length: SEASON_YEAR_COUNT }, (_, index) => first + index);
 }
 
 export function monthStart(num: number) {
@@ -95,12 +105,14 @@ export function buildExts(applied: Span, view: Span) {
   return exts;
 }
 
-const knownMoons = () => Object.keys(MOON_DATES).map((year) => moonNum(Number(year)));
+const moonsBetween = (fromYear: number, toYear: number) => Array.from({ length: toYear - fromYear + 1 }, (_, index) => moonNum(fromYear + index));
 
-export const moonsIn = (span: Span) => knownMoons().filter((moon) => moon >= span.from && moon <= span.to);
+export const moonsIn = (span: Span) =>
+  moonsBetween(toDate(span.from).getUTCFullYear(), toDate(span.to).getUTCFullYear()).filter((moon) => moon >= span.from && moon <= span.to);
 
 function nearestMoon(num: number) {
-  return knownMoons().reduce((best, moon) => (Math.abs(moon - num) < Math.abs(best - num) ? moon : best));
+  const year = toDate(num).getUTCFullYear();
+  return moonsBetween(year - 1, year + 1).reduce((best, moon) => (Math.abs(moon - num) < Math.abs(best - num) ? moon : best));
 }
 
 export interface Line {
@@ -169,8 +181,8 @@ export function buildMarks(span: Span): Mark[] {
   const toYear = toDate(span.to).getUTCFullYear();
   const items: { moon: boolean; icon: string; name: string; num: number }[] = [];
   for (let year = fromYear; year <= toYear; year++) {
-    if (MOON_DATES[year]) items.push({ moon: true, icon: ICONS.moon, name: "Trung thu", num: moonNum(year) });
-    if (TET_DATES[year]) items.push({ moon: false, icon: ICONS.tet, name: "Tết Nguyên đán", num: dayNum(year, TET_DATES[year][0], TET_DATES[year][1]) });
+    items.push({ moon: true, icon: ICONS.moon, name: "Trung thu", num: moonNum(year) });
+    items.push({ moon: false, icon: ICONS.tet, name: "Tết Nguyên đán", num: tetNum(year) });
     items.push({ moon: false, icon: ICONS.newYear, name: "Tết Dương lịch", num: dayNum(year, 0, 1) });
     items.push({ moon: false, icon: ICONS.flag, name: "Giải phóng miền Nam", num: dayNum(year, 3, 30) });
     items.push({ moon: false, icon: ICONS.star, name: "Quốc khánh", num: dayNum(year, 8, 2) });
@@ -199,6 +211,43 @@ export function moonSummary(range: DayRange) {
 }
 
 export const rentalDays = (range: DayRange) => range.end - range.start + 1;
+
+export const MIN_RENTAL_DAYS = 7;
+
+const OPEN_END = dayNum(2100, 0, 1);
+
+export function isoToDay(text: string) {
+  const [year, month, date] = text.slice(0, 10).split("-").map(Number);
+  return dayNum(year, month - 1, date);
+}
+
+export const dayToIso = (num: number) => toDate(num).toISOString().slice(0, 10);
+
+export function bookedRanges(bookings: { startDate: string; endDate: string | null }[] | undefined): DayRange[] {
+  return (bookings ?? []).map((booking) => ({ start: isoToDay(booking.startDate), end: booking.endDate ? isoToDay(booking.endDate) : OPEN_END }));
+}
+
+export const clashes = (range: DayRange, booked: DayRange[]) => booked.some((b) => range.start <= b.end && range.end >= b.start);
+
+export const moonTaken = (booked: DayRange[], year: number) => {
+  const moon = moonNum(year);
+  return booked.some((b) => b.start <= moon && b.end >= moon);
+};
+
+export function freeRange(booked: DayRange[], year: number): DayRange {
+  const preferred = defaultMaster(year);
+  if (!clashes(preferred, booked)) return preferred;
+  const length = preferred.end - preferred.start;
+  const span = seasonSpan(year);
+  const moon = moonNum(year);
+  let best: DayRange | null = null;
+  for (let start = span.from; start + length <= span.to; start++) {
+    const range = { start, end: start + length };
+    if (clashes(range, booked)) continue;
+    if (!best || Math.abs(start + length / 2 - moon) < Math.abs(best.start + length / 2 - moon)) best = range;
+  }
+  return best ?? preferred;
+}
 
 export function compactPrice(value: number) {
   if (value < 1000000) return `${Math.round(value / 1000)}k`;

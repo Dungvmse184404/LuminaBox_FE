@@ -18,6 +18,7 @@ interface Props {
   visibleIds: Set<string>;
   plannedIds: Set<string>;
   padding: { left: number; bottom: number };
+  openStatus?: Stall["status"];
   onPick: (id: string) => void;
   onHover: (id: string | null) => void;
 }
@@ -35,7 +36,7 @@ const STORE_ICON =
 const hasPosition = (stall: Stall) => stall.latitude !== null && stall.longitude !== null;
 
 export const StallMap = forwardRef<StallMapHandle, Props>(function StallMap(
-  { stalls, selectedId, hoverId, visibleIds, plannedIds, padding, onPick, onHover },
+  { stalls, selectedId, hoverId, visibleIds, plannedIds, padding, openStatus = "Available", onPick, onHover },
   ref,
 ) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -157,7 +158,7 @@ export const StallMap = forwardRef<StallMapHandle, Props>(function StallMap(
       if (!entry) return;
       const isOn = stall.id === selectedId;
       const isHover = stall.id === hoverId;
-      const classes = ["pin", stall.status === "Available" ? "pin-free" : "pin-rented"];
+      const classes = ["pin", stall.status === openStatus ? "pin-free" : "pin-rented"];
       if (isOn) classes.push("pin-on");
       if (isHover) classes.push("pin-hover");
       if (!visibleIds.has(stall.id) && !isOn) classes.push("pin-dim");
@@ -166,7 +167,7 @@ export const StallMap = forwardRef<StallMapHandle, Props>(function StallMap(
       entry.tag.style.display = isOn || isHover ? "" : "none";
       entry.marker.getElement().style.zIndex = isOn ? "5" : isHover ? "4" : "2";
     });
-  }, [stalls, selectedId, hoverId, visibleIds, plannedIds]);
+  }, [stalls, selectedId, hoverId, visibleIds, plannedIds, openStatus]);
 
   return <div ref={containerRef} className="stalls-map" />;
 });
