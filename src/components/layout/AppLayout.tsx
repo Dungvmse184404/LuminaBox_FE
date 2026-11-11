@@ -4,6 +4,7 @@ import { AmbientBackground } from "@/components/ambient/AmbientBackground";
 import { BackToTop } from "@/components/layout/BackToTop";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
+import { GuideProvider } from "@/features/guide/GuideProvider";
 
 const PLAIN_SECTIONS = /^\/(store|admin)(\/|$)/;
 const FULL_SCREEN_PAGES = /^\/(stalls|become-partner\/stalls)\/?$/;
@@ -18,14 +19,16 @@ export function AppLayout() {
   }, [pathname]);
 
   return (
-    <div className={fullScreen ? "flex h-dvh flex-col overflow-hidden" : "flex min-h-screen flex-col"}>
-      {showAmbient && <AmbientBackground />}
-      <Header />
-      <main key={pathname} className={fullScreen ? "relative min-h-0 flex-1 overflow-hidden" : "lb-page-enter flex-1"}>
-        <Outlet />
-      </main>
-      <Footer compact={fullScreen} />
-      <BackToTop />
-    </div>
+    <GuideProvider>
+      <div className={fullScreen ? "flex h-dvh flex-col overflow-hidden" : "flex min-h-screen flex-col"}>
+        {showAmbient && <AmbientBackground />}
+        <Header />
+        <main key={pathname} className={fullScreen ? "relative min-h-0 flex-1 overflow-hidden" : "lb-page-enter flex-1"}>
+          <Outlet />
+        </main>
+        <Footer compact={fullScreen} />
+        <BackToTop />
+      </div>
+    </GuideProvider>
   );
 }

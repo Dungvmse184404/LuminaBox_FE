@@ -9,6 +9,7 @@ export interface SideNavItem {
   label: string;
   icon: ComponentType<LucideProps>;
   end?: boolean;
+  guide?: string;
 }
 
 interface Props {
@@ -26,11 +27,12 @@ export function SideNavLayout({ title, subtitle, items }: Props) {
           {subtitle && <p className="mt-0.5 break-words text-sm font-semibold text-ink">{subtitle}</p>}
         </div>
         <nav className="flex gap-1 overflow-x-auto md:flex-col">
-          {items.map(({ to, label, icon: Icon, end }) => (
+          {items.map(({ to, label, icon: Icon, end, guide }) => (
             <NavLink
               key={to}
               to={to}
               end={end}
+              data-guide={guide}
               className={({ isActive }) =>
                 cn(
                   "flex shrink-0 items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium transition",

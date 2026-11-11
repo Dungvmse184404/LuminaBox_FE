@@ -42,6 +42,7 @@ Never put a Supabase key in the FE. Uploads go through the BE (BE ADR-0015).
 | `src/features/<module>/` | `api/` (only place that calls `request()`), `hooks/` (TanStack Query), `components/`, `pages/`, `types.ts` |
 | `src/features/auth/` | `AuthContext`, `RequireRole`, role types, shared password / phone / OTP rules (`validation.ts`) |
 | `src/features/account/` | Profile page: personal info, change password, organizer shop profile |
+| `src/features/guide/` | On-screen guides: `navigationMap.ts` (graph of guide nodes, one per `data-guide` element), `guides.ts` (guide id → target node, ids shared with the AI service), `GuideProvider` (`useGuide()` and the `?guide=<id>` link: opens the target page and highlights the element), see [`guide-system.md`](./guide-system.md) |
 | `src/features/uploads/` | `POST api/uploads` client and `ImageUploadButton` (type and size checked before upload) |
 | `src/features/store/` | Organizer overview (`/store`): reads other modules' endpoints and computes the stats on the client until the BE has a stats endpoint |
 | `src/features/home/` | home page: feature tiles (role-aware), category shortcuts, partner call-to-action, about. The hero carousel is not built yet: it will be driven by events (see BE `status/open-items.md`). Featured stalls and products are added when their APIs exist; a section renders only when it has data |

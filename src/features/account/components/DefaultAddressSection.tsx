@@ -68,7 +68,7 @@ export function DefaultAddressSection() {
       <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
         <h3 className="text-sm font-semibold text-ink">Địa chỉ của bạn</h3>
         {current && (
-          <Link to="/account/addresses" className="text-sm font-semibold text-primary hover:underline">
+          <Link to="/account/addresses" className="text-sm font-semibold text-primary hover:underline" data-guide="profile-address-manage">
             Quản lý địa chỉ ({list.length})
           </Link>
         )}
@@ -122,7 +122,7 @@ export function DefaultAddressSection() {
             <p className="text-sm font-medium text-ink">Có vẻ bạn chưa thêm địa chỉ nào.</p>
             <p className="text-sm text-ink-muted">Thêm địa chỉ nhận hàng để đặt bánh nhanh hơn, không phải nhập lại mỗi lần.</p>
           </div>
-          <Button onClick={startAdding}>
+          <Button onClick={startAdding} data-guide="profile-address-add">
             <Plus size={16} /> Thêm địa chỉ
           </Button>
         </div>

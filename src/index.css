@@ -259,6 +259,12 @@
   animation: lb-shimmer 1.6s linear infinite;
 }
 
+[data-guide-active] {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 3px;
+  animation: lb-flash-ring 1.6s ease-in-out infinite;
+}
+
 .lb-flash {
   animation: lb-flash-ring 1.6s ease-in-out;
 }
@@ -508,7 +514,8 @@
   .lb-fade-in,
   .lb-skeleton,
   .lb-flash,
-  .lb-cloud {
+  .lb-cloud,
+  [data-guide-active] {
     animation: none;
   }
 

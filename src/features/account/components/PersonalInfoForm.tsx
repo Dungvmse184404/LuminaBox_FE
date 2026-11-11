@@ -51,7 +51,7 @@ export function PersonalInfoForm() {
   if (!user) return null;
 
   return (
-    <Card>
+    <Card data-guide="profile-personal-info">
       <h2 className="mb-1 font-semibold text-ink">Thông tin cá nhân</h2>
       <p className="mb-4 text-sm text-ink-muted">
         {user.email} · {ROLE_LABEL[user.role]}

@@ -8,7 +8,7 @@ const ITEMS: SideNavItem[] = [
   { to: "/store/products", label: "Sản phẩm", icon: Cake },
   { to: "/store/boxes", label: "Hộp", icon: Boxes },
   { to: "/store/stalls", label: "Gian hàng", icon: Store },
-  { to: "/store/pickup-addresses", label: "Địa chỉ lấy hàng", icon: MapPin },
+  { to: "/store/pickup-addresses", label: "Địa chỉ lấy hàng", icon: MapPin, guide: "store-nav-pickup-addresses" },
   { to: "/become-partner", label: "Mở rộng kinh doanh", icon: Building2 },
 ];
 

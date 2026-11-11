@@ -54,7 +54,7 @@ export function ShopProfileForm() {
   });
 
   return (
-    <Card>
+    <Card data-guide="profile-shop-profile">
       <div className="mb-4 flex flex-wrap items-center gap-2">
         <h2 className="font-semibold text-ink">Hồ sơ cửa hàng</h2>
         {profile.data && (

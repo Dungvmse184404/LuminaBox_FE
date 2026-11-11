@@ -56,7 +56,7 @@ export function ChangePasswordForm() {
           <p className="text-sm text-ink-muted">Đổi mật khẩu sẽ đăng xuất tài khoản trên các thiết bị khác.</p>
         </div>
         {!open && (
-          <Button variant="outline" onClick={() => setOpen(true)}>
+          <Button variant="outline" onClick={() => setOpen(true)} data-guide="profile-change-password">
             <KeyRound size={16} /> Đổi mật khẩu
           </Button>
         )}

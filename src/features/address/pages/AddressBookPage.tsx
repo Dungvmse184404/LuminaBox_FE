@@ -61,7 +61,7 @@ export function AddressBookPage({ type = "Shipping" }: { type?: AddressType }) {
         title={copy.title}
         description={copy.description}
         actions={
-          <Button onClick={() => setCreating(true)}>
+          <Button onClick={() => setCreating(true)} data-guide={type === "Pickup" ? "pickup-address-add" : "address-book-add"}>
             <Plus size={16} />
             Thêm địa chỉ
           </Button>

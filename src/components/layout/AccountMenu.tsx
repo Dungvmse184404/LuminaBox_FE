@@ -40,32 +40,39 @@ export function AccountMenu() {
 
   return (
     <div ref={rootRef} className="relative">
-      <button type="button" onClick={() => setOpen((value) => !value)} aria-expanded={open} aria-haspopup="menu" className={triggerClass}>
+      <button
+        type="button"
+        onClick={() => setOpen((value) => !value)}
+        aria-expanded={open}
+        aria-haspopup="menu"
+        data-guide="account-menu"
+        className={triggerClass}
+      >
         <User size={20} />
         <span className="hidden max-w-24 truncate text-[11px] sm:block">{user.fullName}</span>
       </button>
 
       {open && (
         <div role="menu" className="lb-fade-in absolute right-0 top-full z-50 mt-2 w-56 rounded-xl border border-line bg-card p-2 shadow-pop">
-          <Link to="/account/profile" onClick={close} className={itemClass}>
+          <Link to="/account/profile" onClick={close} className={itemClass} data-guide="account-menu-profile">
             <UserCog size={16} /> Hồ sơ của tôi
           </Link>
-          <Link to="/orders" onClick={close} className={itemClass}>
+          <Link to="/orders" onClick={close} className={itemClass} data-guide="account-menu-orders">
             <Package size={16} /> Đơn hàng của tôi
           </Link>
-          <Link to="/vouchers" onClick={close} className={itemClass}>
+          <Link to="/vouchers" onClick={close} className={itemClass} data-guide="account-menu-vouchers">
             <Ticket size={16} /> Voucher của tôi
           </Link>
-          <Link to="/account/addresses" onClick={close} className={itemClass}>
+          <Link to="/account/addresses" onClick={close} className={itemClass} data-guide="account-menu-addresses">
             <MapPin size={16} /> Sổ địa chỉ
           </Link>
           {hasRole("Organization") && (
-            <Link to="/store" onClick={close} className={itemClass}>
+            <Link to="/store" onClick={close} className={itemClass} data-guide="account-menu-store">
               <Store size={16} /> Cửa hàng của tôi
             </Link>
           )}
           {hasRole("Manager") && (
-            <Link to="/admin" onClick={close} className={itemClass}>
+            <Link to="/admin" onClick={close} className={itemClass} data-guide="account-menu-admin">
               <ShieldCheck size={16} /> Quản trị
             </Link>
           )}
