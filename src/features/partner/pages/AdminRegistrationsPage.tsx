@@ -13,7 +13,7 @@ import { StatusBadge } from "@/components/ui/StatusBadge";
 import { useToast } from "@/components/ui/Toast";
 import { useStalls } from "@/features/stalls/hooks/useStalls";
 import { ApiError } from "@/lib/api";
-import { formatDateTime } from "@/lib/format";
+import { formatShortDateTime } from "@/lib/format";
 import {
   useAllRegistrations,
   useApproveRegistration,
@@ -183,77 +183,87 @@ export function AdminRegistrationsPage() {
                   <th className="p-3">Thương hiệu</th>
                   <th className="p-3">Người nộp</th>
                   <th className="p-3">Hình thức</th>
-                  <th className="p-3">Gian hàng</th>
-                  <th className="p-3">Hoa hồng</th>
                   <th className="p-3">Ngày gửi</th>
                   <th className="p-3">Trạng thái</th>
-                  <th className="p-3 text-right">Thao tác</th>
+                  <th className="sticky right-0 border-l border-line bg-[color-mix(in_oklab,var(--color-cream)_60%,var(--color-card))] py-3 pl-3 pr-4 text-right">
+                    Thao tác
+                  </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-line">
                 {data.items.map((item) => (
-                  <tr key={item.id} className="hover:bg-cream/30">
+                  <tr key={item.id} className="group hover:bg-cream/30">
                     <td className="p-3 font-semibold text-ink">
                       <div>{item.brandName}</div>
                       <div className="text-[11px] text-ink-muted">{item.contactPhone}</div>
                     </td>
                     <td className="p-3">
                       <div className="text-ink">{item.userFullName}</div>
-                      <div className="text-[11px] text-ink-muted">{item.userEmail}</div>
-                    </td>
-                    <td className="p-3">
-                      <span className="rounded bg-cream-dark px-2 py-0.5 font-medium text-ink-soft">
-                        {item.type === "Stall" ? "Thuê gian" : "Online"}
-                      </span>
-                    </td>
-                    <td className="p-3">
-                      {item.stallCode ? (
-                        <span className="font-semibold text-primary">{item.stallCode}</span>
-                      ) : (
-                        "—"
+                      {item.userEmail !== item.userFullName && (
+                        <div className="text-[11px] text-ink-muted">
+                          {item.userEmail}
+                        </div>
                       )}
                     </td>
                     <td className="p-3">
-                      {item.commissionRate !== null ? `${item.commissionRate}%` : "—"}
+                      <span className="inline-block whitespace-nowrap rounded bg-cream-dark px-2 py-0.5 font-medium text-ink-soft">
+                        {item.type === "Stall" ? "Thuê gian" : "Online"}
+                      </span>
+                      {item.stallCode && (
+                        <div className="mt-1 whitespace-nowrap text-[11px] font-semibold text-primary">
+                          {item.stallCode}
+                        </div>
+                      )}
                     </td>
-                    <td className="p-3 text-ink-muted">{formatDateTime(item.createdAt)}</td>
+                    <td className="whitespace-nowrap p-3 text-ink-muted">
+                      {formatShortDateTime(item.createdAt)}
+                    </td>
                     <td className="p-3">
                       <StatusBadge
                         status={item.status}
                         label={STATUS_LABELS[item.status] ?? item.status}
                       />
-                    </td>
-                    <td className="p-3 text-right space-x-1">
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        onClick={() => setSelectedItem(item)}
-                      >
-                        <Eye size={13} />
-                      </Button>
-                      {item.status === "Pending" && (
-                        <>
-                          <Button
-                            size="sm"
-                            onClick={() => {
-                              setApproveModalItem(item);
-                              setCommissionRate(10);
-                            }}
-                          >
-                            Duyệt
-                          </Button>
-                          <Button
-                            size="sm"
-                            variant="danger"
-                            onClick={() => {
-                              setRejectModalItem(item);
-                              setRejectReason("");
-                            }}
-                          >
-                            Từ chối
-                          </Button>
-                        </>
+                      {item.commissionRate !== null && (
+                        <div className="mt-1 whitespace-nowrap text-[11px] text-ink-muted">
+                          Hoa hồng {item.commissionRate}%
+                        </div>
                       )}
+                    </td>
+                    <td className="sticky right-0 border-l border-line bg-card py-3 pl-3 pr-4 group-hover:bg-[color-mix(in_oklab,var(--color-cream)_30%,var(--color-card))]">
+                      <div className="flex min-w-max items-center justify-end gap-1.5 whitespace-nowrap">
+                        {item.status === "Pending" && (
+                          <>
+                            <Button
+                              size="sm"
+                              onClick={() => {
+                                setApproveModalItem(item);
+                                setCommissionRate(10);
+                              }}
+                            >
+                              Duyệt
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="danger"
+                              onClick={() => {
+                                setRejectModalItem(item);
+                                setRejectReason("");
+                              }}
+                            >
+                              Từ chối
+                            </Button>
+                          </>
+                        )}
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          title="Xem chi tiết"
+                          aria-label={`Xem đơn của ${item.brandName}`}
+                          onClick={() => setSelectedItem(item)}
+                        >
+                          <Eye size={14} />
+                        </Button>
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -362,7 +372,8 @@ export function AdminRegistrationsPage() {
       >
         <div className="space-y-4">
           <p className="text-sm text-ink-soft">
-            Bạn có chắc chắn muốn phê duyệt đơn cho thương hiệu <strong>{approveModalItem?.brandName}</strong>?
+            Bạn có chắc chắn muốn phê duyệt đơn cho thương hiệu{" "}
+            <strong>{approveModalItem?.brandName}</strong>?
           </p>
 
           {approveModalItem?.type === "Online" && (
@@ -408,7 +419,8 @@ export function AdminRegistrationsPage() {
       >
         <div className="space-y-3">
           <p className="text-sm text-ink-soft">
-            Vui lòng nhập lý do từ chối đơn của thương hiệu <strong>{rejectModalItem?.brandName}</strong>:
+            Vui lòng nhập lý do từ chối đơn của thương hiệu{" "}
+            <strong>{rejectModalItem?.brandName}</strong>:
           </p>
           <Textarea
             label="Lý do từ chối *"

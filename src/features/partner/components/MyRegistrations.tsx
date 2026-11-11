@@ -132,7 +132,7 @@ export function MyRegistrations({ onCreate }: { onCreate: () => void }) {
 
             {item.status === "Pending" && (
               <div className="flex justify-end">
-                <Button size="sm" variant="ghost" className="text-danger hover:bg-danger/10" onClick={() => setCancelItem(item)}>
+                <Button size="sm" variant="dangerGhost" onClick={() => setCancelItem(item)}>
                   <XCircle size={14} /> Hủy đơn
                 </Button>
               </div>

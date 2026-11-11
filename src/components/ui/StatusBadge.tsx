@@ -41,7 +41,7 @@ interface Props {
 
 export function StatusBadge({ status, label, tone }: Props) {
   return (
-    <span className={cn("inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold", TONES[tone ?? STATUS_TONE[status] ?? "neutral"])}>
+    <span className={cn("inline-flex items-center whitespace-nowrap rounded-full px-2.5 py-0.5 text-xs font-semibold", TONES[tone ?? STATUS_TONE[status] ?? "neutral"])}>
       {label ?? status}
     </span>
   );

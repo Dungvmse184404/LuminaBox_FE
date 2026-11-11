@@ -1,13 +1,13 @@
 ---
 title: Frontend architecture
 status: accepted
-updated: 2026-11-03
-related: [conventions.md, routing-and-access.md, mock-layer.md, ../../LuminaBox_BE/docs/api/conventions.md]
+updated: 2026-11-10
+related: [conventions.md, routing-and-access.md, mock-layer.md, ../../localDocs/api/conventions.md]
 ---
 
 # Frontend architecture (`LuminaBox_FE`)
 
-Shared docs (product, data model, API, decisions) live in the BE repo: see [`README.md`](./README.md#backend-docs).
+Shared docs (product, data model, API, decisions) live in `../localDocs/`: see [`README.md`](./README.md#shared-docs).
 
 ## Stack
 React 19 · TypeScript (strict) · Vite · **Tailwind CSS v4** (`@tailwindcss/vite`) · react-router-dom v7 · TanStack Query · react-hook-form + zod · lucide-react · **pnpm**.
@@ -40,7 +40,10 @@ Never put a Supabase key in the FE. Uploads go through the BE (BE ADR-0015).
 | `src/lib/` | `env`, `errors` (status / message from any error), `storage` (public image URLs), `cn` |
 | `src/types/api.ts` | `Paged<T>` and `ListParams`, the single definition of every list contract |
 | `src/features/<module>/` | `api/` (only place that calls `request()`), `hooks/` (TanStack Query), `components/`, `pages/`, `types.ts` |
-| `src/features/auth/` | `AuthContext`, `RequireRole`, role types |
+| `src/features/auth/` | `AuthContext`, `RequireRole`, role types, shared password / phone / OTP rules (`validation.ts`) |
+| `src/features/account/` | Profile page: personal info, change password, organizer shop profile |
+| `src/features/uploads/` | `POST api/uploads` client and `ImageUploadButton` (type and size checked before upload) |
+| `src/features/store/` | Organizer overview (`/store`): reads other modules' endpoints and computes the stats on the client until the BE has a stats endpoint |
 | `src/features/home/` | home page: feature tiles (role-aware), category shortcuts, partner call-to-action, about. The hero carousel is not built yet: it will be driven by events (see BE `status/open-items.md`). Featured stalls and products are added when their APIs exist; a section renders only when it has data |
 | `src/components/ui/` | `Button`, `Input` / `Textarea` / `Select`, `Modal`, `Card`, `StatusBadge`, `Pager`, `SearchInput`, `Toast`, skeleton / empty / error states, `StorageImage` |
 | `src/components/layout/` | `AppLayout`, `ContentLayout`, `StoreLayout` (Organizer), `AdminLayout` (Manager), `Header` (top bar, logo + search + actions, navigation, category menu), `HeaderSearch`, `AccountMenu`, `EffectSettingsMenu`, `Footer`, `BackToTop`, `Container`, `PageHeader` |

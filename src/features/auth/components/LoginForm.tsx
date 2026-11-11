@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -57,6 +58,11 @@ export function LoginForm({ onUnverified }: Props) {
         error={errors.password?.message}
         {...register("password")}
       />
+      <div className="-mt-2 text-right">
+        <Link to="/forgot-password" className="text-sm font-semibold text-primary hover:underline">
+          Quên mật khẩu?
+        </Link>
+      </div>
       {formError && (
         <p role="alert" className="text-sm text-danger">
           {formError}

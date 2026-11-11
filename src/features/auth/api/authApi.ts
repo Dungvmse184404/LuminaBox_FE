@@ -1,5 +1,5 @@
 import { request, type Tokens } from "@/lib/api";
-import type { CurrentUser, Credentials, RegisterPayload } from "../types";
+import type { ChangePasswordPayload, CurrentUser, Credentials, ProfilePayload, RegisterPayload, ResetPasswordPayload } from "../types";
 
 export const authApi = {
   login: async (credentials: Credentials) => {
@@ -26,5 +26,23 @@ export const authApi = {
 
   resendOtp: async (email: string) => {
     await request("/auth/resend-otp", { method: "POST", body: { email } });
+  },
+
+  forgotPassword: async (email: string) => {
+    await request("/auth/forgot-password", { method: "POST", body: { email } });
+  },
+
+  resetPassword: async (payload: ResetPasswordPayload) => {
+    await request("/auth/reset-password", { method: "POST", body: payload });
+  },
+
+  updateProfile: async (payload: ProfilePayload) => {
+    const { data } = await request<CurrentUser>("/users/me", { method: "PUT", body: payload, auth: true });
+    return data!;
+  },
+
+  changePassword: async (payload: ChangePasswordPayload) => {
+    const { data } = await request<Tokens>("/users/me/password", { method: "PUT", body: payload, auth: true });
+    return data!;
   },
 };
