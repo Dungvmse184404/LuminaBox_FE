@@ -1,13 +1,13 @@
 ---
 title: "FE-0002: Shared docs live in the BE repo"
-status: accepted
+status: superseded
 date: 2026-11-03
 related: [../README.md]
 ---
 
 # FE-0002: Shared docs live in the BE repo
 
-- **Status:** Accepted
+- **Status:** Superseded by [FE-0007](./FE-0007-shared-docs-in-localdocs.md)
 - **Date:** 2026-11-03
 
 ## Context

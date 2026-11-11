@@ -9,7 +9,7 @@ related: [FE-0004-shared-address-fields.md, ../screens.md, ../routing-and-access
 
 - **Status:** Accepted
 - **Date:** 2026-11-09
-- **Supersedes / Superseded by:** –
+- **Supersedes / Superseded by:** Partly superseded by FE-0008 (pickup contact fields)
 
 ## Context
 Picking stalls to rent existed twice: the map with a rental timeline on `/stalls`, and a dropdown plus a modal on `/become-partner`. A seller can rent several stalls, each for its own dates, sell online, or both. The map needs the full screen, while the other steps sit in the normal content layout. `AppLayout` remounts `<main>` on every path change, so React state does not survive moving between steps or a detour to the login page.

@@ -73,7 +73,7 @@ export function CartPage() {
       <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_20rem]">
         <div className="grid min-w-0 gap-4">
           {cart?.groups.map((group) => (
-            <Card key={`${group.organizerId}-${group.stallId}`} className="min-w-0 p-0">
+            <Card key={`${group.organizerId}-${group.stallId}`} flush className="min-w-0">
               <p className="border-b border-line px-5 py-3 font-semibold text-ink">{groupLabel(group)}</p>
               <div className="divide-y divide-line">
                 {group.items.map((item) => (

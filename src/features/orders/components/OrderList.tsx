@@ -47,7 +47,7 @@ export function OrderList({ data, isLoading, isError, onRetry, status, onStatusC
       ) : !data || data.items.length === 0 ? (
         <EmptyState title="Chưa có đơn hàng" />
       ) : (
-        <Card className="divide-y divide-line p-0">
+        <Card flush className="divide-y divide-line">
           {data.items.map((order) => (
             <Link key={order.id} to={`${linkPrefix}/${order.id}`} className="flex flex-wrap items-center justify-between gap-3 px-5 py-3.5 transition hover:bg-cream/50">
               <div className="min-w-0">

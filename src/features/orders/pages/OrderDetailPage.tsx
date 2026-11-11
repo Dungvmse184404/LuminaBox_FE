@@ -11,7 +11,7 @@ import { useToast } from "@/components/ui/Toast";
 import { formatDiscount, formatPrice } from "@/features/products/types";
 import { errorMessage } from "@/lib/errors";
 import { useAdvanceOrder, useCancelOrder, useOrder, usePayOrder, useRejectOrder } from "../hooks/useOrders";
-import { canBuyerCancel, canPayOrder, formatDateTime, ORDER_STATUS_LABEL, paymentLabel, type Order } from "../types";
+import { canBuyerCancel, canPayOrder, formatDateTime, ghnStatusLabel, ORDER_STATUS_LABEL, paymentLabel, type Order } from "../types";
 
 type ReasonAction = "cancel" | "reject";
 
@@ -82,7 +82,7 @@ export function OrderDetailPage({ store = false }: { store?: boolean }) {
 
       <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_20rem]">
         <div className="grid min-w-0 gap-4">
-          <Card className="divide-y divide-line p-0">
+          <Card flush className="divide-y divide-line">
             {order.items.map((line) => (
               <div key={line.id} className="px-5 py-3">
                 <div className="flex items-start justify-between gap-3 text-sm">
@@ -112,6 +112,12 @@ export function OrderDetailPage({ store = false }: { store?: boolean }) {
               {order.receiverName} · {order.receiverPhone}
             </p>
             <p className="break-words">{order.shippingAddress}</p>
+            {order.ghnOrderCode && (
+              <p>
+                Mã vận đơn GHN: <span className="font-semibold text-ink">{order.ghnOrderCode}</span>
+                {order.ghnStatus && <span className="text-ink-muted"> · {ghnStatusLabel(order.ghnStatus)}</span>}
+              </p>
+            )}
             {order.note && <p className="break-words text-ink-muted">Ghi chú: {order.note}</p>}
             {order.cancelReason && <p className="break-words text-danger">Lý do hủy: {order.cancelReason}</p>}
           </Card>

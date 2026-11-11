@@ -1,8 +1,8 @@
 ---
 title: Frontend conventions
 status: accepted
-updated: 2026-11-03
-related: [architecture.md, ../AGENTS.md, ../../LuminaBox_BE/docs/CONTRIBUTING.md]
+updated: 2026-11-10
+related: [architecture.md, ../AGENTS.md, ../../localDocs/CONTRIBUTING.md]
 ---
 
 # Frontend conventions
@@ -27,10 +27,10 @@ related: [architecture.md, ../AGENTS.md, ../../LuminaBox_BE/docs/CONTRIBUTING.md
 - Colors, shadows and radii come from tokens (see [`styling.md`](./styling.md)); do not hard-code them.
 
 ## Forms
-Zod schema + react-hook-form + a mutation hook + a toast on the result. Reference implementation: `features/catalog/components/CategoryFormModal.tsx`.
+Zod schema + react-hook-form + a mutation hook + a toast on the result. Reference implementation: `features/catalog/components/LookupFormModal.tsx`.
 
 ## Lists
 Filters in state → query hook → loading / error / empty / data states → `Pager`. Reset to page 1 when a filter changes. Reference implementation: `features/catalog/pages/AdminCatalogPage.tsx`.
 
 ## Git
-Branches, commits and the PR checklist follow the shared [`CONTRIBUTING.md`](../../LuminaBox_BE/docs/CONTRIBUTING.md). A PR that depends on a BE change links the BE PR instead of copying contract details into FE docs.
+Branches, commits and the PR checklist follow the shared [`CONTRIBUTING.md`](../../localDocs/CONTRIBUTING.md). A change to the API or business rules is written in `localDocs/` (never in `LuminaBox.BE/docs`); FE docs link to it instead of copying contract details.

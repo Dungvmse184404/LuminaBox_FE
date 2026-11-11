@@ -13,14 +13,18 @@ export interface SideNavItem {
 
 interface Props {
   title: string;
+  subtitle?: string | null;
   items: SideNavItem[];
 }
 
-export function SideNavLayout({ title, items }: Props) {
+export function SideNavLayout({ title, subtitle, items }: Props) {
   return (
     <Container className="grid gap-6 py-8 md:grid-cols-[14rem_1fr]">
       <aside className="md:sticky md:top-24 md:self-start">
-        <p className="mb-3 px-3 text-xs font-semibold uppercase tracking-wide text-ink-muted">{title}</p>
+        <div className="mb-3 px-3">
+          <p className="text-xs font-semibold uppercase tracking-wide text-ink-muted">{title}</p>
+          {subtitle && <p className="mt-0.5 break-words text-sm font-semibold text-ink">{subtitle}</p>}
+        </div>
         <nav className="flex gap-1 overflow-x-auto md:flex-col">
           {items.map(({ to, label, icon: Icon, end }) => (
             <NavLink

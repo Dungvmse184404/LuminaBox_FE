@@ -11,6 +11,8 @@ export interface OrderSummary {
   organizerBrandName: string;
   stallName: string | null;
   receiverName: string;
+  subtotalAmount: number;
+  organizerDiscount: number;
   totalAmount: number;
   itemCount: number;
   status: OrderStatus;
@@ -64,6 +66,8 @@ export interface Order {
   status: OrderStatus;
   createdAt: string;
   cancelReason: string | null;
+  ghnOrderCode?: string | null;
+  ghnStatus?: string | null;
   payment: { method: PaymentMethod; status: PaymentStatus } | null;
   items: OrderLine[];
   statusHistories: OrderHistory[];
@@ -108,3 +112,23 @@ export const canBuyerCancel = (order: Pick<Order, "status" | "payment">) =>
   order.status === "Pending" && !(order.payment?.method === "Stripe" && order.payment.status === "Success");
 
 export const formatDateTime = (value: string) => new Date(value).toLocaleString("vi-VN", { dateStyle: "short", timeStyle: "short" });
+
+const GHN_STATUS_LABEL: Record<string, string> = {
+  ready_to_pick: "Chờ lấy hàng",
+  picking: "Đang lấy hàng",
+  picked: "Đã lấy hàng",
+  storing: "Đang lưu kho",
+  transporting: "Đang trung chuyển",
+  sorting: "Đang phân loại",
+  delivering: "Đang giao",
+  delivered: "Đã giao",
+  delivery_fail: "Giao không thành công",
+  waiting_to_return: "Chờ hoàn hàng",
+  return: "Đang hoàn hàng",
+  returned: "Đã hoàn hàng",
+  cancel: "Đã hủy",
+  lost: "Thất lạc",
+  damage: "Hư hỏng",
+};
+
+export const ghnStatusLabel = (status: string | null | undefined) => (status ? (GHN_STATUS_LABEL[status] ?? status) : null);

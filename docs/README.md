@@ -1,7 +1,7 @@
 # LuminaBox frontend documentation
 
 Entry point for the **frontend-only** docs. AI agents: start at [`../AGENTS.md`](../AGENTS.md).
-Product, data model, API and shared decisions are documented once, in the BE repo (see [Backend docs](#backend-docs)).
+Product, data model, API and shared decisions are documented once, in `../localDocs/` (see [Shared docs](#shared-docs)). Never edit `LuminaBox.BE/docs` ([FE-0007](./decisions/FE-0007-shared-docs-in-localdocs.md)).
 
 ## Map
 | Page | Answers |
@@ -16,27 +16,28 @@ Product, data model, API and shared decisions are documented once, in the BE rep
 | [`decisions/`](./decisions/) | Frontend-only ADRs (`FE-NNNN`) |
 | [`guides/local-development.md`](./guides/local-development.md) | Run the frontend locally |
 
-## Backend docs
-Both repos are cloned side by side, so BE docs are at `../LuminaBox_BE/docs/` (from the repo root). GitHub URL: to be filled once the BE repo is published.
+## Shared docs
+Shared docs are in `localDocs/`, the folder beside both repos (`../localDocs/` from the repo root). It is the only shared docs folder: read and update shared docs there, never in `LuminaBox.BE/docs`.
 
-| Need | BE doc |
+| Need | `localDocs/` page |
 |---|---|
-| What a feature must do | `docs/product/features/<context>.md`, `docs/product/business-rules.md` |
-| Status values and lifecycles | `docs/product/enums.md` |
-| Tables and relationships | `docs/architecture/data-model.md`, `docs/architecture/data-model-schema.txt` |
-| API envelope, errors, pagination | `docs/api/conventions.md` |
-| GHN / VNPay / Supabase | `docs/architecture/integrations/` |
-| Why the system is designed this way | `docs/decisions/` |
-| Branches, commits, PR checklist | `docs/CONTRIBUTING.md` |
+| What a feature must do | `product/features/<context>.md`, `product/business-rules.md` |
+| Status values and lifecycles | `product/enums.md` |
+| Tables and relationships | `architecture/data-model.md`, `architecture/data-model-schema.txt` |
+| API envelope, errors, pagination | `api/conventions.md` |
+| GHN / VNPay / Supabase | `architecture/integrations/` |
+| Seed accounts and demo data | `seed/README.md` |
+| Why the system is designed this way | `decisions/`, `status/issue-log.md` |
+| Branches, commits, PR checklist | `CONTRIBUTING.md` |
 
 ## Source of truth
 | Fact | Lives in |
 |---|---|
-| Business behaviour, data, API | BE repo |
+| Business behaviour, data, API | `../localDocs/` |
 | Frontend structure, routes, styling, mocks | this folder |
 
 ## Maintaining the docs
 - **Frontmatter** on every page: `title`, `status` (`draft` / `accepted` / `deprecated`), `updated`, `related`.
-- Do not copy enums, rules, DTOs or endpoint contracts from the BE docs; link to them.
+- Do not copy enums, rules, DTOs or endpoint contracts from `localDocs/`; link to them.
 - Same PR rule: a change to routes, structure, tokens or the mock layer updates the matching page here.
 - Keep pages ≲ 300 lines.
