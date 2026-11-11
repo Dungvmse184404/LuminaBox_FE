@@ -2,7 +2,7 @@ import { useMutation } from "@tanstack/react-query";
 import { saveTokens } from "@/lib/api";
 import { authApi } from "../api/authApi";
 import { useAuth } from "../AuthContext";
-import type { Credentials } from "../types";
+import type { ChangePasswordPayload, Credentials, ProfilePayload } from "../types";
 
 export function useLogin() {
   const { setUser } = useAuth();
@@ -29,3 +29,17 @@ export const useVerifyOtp = () =>
   });
 
 export const useResendOtp = () => useMutation({ mutationFn: authApi.resendOtp });
+
+export const useForgotPassword = () => useMutation({ mutationFn: authApi.forgotPassword });
+
+export const useResetPassword = () => useMutation({ mutationFn: authApi.resetPassword });
+
+export function useUpdateProfile() {
+  const { setUser } = useAuth();
+  return useMutation({ mutationFn: (payload: ProfilePayload) => authApi.updateProfile(payload), onSuccess: setUser });
+}
+
+export const useChangePassword = () =>
+  useMutation({
+    mutationFn: async (payload: ChangePasswordPayload) => saveTokens(await authApi.changePassword(payload)),
+  });

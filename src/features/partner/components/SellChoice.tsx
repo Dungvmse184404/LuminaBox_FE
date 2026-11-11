@@ -4,15 +4,11 @@ import { Check, Globe2, Store } from "lucide-react";
 import { CornerFrame } from "@/components/ornament/CornerOrnament";
 import { Button } from "@/components/ui/Button";
 import { Input, Textarea } from "@/components/ui/FormField";
-import {
-  ContactAddressFields,
-  PHONE_PATTERN,
-  validateContactAddress,
-  type ContactAddressErrors,
-} from "@/features/address/components/ContactAddressFields";
+import { PHONE_PATTERN } from "@/features/auth/validation";
 import { useAuth } from "@/features/auth/AuthContext";
 import { cn } from "@/lib/cn";
 import { hasPickup, updateDraft, usePartnerDraft, type SellKind } from "../draft";
+import { PickupAddressFields, validatePickup, type PickupErrors } from "./PickupAddressFields";
 
 const OPTIONS: { kind: SellKind; icon: typeof Store; title: string; text: string; meta: string }[] = [
   {
@@ -42,7 +38,7 @@ function Reveal({ open, children }: { open: boolean; children: ReactNode }) {
 interface Errors {
   brandName?: string;
   contactPhone?: string;
-  pickup?: ContactAddressErrors | null;
+  pickup?: PickupErrors | null;
 }
 
 export function SellChoice() {
@@ -68,7 +64,7 @@ export function SellChoice() {
       if (!draft.brandName.trim()) next.brandName = "Vui lòng nhập tên thương hiệu";
       if (!PHONE_PATTERN.test(draft.contactPhone.trim())) next.contactPhone = "Số điện thoại không hợp lệ";
     }
-    if (online && hasPickup(draft)) next.pickup = validateContactAddress(draft.pickup);
+    if (online && hasPickup(draft)) next.pickup = validatePickup(draft.pickup);
     setErrors(next);
     return !next.brandName && !next.contactPhone && !next.pickup;
   };
@@ -161,7 +157,7 @@ export function SellChoice() {
               <fieldset className="grid gap-3 rounded-xl border border-line bg-cream/40 p-4">
                 <legend className="px-1 text-xs font-bold uppercase tracking-wide text-primary">Điểm lấy hàng</legend>
                 <p className="-mt-1 text-xs text-ink-muted">Không bắt buộc. Nơi GHN đến lấy hàng cho đơn online.</p>
-                {online && <ContactAddressFields required={false} value={draft.pickup} errors={errors.pickup} onChange={(pickup) => updateDraft({ pickup })} />}
+                {online && <PickupAddressFields value={draft.pickup} errors={errors.pickup} onChange={(pickup) => updateDraft({ pickup })} />}
               </fieldset>
             </Reveal>
 

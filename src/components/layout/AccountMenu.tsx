@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { LogOut, MapPin, Package, ShieldCheck, Store, Ticket, User } from "lucide-react";
+import { LogOut, MapPin, Package, ShieldCheck, Store, Ticket, User, UserCog } from "lucide-react";
 import { useAuth } from "@/features/auth/AuthContext";
 
 const itemClass = "flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm text-ink-soft transition hover:bg-primary-soft hover:text-primary";
@@ -47,6 +47,9 @@ export function AccountMenu() {
 
       {open && (
         <div role="menu" className="lb-fade-in absolute right-0 top-full z-50 mt-2 w-56 rounded-xl border border-line bg-card p-2 shadow-pop">
+          <Link to="/account/profile" onClick={close} className={itemClass}>
+            <UserCog size={16} /> Hồ sơ của tôi
+          </Link>
           <Link to="/orders" onClick={close} className={itemClass}>
             <Package size={16} /> Đơn hàng của tôi
           </Link>

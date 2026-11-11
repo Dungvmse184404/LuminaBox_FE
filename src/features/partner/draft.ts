@@ -1,15 +1,26 @@
 import { useSyncExternalStore } from "react";
-import { EMPTY_CONTACT_ADDRESS, isContactAddressEmpty, type ContactAddressValue } from "@/features/address/components/ContactAddressFields";
+import { EMPTY_ADDRESS, type AddressValue } from "@/features/address/components/AddressFields";
 import type { PlanSnapshot } from "@/features/stalls/hooks/useRentalPlan";
 
 export type SellKind = "stall" | "online";
+
+export interface PickupValue {
+  contactName: string;
+  phone: string;
+  address: AddressValue;
+}
+
+export const EMPTY_PICKUP: PickupValue = { contactName: "", phone: "", address: EMPTY_ADDRESS };
+
+const isPickupEmpty = (value: PickupValue) =>
+  !value.contactName.trim() && !value.phone.trim() && !value.address.wardId && !value.address.addressLine.trim();
 
 export interface PartnerDraft {
   kinds: SellKind[];
   brandName: string;
   contactPhone: string;
   businessInfo: string;
-  pickup: ContactAddressValue;
+  pickup: PickupValue;
   rental: PlanSnapshot | null;
 }
 
@@ -20,7 +31,7 @@ export const EMPTY_DRAFT: PartnerDraft = {
   brandName: "",
   contactPhone: "",
   businessInfo: "",
-  pickup: EMPTY_CONTACT_ADDRESS,
+  pickup: EMPTY_PICKUP,
   rental: null,
 };
 
@@ -62,4 +73,4 @@ const subscribe = (listener: () => void) => {
 
 export const usePartnerDraft = () => useSyncExternalStore(subscribe, () => draft);
 
-export const hasPickup = (value: PartnerDraft) => !isContactAddressEmpty(value.pickup);
+export const hasPickup = (value: PartnerDraft) => !isPickupEmpty(value.pickup);

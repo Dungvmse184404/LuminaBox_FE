@@ -24,7 +24,7 @@ export function PaymentResultPage() {
   }, [queryClient]);
 
   return (
-    <Card className="mx-auto mt-8 grid max-w-md justify-items-center gap-3 py-10 text-center">
+    <Card flush className="mx-auto mt-8 grid max-w-md justify-items-center gap-3 px-5 py-10 text-center">
       {success ? <CircleCheck size={40} className="text-success" /> : <CircleX size={40} className="text-danger" />}
       <h1 className="font-serif text-xl font-bold text-ink">{COPY[status] ?? COPY.failed}</h1>
       <Link to={orderId ? `/orders/${orderId}` : "/orders"} className="text-sm font-semibold text-primary hover:underline">

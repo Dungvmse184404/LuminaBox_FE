@@ -93,16 +93,18 @@ Details: [`docs/conventions.md`](./docs/conventions.md).
 
 **Frontend docs** in [`docs/`](./docs/README.md): architecture, conventions, routing and access, screen-to-endpoint map, styling, mock layer, and frontend decision records.
 
-**Product, data model, API and shared decisions** live in the backend repository, expected next to this one:
+**Product, data model, API and shared decisions** live in `localDocs/`, next to this repository. `LuminaBox.BE/docs` is not edited.
 
 ```
 PRN232_LuminaBox/
-  LuminaBox_BE/   shared docs (docs/), ERD, backend
+  localDocs/      shared docs (product, API, data model, seed, decisions)
+  LuminaBox.BE/   backend
   LuminaBox_FE/   this repository
 ```
 
-Start with `../LuminaBox_BE/docs/README.md`. Branch, commit and pull request rules are in `../LuminaBox_BE/docs/CONTRIBUTING.md`.
+Start with `../localDocs/README.md`. Branch, commit and pull request rules are in `../localDocs/CONTRIBUTING.md`.
 
 ## Related
 
-- Backend and shared docs: `LuminaBox_BE`
+- Shared docs: `../localDocs`
+- Backend: `../LuminaBox.BE`

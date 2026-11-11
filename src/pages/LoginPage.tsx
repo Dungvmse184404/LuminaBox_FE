@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, Navigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/features/auth/AuthContext";
 import { AuthShell } from "@/features/auth/components/AuthShell";
+import { pathAfterLogin } from "@/features/auth/homePath";
 import { LoginForm } from "@/features/auth/components/LoginForm";
 import { VerifyOtpForm } from "@/features/auth/components/VerifyOtpForm";
 import type { Credentials } from "@/features/auth/types";
@@ -12,7 +13,7 @@ export function LoginPage() {
   const [unverified, setUnverified] = useState<Credentials | null>(null);
   const from = (location.state as { from?: string } | null)?.from;
 
-  if (user) return <Navigate to={from ?? "/"} replace />;
+  if (user) return <Navigate to={pathAfterLogin(user.role, from)} replace />;
 
   if (unverified) {
     return (

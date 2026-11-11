@@ -2,7 +2,7 @@
 title: Local development (frontend)
 status: accepted
 updated: 2026-11-03
-related: [../architecture.md, ../mock-layer.md, ../../../LuminaBox_BE/docs/guides/local-development.md]
+related: [../architecture.md, ../mock-layer.md, ../../../localDocs/guides/local-development.md]
 ---
 
 # Local development (frontend)
