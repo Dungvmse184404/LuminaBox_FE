@@ -9,6 +9,7 @@ import { MyRegistrations } from "../components/MyRegistrations";
 import { SellChoice } from "../components/SellChoice";
 import { updateDraft, usePartnerDraft, type SellKind } from "../draft";
 import { useMyRegistrations } from "../hooks/usePartner";
+import { useSyncRoleOnApproval } from "../hooks/useRegistrationState";
 
 const KINDS: SellKind[] = ["stall", "online"];
 
@@ -18,6 +19,7 @@ export function BecomePartnerPage() {
   const [params, setParams] = useSearchParams();
   const tab = params.get("tab") === "requests" && user ? "requests" : "register";
   const { data: mine } = useMyRegistrations(undefined, Boolean(user));
+  useSyncRoleOnApproval(mine?.items);
 
   useEffect(() => {
     const type = params.get("type") as SellKind | null;

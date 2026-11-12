@@ -7,12 +7,10 @@ import { Modal } from "@/components/ui/Modal";
 import { EmptyState, SkeletonRows } from "@/components/ui/States";
 import { StatusBadge } from "@/components/ui/StatusBadge";
 import { useToast } from "@/components/ui/Toast";
-import { useAuth } from "@/features/auth/AuthContext";
-import { authApi } from "@/features/auth/api/authApi";
-import { refreshTokens } from "@/lib/api";
 import { errorMessage } from "@/lib/errors";
 import { formatDateTime } from "@/lib/format";
 import { useCancelRegistration, useConfirmRegistration, useMyRegistrations } from "../hooks/usePartner";
+import { useReloadCurrentUser } from "../hooks/useRegistrationState";
 import type { OrganizerRegistrationResponse } from "../types";
 
 const STATUS_LABELS: Record<string, string> = {
@@ -24,7 +22,7 @@ const STATUS_LABELS: Record<string, string> = {
 };
 
 export function MyRegistrations({ onCreate }: { onCreate: () => void }) {
-  const { setUser } = useAuth();
+  const reloadCurrentUser = useReloadCurrentUser();
   const toast = useToast();
   const { data, isLoading } = useMyRegistrations();
   const confirmRegistration = useConfirmRegistration();
@@ -36,10 +34,7 @@ export function MyRegistrations({ onCreate }: { onCreate: () => void }) {
     try {
       await confirmRegistration.mutateAsync(item.id);
       toast.success(`Đã xác nhận mức hoa hồng ${item.commissionRate}%.`);
-      await refreshTokens()
-        .then(() => authApi.me())
-        .then(setUser)
-        .catch(() => undefined);
+      await reloadCurrentUser();
     } catch (error) {
       toast.error(errorMessage(error, "Không thể xác nhận hoa hồng."));
     }
