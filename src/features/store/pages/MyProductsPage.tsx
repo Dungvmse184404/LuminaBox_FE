@@ -178,7 +178,7 @@ export function MyProductsPage() {
                     <Button size="sm" variant="ghost" title="Sửa" aria-label={`Sửa ${product.name}`} onClick={() => setProductForm({ open: true, product })}>
                       <Pencil size={14} />
                     </Button>
-                    <Button size="sm" variant="ghost" title="Xóa" aria-label={`Xóa ${product.name}`} className="hover:text-danger" onClick={() => setDeletingProduct(product)}>
+                    <Button size="sm" variant="ghost" title="Xóa" aria-label={`Xóa ${product.name}`} className="hover:text-danger" data-guide-kind="danger" onClick={() => setDeletingProduct(product)}>
                       <Trash2 size={14} />
                     </Button>
                     <Button size="sm" variant="ghost" aria-expanded={open} onClick={() => toggle(product.id)}>
@@ -226,7 +226,7 @@ export function MyProductsPage() {
                               >
                                 <Pencil size={14} />
                               </Button>
-                              <Button size="sm" variant="ghost" title="Xóa" aria-label={`Xóa ${item.name}`} className="hover:text-danger" onClick={() => setDeletingVariant(item)}>
+                              <Button size="sm" variant="ghost" title="Xóa" aria-label={`Xóa ${item.name}`} className="hover:text-danger" data-guide-kind="danger" onClick={() => setDeletingVariant(item)}>
                                 <Trash2 size={14} />
                               </Button>
                             </div>

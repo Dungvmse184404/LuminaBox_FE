@@ -100,7 +100,7 @@ export function AddressBookPage({ type = "Shipping" }: { type?: AddressType }) {
                     Đặt mặc định
                   </Button>
                 )}
-                <Button variant="ghost" size="sm" onClick={() => setDeleting(address)}>
+                <Button variant="ghost" size="sm" data-guide-kind="danger" onClick={() => setDeleting(address)}>
                   <Trash2 size={14} />
                   Xóa
                 </Button>

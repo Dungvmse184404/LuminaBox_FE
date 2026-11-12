@@ -89,7 +89,7 @@ export function TierModal({ kind, target, onClose }: Props) {
               Đơn giá (₫)
               <input type="number" min={1} value={row.unitPrice} onChange={(e) => update(index, { unitPrice: e.target.value })} className={cn(CONTROL, "border-line")} />
             </label>
-            <Button variant="ghost" aria-label="Xóa bậc giá" onClick={() => setRows((current) => current.filter((_, i) => i !== index))}>
+            <Button variant="ghost" aria-label="Xóa bậc giá" data-guide-kind="danger" onClick={() => setRows((current) => current.filter((_, i) => i !== index))}>
               <Trash2 size={15} />
             </Button>
           </div>

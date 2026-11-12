@@ -92,7 +92,7 @@ export function SellChoice() {
             const on = picked.has(kind);
             const fromLeft = index === 0;
             return (
-              <button key={kind} type="button" aria-pressed={on} onClick={() => toggle(kind)} className="group relative overflow-hidden p-6 text-left">
+              <button key={kind} type="button" aria-pressed={on} data-guide-label={title} onClick={() => toggle(kind)} className="group relative overflow-hidden p-6 text-left">
                 <span
                   aria-hidden
                   className={cn(

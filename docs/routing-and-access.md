@@ -51,6 +51,10 @@ Public pages other than the home page and `/login` are wrapped by `ContentLayout
 - signed in with the wrong role → the 403 page, no redirect;
 - `roles` omitted → any signed-in user.
 
+In `router.tsx` a guarded group is written with `guarded(roles, { path, children })`, which sets both `<RequireRole roles={roles} />` and `handle: { roles }` from the same value (`[]` = any signed-in user). The handle is read by the on-screen guides (`features/guide/locate.ts`: `routeInfo`, `listGuideRoutes`) and the guide crawler. Pages a guide must never open or crawl (login, register, error pages, `*`) carry `handle: { guide: false }`. `router.tsx` registers its route table with `registerGuideRoutes(router.routes)`.
+
+Error pages render `data-error-page="<code>"` (from `ErrorPage`) so tools can tell a 403 screen from a real page.
+
 ## After login
 `pathAfterLogin` (`src/features/auth/homePath.ts`) picks where `/login` sends a signed-in user:
 - `Manager` → `/admin`; `Organization` → `/store`. The saved `from` path is kept only when it is inside that area.

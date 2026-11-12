@@ -32,7 +32,7 @@ export function Header() {
   const [categoriesOpen, setCategoriesOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-40 bg-gradient-to-b from-chrome to-chrome-light text-primary-soft shadow-md">
+    <header data-guide-scope="global" className="sticky top-0 z-40 bg-gradient-to-b from-chrome to-chrome-light text-primary-soft shadow-md">
       <div className="relative hidden border-b border-white/10 bg-black/15 text-xs text-primary-soft/80 md:block">
         <Container className="flex h-8 items-center justify-between">
           <div className="flex items-center gap-5">
@@ -73,6 +73,8 @@ export function Header() {
           <button
             type="button"
             onClick={() => setCategoriesOpen((value) => !value)}
+            aria-expanded={categoriesOpen}
+            aria-haspopup="menu"
             className="flex items-center gap-2 text-sm font-medium text-primary-soft transition hover:text-white"
           >
             <Menu size={18} /> Danh mục <ChevronDown size={14} />
@@ -131,7 +133,7 @@ export function Header() {
 
 function IconLink({ to, icon, label, count = 0 }: { to: string; icon: ReactNode; label: string; count?: number }) {
   return (
-    <Link to={to} className="relative flex flex-col items-center gap-0.5 rounded-lg px-3 py-1 text-primary-soft transition hover:text-white">
+    <Link to={to} data-guide-label={label} className="relative flex flex-col items-center gap-0.5 rounded-lg px-3 py-1 text-primary-soft transition hover:text-white">
       {icon}
       {count > 0 && (
         <span className="absolute right-1 top-0 grid min-w-4 place-items-center rounded-full bg-gold px-1 text-[10px] font-bold text-chrome-deep">{count}</span>

@@ -61,7 +61,9 @@ export function ProductsPage() {
     <>
       <h1 className="font-serif text-2xl font-black text-primary-dark">{stallId && stallName ? `Bánh tại ${stallName}` : organizerId && shopName ? `Sản phẩm của ${shopName}` : "Sản phẩm"}</h1>
 
-      <SearchInput value={search} onChange={(q) => update({ q })} placeholder="Tìm theo tên bánh" className="mt-4 max-w-xl" suggestions={suggestions} />
+      <div data-guide="products-search" className="mt-4 max-w-xl">
+        <SearchInput value={search} onChange={(q) => update({ q })} placeholder="Tìm theo tên bánh" suggestions={suggestions} />
+      </div>
 
       <div className="mt-4 grid items-start gap-6 lg:grid-cols-[17rem_minmax(0,1fr)]">
         <ProductFilter

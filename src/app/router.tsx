@@ -1,4 +1,4 @@
-import { createBrowserRouter } from "react-router-dom";
+import { createBrowserRouter, type RouteObject } from "react-router-dom";
 import { AdminLayout } from "@/components/layout/AdminLayout";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { ContentLayout } from "@/components/layout/ContentLayout";
@@ -34,6 +34,15 @@ import { ForgotPasswordPage } from "@/pages/ForgotPasswordPage";
 import { LoginPage } from "@/pages/LoginPage";
 import { RegisterPage } from "@/pages/RegisterPage";
 import { PlaceholderPage } from "@/pages/PlaceholderPage";
+import type { UserRole } from "@/features/auth/types";
+import { registerGuideRoutes, type GuideRouteHandle } from "@/features/guide/locate";
+
+const NO_GUIDE: GuideRouteHandle = { guide: false };
+
+function guarded(roles: UserRole[], route: { path?: string; children: RouteObject[] }): RouteObject {
+  const handle: GuideRouteHandle = { roles };
+  return { ...route, element: <RequireRole roles={roles} />, handle };
+}
 
 export const router = createBrowserRouter([
   {
@@ -44,9 +53,9 @@ export const router = createBrowserRouter([
         errorElement: <RouteErrorPage />,
         children: [
           { index: true, element: <HomePage /> },
-          { path: "login", element: <LoginPage /> },
-          { path: "register", element: <RegisterPage /> },
-          { path: "forgot-password", element: <ForgotPasswordPage /> },
+          { path: "login", element: <LoginPage />, handle: NO_GUIDE },
+          { path: "register", element: <RegisterPage />, handle: NO_GUIDE },
+          { path: "forgot-password", element: <ForgotPasswordPage />, handle: NO_GUIDE },
           {
             path: "stalls",
             lazy: async () => ({ Component: (await import("@/features/stalls/pages/StallsPage")).StallsPage }),
@@ -68,8 +77,7 @@ export const router = createBrowserRouter([
               { path: "help/ordering", element: <PlaceholderPage title="Hướng dẫn đặt hàng" /> },
               { path: "policies/returns", element: <PlaceholderPage title="Chính sách đổi trả" /> },
               { path: "policies/commission", element: <PlaceholderPage title="Chính sách hoa hồng" /> },
-              {
-                element: <RequireRole />,
+              guarded([], {
                 children: [
                   { path: "account/profile", element: <ProfilePage /> },
                   { path: "account/addresses", element: <AddressBookPage /> },
@@ -79,13 +87,12 @@ export const router = createBrowserRouter([
                   { path: "orders/:id", element: <OrderDetailPage /> },
                   { path: "vouchers", element: <VouchersPage /> },
                 ],
-              },
+              }),
             ],
           },
 
-          {
+          guarded(["Organization"], {
             path: "store",
-            element: <RequireRole roles={["Organization"]} />,
             children: [
               {
                 element: <StoreLayout />,
@@ -100,11 +107,10 @@ export const router = createBrowserRouter([
                 ],
               },
             ],
-          },
+          }),
 
-          {
+          guarded(["Manager"], {
             path: "admin",
-            element: <RequireRole roles={["Manager"]} />,
             children: [
               {
                 element: <AdminLayout />,
@@ -116,14 +122,16 @@ export const router = createBrowserRouter([
                 ],
               },
             ],
-          },
+          }),
 
-          { path: "unauthorized", element: <UnauthorizedPage /> },
-          { path: "forbidden", element: <ForbiddenPage /> },
-          { path: "server-error", element: <ServerErrorPage /> },
-          { path: "*", element: <NotFoundPage /> },
+          { path: "unauthorized", element: <UnauthorizedPage />, handle: NO_GUIDE },
+          { path: "forbidden", element: <ForbiddenPage />, handle: NO_GUIDE },
+          { path: "server-error", element: <ServerErrorPage />, handle: NO_GUIDE },
+          { path: "*", element: <NotFoundPage />, handle: NO_GUIDE },
         ],
       },
     ],
   },
 ]);
+
+registerGuideRoutes(router.routes);

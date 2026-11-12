@@ -43,6 +43,7 @@ export function PartnerSection() {
           <Link
             key={type}
             to={`/become-partner?type=${type}`}
+            data-guide-label={title}
             className="group rounded-xl bg-white/10 p-5 transition hover:bg-white/20"
           >
             <span className="grid size-10 place-items-center rounded-full bg-card/90 text-primary">

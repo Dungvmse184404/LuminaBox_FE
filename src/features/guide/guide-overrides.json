@@ -1,0 +1,47 @@
+{
+  "exclude": [],
+  "kinds": {},
+  "guides": {
+    "add_address": {
+      "target": "address-book-add",
+      "label": "Sổ địa chỉ",
+      "description": "Add, edit or choose a default delivery address"
+    },
+    "update_personal_info": {
+      "target": "profile-personal-info",
+      "label": "Hồ sơ của tôi",
+      "description": "Change full name or phone number"
+    },
+    "change_password": {
+      "target": "profile-change-password",
+      "label": "Hồ sơ của tôi",
+      "description": "Change the account password"
+    },
+    "update_shop_profile": {
+      "target": "profile-shop-profile",
+      "label": "Hồ sơ của tôi",
+      "description": "Edit the shop profile (shop name, description, contact)"
+    },
+    "add_pickup_address": {
+      "target": "pickup-address-add",
+      "label": "Địa chỉ lấy hàng",
+      "description": "Add a pickup address for online orders of a shop"
+    },
+    "search_products": {
+      "target": "products-search",
+      "label": "Sản phẩm",
+      "description": "Find cakes or products by name or keyword and show the results",
+      "params": {
+        "query": {
+          "urlKey": "q",
+          "description": "The product name or keyword to search, in Vietnamese, as short as possible (e.g. \"bánh nướng\")."
+        }
+      }
+    },
+    "add_cake_category": {
+      "target": "catalog-add-category",
+      "label": "Loại bánh & nhân",
+      "description": "Add a new cake category to the platform catalogue"
+    }
+  }
+}

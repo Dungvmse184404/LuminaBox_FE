@@ -78,6 +78,7 @@ export function AccountMenu() {
           )}
           <button
             type="button"
+            data-guide-kind="danger"
             onClick={() => {
               close();
               logout();

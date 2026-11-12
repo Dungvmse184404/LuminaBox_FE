@@ -168,7 +168,7 @@ export function StallPanel({
         </div>
         <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
           {chips.map((chip) => (
-            <button key={chip.id} type="button" className="chip" aria-pressed={filter === chip.id} onClick={() => onFilter(chip.id)}>
+            <button key={chip.id} type="button" className="chip" aria-pressed={filter === chip.id} data-guide-label={chip.label} onClick={() => onFilter(chip.id)}>
               {chip.label} ({chip.count})
             </button>
           ))}

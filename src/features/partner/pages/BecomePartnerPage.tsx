@@ -54,6 +54,7 @@ export function BecomePartnerPage() {
               <button
                 key={key}
                 type="button"
+                data-guide-label={label}
                 onClick={() => show(key)}
                 className={cn(
                   "flex items-center gap-2 border-b-2 px-4 py-2.5 text-sm font-semibold transition",

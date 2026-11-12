@@ -14,5 +14,5 @@ const ITEMS: SideNavItem[] = [
 
 export function StoreLayout() {
   const { user } = useAuth();
-  return <SideNavLayout title="Cửa hàng" subtitle={user?.organizerBrandName} items={ITEMS} />;
+  return <SideNavLayout title="Cửa hàng" subtitle={user?.organizerBrandName} items={ITEMS} guideScope="/store/*" />;
 }

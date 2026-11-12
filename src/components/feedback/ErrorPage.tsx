@@ -19,7 +19,7 @@ export function ErrorPage({ code, title, description, icon: Icon, actions, detai
 
   return (
     <Container className="grid min-h-[60vh] place-items-center py-16">
-      <div className="lb-page-enter flex max-w-md flex-col items-center text-center">
+      <div data-error-page={code} className="lb-page-enter flex max-w-md flex-col items-center text-center">
         <span className="grid size-16 place-items-center rounded-full bg-primary-soft text-primary">
           <Icon size={28} />
         </span>

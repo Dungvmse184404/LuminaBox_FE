@@ -20,6 +20,8 @@ const VARIANTS: Record<Variant, string> = {
   dangerGhost: "text-danger hover:bg-danger/10",
 };
 
+const DANGER_VARIANTS: ReadonlySet<Variant> = new Set(["danger", "dangerOutline", "dangerGhost"]);
+
 const SIZES: Record<Size, string> = {
   sm: "px-3 py-1.5 text-xs",
   md: "px-4 py-2.5 text-sm",
@@ -36,6 +38,7 @@ export function Button({ variant = "primary", size = "md", loading, disabled, cl
         SIZES[size],
         className,
       )}
+      data-guide-kind={DANGER_VARIANTS.has(variant) ? "danger" : undefined}
       {...rest}
     >
       {loading && <Loader2 size={size === "sm" ? 12 : 16} className="animate-spin" />}

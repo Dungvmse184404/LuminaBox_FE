@@ -65,7 +65,7 @@ The page and every element with an `overflow-*-auto` class get it automatically.
 `components/ambient/AmbientBackground.tsx` draws drifting clouds (CSS) and an ASCII fluid on a canvas (`lib/asciiFluid.ts`). The fluid runs in the free margins beside the content rail (`--page-max`) and is skipped under the rail. It is only active with a fine pointer (mouse) and without `prefers-reduced-motion`. Click in a margin to start or stop the cursor trail.
 
 - Mounted once in `AppLayout`, so it stays alive (same canvas) while the route changes. It is not rendered under `/store` and `/admin`, where dense tables need a plain background (`PLAIN_SECTIONS` in `AppLayout`).
-- The header **Hiệu ứng** menu switches between the presets *Đầy đủ* and *Rút gọn* (fluid off). Settings are stored in `localStorage` (`luminabox.effects`) by `lib/appearance.ts`; the other knobs (fps, drift, rail mode, cloud mode, rail surface) exist there but have no UI.
+- The header **Hiệu ứng** menu switches between the presets *Đầy đủ* and *Rút gọn* (fluid off), and sets **Hướng dẫn tự chuyển bước** (`guideCountdown`, not part of the presets; see [`guide-system.md`](./guide-system.md)). Settings are stored in `localStorage` (`luminabox.effects`) by `lib/appearance.ts`; the other knobs (fps, drift, rail mode, cloud mode, rail surface) exist there but have no UI.
 - The ink color comes from `--color-primary-dark` and `--color-gold`; change the tokens, not the component.
 
 ## Palette sketch

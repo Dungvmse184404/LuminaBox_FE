@@ -12,15 +12,22 @@ export interface EffectSettings {
   fluidRail: FluidRail;
   cloudMode: CloudMode;
   railSurface: RailSurface;
+  guideCountdown: number;
 }
+
+type BackgroundEffects = Omit<EffectSettings, "guideCountdown">;
 
 export const FLUID_DRIFT_MAX = 5;
 
 export const FPS_STEPS = [0, 15, 20, 30, 60] as const;
 
+export const GUIDE_COUNTDOWN_STEPS = [0, 2, 3, 5, 8] as const;
+
+const GUIDE_COUNTDOWN_MAX = 10;
+
 export type EffectPreset = "full" | "reduced";
 
-export const EFFECT_PRESETS: Record<EffectPreset, EffectSettings> = {
+export const EFFECT_PRESETS: Record<EffectPreset, BackgroundEffects> = {
   full: { fluidFps: 30, fluidDrift: 3, fluidRail: "clip", cloudMode: "playing", railSurface: "blur" },
   reduced: { fluidFps: 0, fluidDrift: 3, fluidRail: "clip", cloudMode: "playing", railSurface: "blur" },
 };
@@ -30,7 +37,7 @@ export const EFFECT_PRESET_LABELS: ReadonlyArray<{ value: EffectPreset; label: s
   { value: "reduced", label: "Rút gọn" },
 ];
 
-const DEFAULTS = EFFECT_PRESETS.full;
+const DEFAULTS: EffectSettings = { ...EFFECT_PRESETS.full, guideCountdown: 3 };
 
 function clampInt(value: unknown, max: number): number | null {
   if (value === null || value === undefined || value === "") return null;
@@ -56,6 +63,7 @@ function readEffects(): EffectSettings {
     fluidRail: v.fluidRail === "full" || v.fluidRail === "clip" || v.fluidRail === "stitch" ? v.fluidRail : DEFAULTS.fluidRail,
     cloudMode: v.cloudMode === "playing" || v.cloudMode === "paused" || v.cloudMode === "hidden" ? v.cloudMode : DEFAULTS.cloudMode,
     railSurface: v.railSurface === "blur" || v.railSurface === "tint" ? v.railSurface : DEFAULTS.railSurface,
+    guideCountdown: clampInt(v.guideCountdown, GUIDE_COUNTDOWN_MAX) ?? DEFAULTS.guideCountdown,
   };
 }
 
@@ -89,7 +97,7 @@ export function applyEffectPreset(preset: EffectPreset) {
 }
 
 export function getActivePreset(current: EffectSettings): EffectPreset | null {
-  const keys = Object.keys(DEFAULTS) as Array<keyof EffectSettings>;
+  const keys = Object.keys(EFFECT_PRESETS.full) as Array<keyof BackgroundEffects>;
   for (const [name, preset] of Object.entries(EFFECT_PRESETS)) {
     if (keys.every((k) => current[k] === preset[k])) return name as EffectPreset;
   }

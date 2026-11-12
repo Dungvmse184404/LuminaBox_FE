@@ -1,12 +1,22 @@
 import { useEffect, useRef, useState } from "react";
 import { Sparkles } from "lucide-react";
-import { EFFECT_PRESET_LABELS, applyEffectPreset, getActivePreset, useEffectSettings } from "@/lib/appearance";
+import {
+  EFFECT_PRESET_LABELS,
+  GUIDE_COUNTDOWN_STEPS,
+  applyEffectPreset,
+  getActivePreset,
+  setEffects,
+  useEffectSettings,
+} from "@/lib/appearance";
 import { cn } from "@/lib/cn";
+
+const choiceClass = "flex-1 rounded-md px-2 py-1.5 text-xs font-semibold transition-colors";
 
 export function EffectSettingsMenu() {
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
-  const preset = getActivePreset(useEffectSettings());
+  const settings = useEffectSettings();
+  const preset = getActivePreset(settings);
 
   useEffect(() => {
     if (!open) return;
@@ -51,12 +61,29 @@ export function EffectSettingsMenu() {
                   role="radio"
                   aria-checked={selected}
                   onClick={() => applyEffectPreset(choice.value)}
-                  className={cn(
-                    "flex-1 rounded-md px-2 py-1.5 text-xs font-semibold transition-colors",
-                    selected ? "bg-primary text-white" : "text-ink-soft hover:bg-cream-dark hover:text-ink",
-                  )}
+                  className={cn(choiceClass, selected ? "bg-primary text-white" : "text-ink-soft hover:bg-cream-dark hover:text-ink")}
                 >
                   {choice.label}
+                </button>
+              );
+            })}
+          </div>
+
+          <p className="mb-1.5 mt-3 text-sm font-medium text-ink-soft">Hướng dẫn tự chuyển bước</p>
+          <div role="radiogroup" aria-label="Thời gian chờ trước khi hướng dẫn tự chuyển bước" className="flex gap-1 rounded-lg bg-cream p-1">
+            {GUIDE_COUNTDOWN_STEPS.map((seconds) => {
+              const selected = settings.guideCountdown === seconds;
+              return (
+                <button
+                  key={seconds}
+                  type="button"
+                  role="radio"
+                  aria-checked={selected}
+                  data-guide-label={seconds === 0 ? "Tắt tự chuyển bước" : `Tự chuyển bước sau ${seconds} giây`}
+                  onClick={() => setEffects({ guideCountdown: seconds })}
+                  className={cn(choiceClass, selected ? "bg-primary text-white" : "text-ink-soft hover:bg-cream-dark hover:text-ink")}
+                >
+                  {seconds === 0 ? "Tắt" : `${seconds}s`}
                 </button>
               );
             })}

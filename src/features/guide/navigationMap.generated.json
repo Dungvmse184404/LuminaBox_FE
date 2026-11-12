@@ -1,0 +1,1955 @@
+{
+  "roles": [
+    "User",
+    "Organization",
+    "Manager"
+  ],
+  "nodes": [
+    {
+      "id": "/#link:ban-online",
+      "label": "Bán online",
+      "kind": "nav",
+      "page": "/",
+      "opens": "/become-partner",
+      "next": [
+        "/become-partner#button:ban-online",
+        "/become-partner#button:dang-ky",
+        "/become-partner#button:den-trang-duyet-don",
+        "/become-partner#button:don-dang-ky-cua-toi",
+        "/become-partner#button:mo-rong-ban-hang",
+        "/become-partner#button:thue-quay",
+        "/become-partner#button:tiep-tuc",
+        "/become-partner#input:so-dien-thoai",
+        "/become-partner#input:ten-thuong-hieu",
+        "/become-partner#link:den-trang-duyet-don",
+        "/become-partner#link:trang-cua-hang"
+      ],
+      "roles": [
+        "Organization",
+        "User"
+      ]
+    },
+    {
+      "id": "/#link:banh-chay",
+      "label": "Bánh chay",
+      "kind": "nav",
+      "page": "/",
+      "opens": "/products",
+      "next": [
+        "/products#button:banh-chay",
+        "/products#button:banh-deo",
+        "/products#button:banh-nuong",
+        "/products#button:banh-tuyet",
+        "/products#button:hang",
+        "/products#button:loai-banh",
+        "/products#button:nhan",
+        "/products#button:thu-lai",
+        "/products#button:tim-nhan",
+        "/products#combobox:tim-nhan",
+        "products-search"
+      ]
+    },
+    {
+      "id": "/#link:banh-deo",
+      "label": "Bánh dẻo",
+      "kind": "nav",
+      "page": "/",
+      "opens": "/products",
+      "next": [
+        "/products#button:banh-chay",
+        "/products#button:banh-deo",
+        "/products#button:banh-nuong",
+        "/products#button:banh-tuyet",
+        "/products#button:hang",
+        "/products#button:loai-banh",
+        "/products#button:nhan",
+        "/products#button:thu-lai",
+        "/products#button:tim-nhan",
+        "/products#combobox:tim-nhan",
+        "products-search"
+      ]
+    },
+    {
+      "id": "/#link:banh-nuong",
+      "label": "Bánh nướng",
+      "kind": "nav",
+      "page": "/",
+      "opens": "/products",
+      "next": [
+        "/products#button:banh-chay",
+        "/products#button:banh-deo",
+        "/products#button:banh-nuong",
+        "/products#button:banh-tuyet",
+        "/products#button:hang",
+        "/products#button:loai-banh",
+        "/products#button:nhan",
+        "/products#button:thu-lai",
+        "/products#button:tim-nhan",
+        "/products#combobox:tim-nhan",
+        "products-search"
+      ]
+    },
+    {
+      "id": "/#link:banh-tuyet",
+      "label": "Bánh tuyết",
+      "kind": "nav",
+      "page": "/",
+      "opens": "/products",
+      "next": [
+        "/products#button:banh-chay",
+        "/products#button:banh-deo",
+        "/products#button:banh-nuong",
+        "/products#button:banh-tuyet",
+        "/products#button:hang",
+        "/products#button:loai-banh",
+        "/products#button:nhan",
+        "/products#button:thu-lai",
+        "/products#button:tim-nhan",
+        "/products#combobox:tim-nhan",
+        "products-search"
+      ]
+    },
+    {
+      "id": "/#link:bo-suu-tap-hop-qua",
+      "label": "Bộ sưu tập hộp quà",
+      "kind": "nav",
+      "page": "/",
+      "opens": "/cake-sets",
+      "next": [
+        "/cake-sets#button:thu-lai"
+      ]
+    },
+    {
+      "id": "/#link:hop-qua-trung-thu-moi",
+      "label": "Hộp quà Trung thu mới",
+      "kind": "nav",
+      "page": "/",
+      "opens": "/products",
+      "next": [
+        "/products#button:banh-chay",
+        "/products#button:banh-deo",
+        "/products#button:banh-nuong",
+        "/products#button:banh-tuyet",
+        "/products#button:hang",
+        "/products#button:loai-banh",
+        "/products#button:nhan",
+        "/products#button:thu-lai",
+        "/products#button:tim-nhan",
+        "/products#combobox:tim-nhan",
+        "products-search"
+      ]
+    },
+    {
+      "id": "/#link:loai-banh-nhan",
+      "label": "Loại bánh & nhân",
+      "kind": "nav",
+      "page": "/",
+      "opens": "/admin/catalog",
+      "next": [
+        "/admin/*#link:don-doi-tac",
+        "/admin/*#link:gian-hang",
+        "/admin/*#link:loai-banh-nhan",
+        "/admin/*#link:tong-quan",
+        "/admin/catalog#button:sua-banh-chay",
+        "/admin/catalog#button:sua-banh-deo",
+        "/admin/catalog#button:sua-banh-nuong",
+        "/admin/catalog#button:sua-banh-tuyet",
+        "/admin/catalog#button:xoa-banh-chay",
+        "/admin/catalog#button:xoa-banh-deo",
+        "/admin/catalog#button:xoa-banh-nuong",
+        "/admin/catalog#button:xoa-banh-tuyet",
+        "/admin/catalog#combobox:tim-loai-banh",
+        "/admin/catalog#tab:loai-banh",
+        "/admin/catalog#tab:nhan",
+        "catalog-add-category"
+      ],
+      "roles": [
+        "Manager"
+      ]
+    },
+    {
+      "id": "/#link:mua-sam-ngay",
+      "label": "Mua sắm ngay",
+      "kind": "nav",
+      "page": "/",
+      "opens": "/products",
+      "next": [
+        "/products#button:banh-chay",
+        "/products#button:banh-deo",
+        "/products#button:banh-nuong",
+        "/products#button:banh-tuyet",
+        "/products#button:hang",
+        "/products#button:loai-banh",
+        "/products#button:nhan",
+        "/products#button:thu-lai",
+        "/products#button:tim-nhan",
+        "/products#combobox:tim-nhan",
+        "products-search"
+      ],
+      "roles": [
+        "User"
+      ]
+    },
+    {
+      "id": "/#link:quan-ly-cua-hang",
+      "label": "Quản lý cửa hàng",
+      "kind": "nav",
+      "page": "/",
+      "opens": "/store",
+      "next": [
+        "/store#button:thu-lai",
+        "/store/*#link:don-hang",
+        "/store/*#link:gian-hang",
+        "/store/*#link:hop",
+        "/store/*#link:mo-rong-kinh-doanh",
+        "/store/*#link:san-pham",
+        "/store/*#link:tong-quan",
+        "store-nav-pickup-addresses"
+      ],
+      "roles": [
+        "Organization"
+      ]
+    },
+    {
+      "id": "/#link:quan-tri-san",
+      "label": "Quản trị sàn",
+      "kind": "nav",
+      "page": "/",
+      "opens": "/admin",
+      "next": [
+        "/admin/*#link:don-doi-tac",
+        "/admin/*#link:gian-hang",
+        "/admin/*#link:loai-banh-nhan",
+        "/admin/*#link:tong-quan"
+      ],
+      "roles": [
+        "Manager"
+      ]
+    },
+    {
+      "id": "/#link:san-pham-cua-ban",
+      "label": "Sản phẩm của bạn",
+      "kind": "nav",
+      "page": "/",
+      "opens": "/store/products",
+      "next": [
+        "/store/*#link:don-hang",
+        "/store/*#link:gian-hang",
+        "/store/*#link:hop",
+        "/store/*#link:mo-rong-kinh-doanh",
+        "/store/*#link:san-pham",
+        "/store/*#link:tong-quan",
+        "/store/products#button:them-san-pham",
+        "/store/products#button:thu-lai",
+        "/store/products#input:tim-theo-ten-san-pham",
+        "store-nav-pickup-addresses"
+      ],
+      "roles": [
+        "Organization"
+      ]
+    },
+    {
+      "id": "/#link:thue-gian-hang",
+      "label": "Thuê gian hàng",
+      "kind": "nav",
+      "page": "/",
+      "opens": "/become-partner",
+      "next": [
+        "/become-partner#button:ban-online",
+        "/become-partner#button:dang-ky",
+        "/become-partner#button:den-trang-duyet-don",
+        "/become-partner#button:don-dang-ky-cua-toi",
+        "/become-partner#button:mo-rong-ban-hang",
+        "/become-partner#button:thue-quay",
+        "/become-partner#button:tiep-tuc",
+        "/become-partner#input:so-dien-thoai",
+        "/become-partner#input:ten-thuong-hieu",
+        "/become-partner#link:den-trang-duyet-don",
+        "/become-partner#link:trang-cua-hang"
+      ],
+      "roles": [
+        "Organization",
+        "User"
+      ]
+    },
+    {
+      "id": "/#link:tro-thanh-doi-tac",
+      "label": "Trở thành đối tác",
+      "kind": "nav",
+      "page": "/",
+      "opens": "/become-partner",
+      "next": [
+        "/become-partner#button:ban-online",
+        "/become-partner#button:dang-ky",
+        "/become-partner#button:den-trang-duyet-don",
+        "/become-partner#button:don-dang-ky-cua-toi",
+        "/become-partner#button:mo-rong-ban-hang",
+        "/become-partner#button:thue-quay",
+        "/become-partner#button:tiep-tuc",
+        "/become-partner#input:so-dien-thoai",
+        "/become-partner#input:ten-thuong-hieu",
+        "/become-partner#link:den-trang-duyet-don",
+        "/become-partner#link:trang-cua-hang"
+      ],
+      "roles": [
+        "User"
+      ]
+    },
+    {
+      "id": "/#link:xem-tat-ca",
+      "label": "Xem tất cả",
+      "kind": "nav",
+      "page": "/",
+      "opens": "/products",
+      "next": [
+        "/products#button:banh-chay",
+        "/products#button:banh-deo",
+        "/products#button:banh-nuong",
+        "/products#button:banh-tuyet",
+        "/products#button:hang",
+        "/products#button:loai-banh",
+        "/products#button:nhan",
+        "/products#button:thu-lai",
+        "/products#button:tim-nhan",
+        "/products#combobox:tim-nhan",
+        "products-search"
+      ]
+    },
+    {
+      "id": "/account/addresses#button:sua",
+      "label": "Sửa",
+      "kind": "opener",
+      "page": "/account/addresses",
+      "next": []
+    },
+    {
+      "id": "/account/addresses#button:xoa",
+      "label": "Xóa",
+      "kind": "danger",
+      "page": "/account/addresses",
+      "next": []
+    },
+    {
+      "id": "/account/profile#button:luu-thong-tin",
+      "label": "Lưu thông tin",
+      "kind": "action",
+      "page": "/account/profile",
+      "next": []
+    },
+    {
+      "id": "/account/profile#button:thu-lai",
+      "label": "Thử lại",
+      "kind": "opener",
+      "page": "/account/profile",
+      "next": [],
+      "roles": [
+        "Organization"
+      ]
+    },
+    {
+      "id": "/admin/*#link:don-doi-tac",
+      "label": "Đơn đối tác",
+      "kind": "nav",
+      "page": "/admin/*",
+      "opens": "/admin/registrations",
+      "next": [
+        "/admin/*#link:gian-hang",
+        "/admin/*#link:loai-banh-nhan",
+        "/admin/*#link:tong-quan",
+        "/admin/registrations#button:xem-don-cua-banh-trung-thu-nguyet-cat",
+        "/admin/registrations#button:xem-don-cua-kinh-do-gia-truyen",
+        "/admin/registrations#input:tim-kiem"
+      ],
+      "roles": [
+        "Manager"
+      ]
+    },
+    {
+      "id": "/admin/*#link:gian-hang",
+      "label": "Gian hàng",
+      "kind": "nav",
+      "page": "/admin/*",
+      "opens": "/admin/stalls",
+      "next": [
+        "/admin/*#link:don-doi-tac",
+        "/admin/*#link:loai-banh-nhan",
+        "/admin/*#link:tong-quan",
+        "/admin/stalls#button:them-gian-hang",
+        "/admin/stalls#button:thu-lai",
+        "/admin/stalls#input:tim-theo-ma-ten-gian"
+      ],
+      "roles": [
+        "Manager"
+      ]
+    },
+    {
+      "id": "/admin/*#link:loai-banh-nhan",
+      "label": "Loại bánh & nhân",
+      "kind": "nav",
+      "page": "/admin/*",
+      "opens": "/admin/catalog",
+      "next": [
+        "/admin/*#link:don-doi-tac",
+        "/admin/*#link:gian-hang",
+        "/admin/*#link:tong-quan",
+        "/admin/catalog#button:sua-banh-chay",
+        "/admin/catalog#button:sua-banh-deo",
+        "/admin/catalog#button:sua-banh-nuong",
+        "/admin/catalog#button:sua-banh-tuyet",
+        "/admin/catalog#button:xoa-banh-chay",
+        "/admin/catalog#button:xoa-banh-deo",
+        "/admin/catalog#button:xoa-banh-nuong",
+        "/admin/catalog#button:xoa-banh-tuyet",
+        "/admin/catalog#combobox:tim-loai-banh",
+        "/admin/catalog#tab:loai-banh",
+        "/admin/catalog#tab:nhan",
+        "catalog-add-category"
+      ],
+      "roles": [
+        "Manager"
+      ]
+    },
+    {
+      "id": "/admin/*#link:tong-quan",
+      "label": "Tổng quan",
+      "kind": "nav",
+      "page": "/admin/*",
+      "opens": "/admin",
+      "next": [
+        "/admin/*#link:don-doi-tac",
+        "/admin/*#link:gian-hang",
+        "/admin/*#link:loai-banh-nhan"
+      ],
+      "roles": [
+        "Manager"
+      ]
+    },
+    {
+      "id": "/admin/catalog#button:sua-banh-chay",
+      "label": "Sửa Bánh chay",
+      "kind": "opener",
+      "page": "/admin/catalog",
+      "next": [],
+      "roles": [
+        "Manager"
+      ]
+    },
+    {
+      "id": "/admin/catalog#button:sua-banh-deo",
+      "label": "Sửa Bánh dẻo",
+      "kind": "opener",
+      "page": "/admin/catalog",
+      "next": [],
+      "roles": [
+        "Manager"
+      ]
+    },
+    {
+      "id": "/admin/catalog#button:sua-banh-nuong",
+      "label": "Sửa Bánh nướng",
+      "kind": "opener",
+      "page": "/admin/catalog",
+      "next": [],
+      "roles": [
+        "Manager"
+      ]
+    },
+    {
+      "id": "/admin/catalog#button:sua-banh-tuyet",
+      "label": "Sửa Bánh tuyết",
+      "kind": "opener",
+      "page": "/admin/catalog",
+      "next": [],
+      "roles": [
+        "Manager"
+      ]
+    },
+    {
+      "id": "/admin/catalog#button:xoa-banh-chay",
+      "label": "Xóa Bánh chay",
+      "kind": "danger",
+      "page": "/admin/catalog",
+      "next": [],
+      "roles": [
+        "Manager"
+      ]
+    },
+    {
+      "id": "/admin/catalog#button:xoa-banh-deo",
+      "label": "Xóa Bánh dẻo",
+      "kind": "danger",
+      "page": "/admin/catalog",
+      "next": [],
+      "roles": [
+        "Manager"
+      ]
+    },
+    {
+      "id": "/admin/catalog#button:xoa-banh-nuong",
+      "label": "Xóa Bánh nướng",
+      "kind": "danger",
+      "page": "/admin/catalog",
+      "next": [],
+      "roles": [
+        "Manager"
+      ]
+    },
+    {
+      "id": "/admin/catalog#button:xoa-banh-tuyet",
+      "label": "Xóa Bánh tuyết",
+      "kind": "danger",
+      "page": "/admin/catalog",
+      "next": [],
+      "roles": [
+        "Manager"
+      ]
+    },
+    {
+      "id": "/admin/catalog#combobox:tim-loai-banh",
+      "label": "Tìm loại bánh...",
+      "kind": "input",
+      "page": "/admin/catalog",
+      "next": [],
+      "roles": [
+        "Manager"
+      ]
+    },
+    {
+      "id": "/admin/catalog#tab:loai-banh",
+      "label": "Loại bánh",
+      "kind": "nav",
+      "page": "/admin/catalog",
+      "next": [],
+      "roles": [
+        "Manager"
+      ]
+    },
+    {
+      "id": "/admin/catalog#tab:nhan",
+      "label": "Nhân",
+      "kind": "nav",
+      "page": "/admin/catalog",
+      "opens": "/admin/catalog",
+      "next": [
+        "/admin/*#link:don-doi-tac",
+        "/admin/*#link:gian-hang",
+        "/admin/*#link:loai-banh-nhan",
+        "/admin/*#link:tong-quan",
+        "/admin/catalog#button:sua-banh-chay",
+        "/admin/catalog#button:sua-banh-deo",
+        "/admin/catalog#button:sua-banh-nuong",
+        "/admin/catalog#button:sua-banh-tuyet",
+        "/admin/catalog#button:xoa-banh-chay",
+        "/admin/catalog#button:xoa-banh-deo",
+        "/admin/catalog#button:xoa-banh-nuong",
+        "/admin/catalog#button:xoa-banh-tuyet",
+        "/admin/catalog#combobox:tim-loai-banh",
+        "/admin/catalog#tab:loai-banh",
+        "catalog-add-category"
+      ],
+      "roles": [
+        "Manager"
+      ]
+    },
+    {
+      "id": "/admin/registrations#button:xem-don-cua-banh-trung-thu-nguyet-cat",
+      "label": "Xem đơn của Bánh Trung Thu Nguyệt Cát",
+      "kind": "opener",
+      "page": "/admin/registrations",
+      "next": [],
+      "roles": [
+        "Manager"
+      ]
+    },
+    {
+      "id": "/admin/registrations#button:xem-don-cua-kinh-do-gia-truyen",
+      "label": "Xem đơn của Kinh Đô Gia Truyền",
+      "kind": "opener",
+      "page": "/admin/registrations",
+      "next": [],
+      "roles": [
+        "Manager"
+      ]
+    },
+    {
+      "id": "/admin/registrations#input:tim-kiem",
+      "label": "Tìm kiếm",
+      "kind": "input",
+      "page": "/admin/registrations",
+      "next": [],
+      "roles": [
+        "Manager"
+      ]
+    },
+    {
+      "id": "/admin/stalls#button:them-gian-hang",
+      "label": "Thêm gian hàng",
+      "kind": "opener",
+      "page": "/admin/stalls",
+      "next": [],
+      "roles": [
+        "Manager"
+      ]
+    },
+    {
+      "id": "/admin/stalls#button:thu-lai",
+      "label": "Thử lại",
+      "kind": "opener",
+      "page": "/admin/stalls",
+      "next": [],
+      "roles": [
+        "Manager"
+      ]
+    },
+    {
+      "id": "/admin/stalls#input:tim-theo-ma-ten-gian",
+      "label": "Tìm theo mã, tên gian...",
+      "kind": "input",
+      "page": "/admin/stalls",
+      "next": [],
+      "roles": [
+        "Manager"
+      ]
+    },
+    {
+      "id": "/become-partner#button:ban-online",
+      "label": "Bán online",
+      "kind": "opener",
+      "page": "/become-partner",
+      "next": [],
+      "roles": [
+        "Organization",
+        "User"
+      ]
+    },
+    {
+      "id": "/become-partner#button:dang-ky",
+      "label": "Đăng ký",
+      "kind": "opener",
+      "page": "/become-partner",
+      "next": [],
+      "roles": [
+        "User"
+      ]
+    },
+    {
+      "id": "/become-partner#button:den-trang-duyet-don",
+      "label": "Đến trang duyệt đơn",
+      "kind": "opener",
+      "page": "/become-partner",
+      "next": [],
+      "roles": [
+        "Manager"
+      ]
+    },
+    {
+      "id": "/become-partner#button:don-dang-ky-cua-toi",
+      "label": "Đơn đăng ký của tôi",
+      "kind": "opener",
+      "page": "/become-partner",
+      "next": [],
+      "roles": [
+        "Organization",
+        "User"
+      ]
+    },
+    {
+      "id": "/become-partner#button:mo-rong-ban-hang",
+      "label": "Mở rộng bán hàng",
+      "kind": "opener",
+      "page": "/become-partner",
+      "next": [],
+      "roles": [
+        "Organization"
+      ]
+    },
+    {
+      "id": "/become-partner#button:thue-quay",
+      "label": "Thuê quầy",
+      "kind": "opener",
+      "page": "/become-partner",
+      "next": [],
+      "roles": [
+        "Organization",
+        "User"
+      ]
+    },
+    {
+      "id": "/become-partner#button:tiep-tuc",
+      "label": "Tiếp tục",
+      "kind": "opener",
+      "page": "/become-partner",
+      "next": [],
+      "roles": [
+        "Organization",
+        "User"
+      ]
+    },
+    {
+      "id": "/become-partner#input:so-dien-thoai",
+      "label": "Số điện thoại*",
+      "kind": "input",
+      "page": "/become-partner",
+      "next": [],
+      "roles": [
+        "User"
+      ]
+    },
+    {
+      "id": "/become-partner#input:ten-thuong-hieu",
+      "label": "Tên thương hiệu*",
+      "kind": "input",
+      "page": "/become-partner",
+      "next": [],
+      "roles": [
+        "User"
+      ]
+    },
+    {
+      "id": "/become-partner#link:den-trang-duyet-don",
+      "label": "Đến trang duyệt đơn",
+      "kind": "nav",
+      "page": "/become-partner",
+      "opens": "/admin/registrations",
+      "next": [
+        "/admin/*#link:don-doi-tac",
+        "/admin/*#link:gian-hang",
+        "/admin/*#link:loai-banh-nhan",
+        "/admin/*#link:tong-quan",
+        "/admin/registrations#button:xem-don-cua-banh-trung-thu-nguyet-cat",
+        "/admin/registrations#button:xem-don-cua-kinh-do-gia-truyen",
+        "/admin/registrations#input:tim-kiem"
+      ],
+      "roles": [
+        "Manager"
+      ]
+    },
+    {
+      "id": "/become-partner#link:trang-cua-hang",
+      "label": "Trang cửa hàng",
+      "kind": "nav",
+      "page": "/become-partner",
+      "opens": "/store",
+      "next": [
+        "/store#button:thu-lai",
+        "/store/*#link:don-hang",
+        "/store/*#link:gian-hang",
+        "/store/*#link:hop",
+        "/store/*#link:mo-rong-kinh-doanh",
+        "/store/*#link:san-pham",
+        "/store/*#link:tong-quan",
+        "store-nav-pickup-addresses"
+      ],
+      "roles": [
+        "Organization"
+      ]
+    },
+    {
+      "id": "/cake-sets#button:thu-lai",
+      "label": "Thử lại",
+      "kind": "opener",
+      "page": "/cake-sets",
+      "next": []
+    },
+    {
+      "id": "/cart#button:thu-lai",
+      "label": "Thử lại",
+      "kind": "opener",
+      "page": "/cart",
+      "next": []
+    },
+    {
+      "id": "/checkout#button:thu-lai",
+      "label": "Thử lại",
+      "kind": "opener",
+      "page": "/checkout",
+      "next": []
+    },
+    {
+      "id": "/orders#button:cho-xac-nhan",
+      "label": "Chờ xác nhận",
+      "kind": "opener",
+      "page": "/orders",
+      "next": []
+    },
+    {
+      "id": "/orders#button:da-giao",
+      "label": "Đã giao",
+      "kind": "opener",
+      "page": "/orders",
+      "next": []
+    },
+    {
+      "id": "/orders#button:da-huy",
+      "label": "Đã hủy",
+      "kind": "opener",
+      "page": "/orders",
+      "next": []
+    },
+    {
+      "id": "/orders#button:da-xac-nhan",
+      "label": "Đã xác nhận",
+      "kind": "opener",
+      "page": "/orders",
+      "next": []
+    },
+    {
+      "id": "/orders#button:dang-giao",
+      "label": "Đang giao",
+      "kind": "opener",
+      "page": "/orders",
+      "next": []
+    },
+    {
+      "id": "/orders#button:tat-ca",
+      "label": "Tất cả",
+      "kind": "opener",
+      "page": "/orders",
+      "next": []
+    },
+    {
+      "id": "/orders#button:thu-lai",
+      "label": "Thử lại",
+      "kind": "opener",
+      "page": "/orders",
+      "next": []
+    },
+    {
+      "id": "/payment/result#link:ve-don-hang-cua-toi",
+      "label": "Về đơn hàng của tôi",
+      "kind": "nav",
+      "page": "/payment/result",
+      "opens": "/orders",
+      "next": [
+        "/orders#button:cho-xac-nhan",
+        "/orders#button:da-giao",
+        "/orders#button:da-huy",
+        "/orders#button:da-xac-nhan",
+        "/orders#button:dang-giao",
+        "/orders#button:tat-ca",
+        "/orders#button:thu-lai"
+      ]
+    },
+    {
+      "id": "/products#button:banh-chay",
+      "label": "Bánh chay",
+      "kind": "opener",
+      "page": "/products",
+      "next": []
+    },
+    {
+      "id": "/products#button:banh-deo",
+      "label": "Bánh dẻo",
+      "kind": "opener",
+      "page": "/products",
+      "next": []
+    },
+    {
+      "id": "/products#button:banh-nuong",
+      "label": "Bánh nướng",
+      "kind": "opener",
+      "page": "/products",
+      "next": []
+    },
+    {
+      "id": "/products#button:banh-tuyet",
+      "label": "Bánh tuyết",
+      "kind": "opener",
+      "page": "/products",
+      "next": []
+    },
+    {
+      "id": "/products#button:hang",
+      "label": "Hãng",
+      "kind": "nav",
+      "page": "/products",
+      "next": []
+    },
+    {
+      "id": "/products#button:loai-banh",
+      "label": "Loại bánh",
+      "kind": "nav",
+      "page": "/products",
+      "next": []
+    },
+    {
+      "id": "/products#button:nhan",
+      "label": "Nhân",
+      "kind": "nav",
+      "page": "/products",
+      "next": []
+    },
+    {
+      "id": "/products#button:thu-lai",
+      "label": "Thử lại",
+      "kind": "opener",
+      "page": "/products",
+      "next": []
+    },
+    {
+      "id": "/products#button:tim-nhan",
+      "label": "Tìm nhãn",
+      "kind": "opener",
+      "page": "/products",
+      "next": []
+    },
+    {
+      "id": "/products#combobox:tim-nhan",
+      "label": "Tìm nhãn",
+      "kind": "input",
+      "page": "/products",
+      "next": []
+    },
+    {
+      "id": "/stalls#button:chua-mo-ban",
+      "label": "Chưa mở bán",
+      "kind": "opener",
+      "page": "/stalls",
+      "next": []
+    },
+    {
+      "id": "/stalls#button:dang-mo-ban",
+      "label": "Đang mở bán",
+      "kind": "opener",
+      "page": "/stalls",
+      "next": []
+    },
+    {
+      "id": "/stalls#button:phong-to",
+      "label": "Phóng to",
+      "kind": "opener",
+      "page": "/stalls",
+      "next": []
+    },
+    {
+      "id": "/stalls#button:tat-ca",
+      "label": "Tất cả",
+      "kind": "opener",
+      "page": "/stalls",
+      "next": []
+    },
+    {
+      "id": "/stalls#button:thu-lai",
+      "label": "Thử lại",
+      "kind": "opener",
+      "page": "/stalls",
+      "next": []
+    },
+    {
+      "id": "/stalls#button:thu-nho",
+      "label": "Thu nhỏ",
+      "kind": "opener",
+      "page": "/stalls",
+      "next": []
+    },
+    {
+      "id": "/stalls#button:xem-tat-ca-diem-ban",
+      "label": "Xem tất cả điểm bán",
+      "kind": "opener",
+      "page": "/stalls",
+      "next": []
+    },
+    {
+      "id": "/stalls#combobox:tim-gian-hang",
+      "label": "Tìm gian hàng",
+      "kind": "input",
+      "page": "/stalls",
+      "next": []
+    },
+    {
+      "id": "/store/*#link:don-hang",
+      "label": "Đơn hàng",
+      "kind": "nav",
+      "page": "/store/*",
+      "opens": "/store/orders",
+      "next": [
+        "/store/*#link:gian-hang",
+        "/store/*#link:hop",
+        "/store/*#link:mo-rong-kinh-doanh",
+        "/store/*#link:san-pham",
+        "/store/*#link:tong-quan",
+        "/store/orders#button:cho-xac-nhan",
+        "/store/orders#button:da-giao",
+        "/store/orders#button:da-huy",
+        "/store/orders#button:da-xac-nhan",
+        "/store/orders#button:dang-giao",
+        "/store/orders#button:tat-ca",
+        "/store/orders#button:thu-lai",
+        "store-nav-pickup-addresses"
+      ],
+      "roles": [
+        "Organization"
+      ]
+    },
+    {
+      "id": "/store/*#link:gian-hang",
+      "label": "Gian hàng",
+      "kind": "nav",
+      "page": "/store/*",
+      "opens": "/store/stalls",
+      "next": [
+        "/store/*#link:don-hang",
+        "/store/*#link:hop",
+        "/store/*#link:mo-rong-kinh-doanh",
+        "/store/*#link:san-pham",
+        "/store/*#link:tong-quan",
+        "/store/stalls#button:don-dang-ky-cua-toi",
+        "/store/stalls#button:thue-gian-hang",
+        "/store/stalls#button:thue-them-gian",
+        "/store/stalls#link:don-dang-ky-cua-toi",
+        "/store/stalls#link:thue-gian-hang",
+        "/store/stalls#link:thue-them-gian",
+        "store-nav-pickup-addresses"
+      ],
+      "roles": [
+        "Organization"
+      ]
+    },
+    {
+      "id": "/store/*#link:hop",
+      "label": "Hộp",
+      "kind": "nav",
+      "page": "/store/*",
+      "opens": "/store/boxes",
+      "next": [
+        "/store/*#link:don-hang",
+        "/store/*#link:gian-hang",
+        "/store/*#link:mo-rong-kinh-doanh",
+        "/store/*#link:san-pham",
+        "/store/*#link:tong-quan",
+        "/store/boxes#button:them-hop",
+        "/store/boxes#button:thu-lai",
+        "/store/boxes#input:tim-theo-ten-hop",
+        "store-nav-pickup-addresses"
+      ],
+      "roles": [
+        "Organization"
+      ]
+    },
+    {
+      "id": "/store/*#link:mo-rong-kinh-doanh",
+      "label": "Mở rộng kinh doanh",
+      "kind": "nav",
+      "page": "/store/*",
+      "opens": "/become-partner",
+      "next": [
+        "/become-partner#button:ban-online",
+        "/become-partner#button:dang-ky",
+        "/become-partner#button:den-trang-duyet-don",
+        "/become-partner#button:don-dang-ky-cua-toi",
+        "/become-partner#button:mo-rong-ban-hang",
+        "/become-partner#button:thue-quay",
+        "/become-partner#button:tiep-tuc",
+        "/become-partner#input:so-dien-thoai",
+        "/become-partner#input:ten-thuong-hieu",
+        "/become-partner#link:den-trang-duyet-don",
+        "/become-partner#link:trang-cua-hang"
+      ],
+      "roles": [
+        "Organization"
+      ]
+    },
+    {
+      "id": "/store/*#link:san-pham",
+      "label": "Sản phẩm",
+      "kind": "nav",
+      "page": "/store/*",
+      "opens": "/store/products",
+      "next": [
+        "/store/*#link:don-hang",
+        "/store/*#link:gian-hang",
+        "/store/*#link:hop",
+        "/store/*#link:mo-rong-kinh-doanh",
+        "/store/*#link:tong-quan",
+        "/store/products#button:them-san-pham",
+        "/store/products#button:thu-lai",
+        "/store/products#input:tim-theo-ten-san-pham",
+        "store-nav-pickup-addresses"
+      ],
+      "roles": [
+        "Organization"
+      ]
+    },
+    {
+      "id": "/store/*#link:tong-quan",
+      "label": "Tổng quan",
+      "kind": "nav",
+      "page": "/store/*",
+      "opens": "/store",
+      "next": [
+        "/store#button:thu-lai",
+        "/store/*#link:don-hang",
+        "/store/*#link:gian-hang",
+        "/store/*#link:hop",
+        "/store/*#link:mo-rong-kinh-doanh",
+        "/store/*#link:san-pham",
+        "store-nav-pickup-addresses"
+      ],
+      "roles": [
+        "Organization"
+      ]
+    },
+    {
+      "id": "/store/boxes#button:them-hop",
+      "label": "Thêm hộp",
+      "kind": "opener",
+      "page": "/store/boxes",
+      "next": [],
+      "roles": [
+        "Organization"
+      ]
+    },
+    {
+      "id": "/store/boxes#button:thu-lai",
+      "label": "Thử lại",
+      "kind": "opener",
+      "page": "/store/boxes",
+      "next": [],
+      "roles": [
+        "Organization"
+      ]
+    },
+    {
+      "id": "/store/boxes#input:tim-theo-ten-hop",
+      "label": "Tìm theo tên hộp...",
+      "kind": "input",
+      "page": "/store/boxes",
+      "next": [],
+      "roles": [
+        "Organization"
+      ]
+    },
+    {
+      "id": "/store/orders#button:cho-xac-nhan",
+      "label": "Chờ xác nhận",
+      "kind": "opener",
+      "page": "/store/orders",
+      "next": [],
+      "roles": [
+        "Organization"
+      ]
+    },
+    {
+      "id": "/store/orders#button:da-giao",
+      "label": "Đã giao",
+      "kind": "opener",
+      "page": "/store/orders",
+      "next": [],
+      "roles": [
+        "Organization"
+      ]
+    },
+    {
+      "id": "/store/orders#button:da-huy",
+      "label": "Đã hủy",
+      "kind": "opener",
+      "page": "/store/orders",
+      "next": [],
+      "roles": [
+        "Organization"
+      ]
+    },
+    {
+      "id": "/store/orders#button:da-xac-nhan",
+      "label": "Đã xác nhận",
+      "kind": "opener",
+      "page": "/store/orders",
+      "next": [],
+      "roles": [
+        "Organization"
+      ]
+    },
+    {
+      "id": "/store/orders#button:dang-giao",
+      "label": "Đang giao",
+      "kind": "opener",
+      "page": "/store/orders",
+      "next": [],
+      "roles": [
+        "Organization"
+      ]
+    },
+    {
+      "id": "/store/orders#button:tat-ca",
+      "label": "Tất cả",
+      "kind": "opener",
+      "page": "/store/orders",
+      "next": [],
+      "roles": [
+        "Organization"
+      ]
+    },
+    {
+      "id": "/store/orders#button:thu-lai",
+      "label": "Thử lại",
+      "kind": "opener",
+      "page": "/store/orders",
+      "next": [],
+      "roles": [
+        "Organization"
+      ]
+    },
+    {
+      "id": "/store/pickup-addresses#button:sua",
+      "label": "Sửa",
+      "kind": "opener",
+      "page": "/store/pickup-addresses",
+      "next": [],
+      "roles": [
+        "Organization"
+      ]
+    },
+    {
+      "id": "/store/pickup-addresses#button:xoa",
+      "label": "Xóa",
+      "kind": "danger",
+      "page": "/store/pickup-addresses",
+      "next": [],
+      "roles": [
+        "Organization"
+      ]
+    },
+    {
+      "id": "/store/products#button:them-san-pham",
+      "label": "Thêm sản phẩm",
+      "kind": "opener",
+      "page": "/store/products",
+      "next": [],
+      "roles": [
+        "Organization"
+      ]
+    },
+    {
+      "id": "/store/products#button:thu-lai",
+      "label": "Thử lại",
+      "kind": "opener",
+      "page": "/store/products",
+      "next": [],
+      "roles": [
+        "Organization"
+      ]
+    },
+    {
+      "id": "/store/products#input:tim-theo-ten-san-pham",
+      "label": "Tìm theo tên sản phẩm...",
+      "kind": "input",
+      "page": "/store/products",
+      "next": [],
+      "roles": [
+        "Organization"
+      ]
+    },
+    {
+      "id": "/store/stalls#button:don-dang-ky-cua-toi",
+      "label": "Đơn đăng ký của tôi",
+      "kind": "opener",
+      "page": "/store/stalls",
+      "next": [],
+      "roles": [
+        "Organization"
+      ]
+    },
+    {
+      "id": "/store/stalls#button:thue-gian-hang",
+      "label": "Thuê gian hàng",
+      "kind": "opener",
+      "page": "/store/stalls",
+      "next": [],
+      "roles": [
+        "Organization"
+      ]
+    },
+    {
+      "id": "/store/stalls#button:thue-them-gian",
+      "label": "Thuê thêm gian",
+      "kind": "opener",
+      "page": "/store/stalls",
+      "next": [],
+      "roles": [
+        "Organization"
+      ]
+    },
+    {
+      "id": "/store/stalls#link:don-dang-ky-cua-toi",
+      "label": "Đơn đăng ký của tôi",
+      "kind": "nav",
+      "page": "/store/stalls",
+      "opens": "/become-partner",
+      "next": [
+        "/become-partner#button:ban-online",
+        "/become-partner#button:dang-ky",
+        "/become-partner#button:den-trang-duyet-don",
+        "/become-partner#button:don-dang-ky-cua-toi",
+        "/become-partner#button:mo-rong-ban-hang",
+        "/become-partner#button:thue-quay",
+        "/become-partner#button:tiep-tuc",
+        "/become-partner#input:so-dien-thoai",
+        "/become-partner#input:ten-thuong-hieu",
+        "/become-partner#link:den-trang-duyet-don",
+        "/become-partner#link:trang-cua-hang"
+      ],
+      "roles": [
+        "Organization"
+      ]
+    },
+    {
+      "id": "/store/stalls#link:thue-gian-hang",
+      "label": "Thuê gian hàng",
+      "kind": "nav",
+      "page": "/store/stalls",
+      "opens": "/become-partner",
+      "next": [
+        "/become-partner#button:ban-online",
+        "/become-partner#button:dang-ky",
+        "/become-partner#button:den-trang-duyet-don",
+        "/become-partner#button:don-dang-ky-cua-toi",
+        "/become-partner#button:mo-rong-ban-hang",
+        "/become-partner#button:thue-quay",
+        "/become-partner#button:tiep-tuc",
+        "/become-partner#input:so-dien-thoai",
+        "/become-partner#input:ten-thuong-hieu",
+        "/become-partner#link:den-trang-duyet-don",
+        "/become-partner#link:trang-cua-hang"
+      ],
+      "roles": [
+        "Organization"
+      ]
+    },
+    {
+      "id": "/store/stalls#link:thue-them-gian",
+      "label": "Thuê thêm gian",
+      "kind": "nav",
+      "page": "/store/stalls",
+      "opens": "/become-partner",
+      "next": [
+        "/become-partner#button:ban-online",
+        "/become-partner#button:dang-ky",
+        "/become-partner#button:den-trang-duyet-don",
+        "/become-partner#button:don-dang-ky-cua-toi",
+        "/become-partner#button:mo-rong-ban-hang",
+        "/become-partner#button:thue-quay",
+        "/become-partner#button:tiep-tuc",
+        "/become-partner#input:so-dien-thoai",
+        "/become-partner#input:ten-thuong-hieu",
+        "/become-partner#link:den-trang-duyet-don",
+        "/become-partner#link:trang-cua-hang"
+      ],
+      "roles": [
+        "Organization"
+      ]
+    },
+    {
+      "id": "/store#button:thu-lai",
+      "label": "Thử lại",
+      "kind": "opener",
+      "page": "/store",
+      "next": [],
+      "roles": [
+        "Organization"
+      ]
+    },
+    {
+      "id": "/vouchers#button:thu-lai",
+      "label": "Thử lại",
+      "kind": "opener",
+      "page": "/vouchers",
+      "next": []
+    },
+    {
+      "id": "account-menu",
+      "label": "Demo User",
+      "kind": "nav",
+      "page": null,
+      "next": [
+        "account-menu-addresses",
+        "account-menu-admin",
+        "account-menu-orders",
+        "account-menu-profile",
+        "account-menu-store",
+        "account-menu-vouchers",
+        "global#button:dang-xuat"
+      ]
+    },
+    {
+      "id": "account-menu-addresses",
+      "label": "Sổ địa chỉ",
+      "kind": "nav",
+      "page": null,
+      "opens": "/account/addresses",
+      "next": [
+        "/account/addresses#button:sua",
+        "/account/addresses#button:xoa",
+        "address-book-add"
+      ]
+    },
+    {
+      "id": "account-menu-admin",
+      "label": "Quản trị",
+      "kind": "nav",
+      "page": null,
+      "opens": "/admin",
+      "next": [
+        "/admin/*#link:don-doi-tac",
+        "/admin/*#link:gian-hang",
+        "/admin/*#link:loai-banh-nhan",
+        "/admin/*#link:tong-quan"
+      ],
+      "roles": [
+        "Manager"
+      ]
+    },
+    {
+      "id": "account-menu-orders",
+      "label": "Đơn hàng của tôi",
+      "kind": "nav",
+      "page": null,
+      "opens": "/orders",
+      "next": [
+        "/orders#button:cho-xac-nhan",
+        "/orders#button:da-giao",
+        "/orders#button:da-huy",
+        "/orders#button:da-xac-nhan",
+        "/orders#button:dang-giao",
+        "/orders#button:tat-ca",
+        "/orders#button:thu-lai"
+      ]
+    },
+    {
+      "id": "account-menu-profile",
+      "label": "Hồ sơ của tôi",
+      "kind": "nav",
+      "page": null,
+      "opens": "/account/profile",
+      "next": [
+        "/account/profile#button:luu-thong-tin",
+        "/account/profile#button:thu-lai",
+        "profile-address-add",
+        "profile-address-manage",
+        "profile-change-password",
+        "profile-personal-info",
+        "profile-shop-profile"
+      ]
+    },
+    {
+      "id": "account-menu-store",
+      "label": "Cửa hàng của tôi",
+      "kind": "nav",
+      "page": null,
+      "opens": "/store",
+      "next": [
+        "/store#button:thu-lai",
+        "/store/*#link:don-hang",
+        "/store/*#link:gian-hang",
+        "/store/*#link:hop",
+        "/store/*#link:mo-rong-kinh-doanh",
+        "/store/*#link:san-pham",
+        "/store/*#link:tong-quan",
+        "store-nav-pickup-addresses"
+      ],
+      "roles": [
+        "Organization"
+      ]
+    },
+    {
+      "id": "account-menu-vouchers",
+      "label": "Voucher của tôi",
+      "kind": "nav",
+      "page": null,
+      "opens": "/vouchers",
+      "next": [
+        "/vouchers#button:thu-lai"
+      ]
+    },
+    {
+      "id": "address-book-add",
+      "label": "Thêm địa chỉ",
+      "kind": "opener",
+      "page": "/account/addresses",
+      "next": []
+    },
+    {
+      "id": "catalog-add-category",
+      "label": "Thêm loại bánh",
+      "kind": "opener",
+      "page": "/admin/catalog",
+      "next": [],
+      "roles": [
+        "Manager"
+      ]
+    },
+    {
+      "id": "global#button:cai-dat-hieu-ung",
+      "label": "Cài đặt hiệu ứng",
+      "kind": "nav",
+      "page": null,
+      "next": [
+        "global#radio:day-du",
+        "global#radio:rut-gon",
+        "global#radio:tat-tu-chuyen-buoc",
+        "global#radio:tu-chuyen-buoc-sau-2-giay",
+        "global#radio:tu-chuyen-buoc-sau-3-giay",
+        "global#radio:tu-chuyen-buoc-sau-5-giay",
+        "global#radio:tu-chuyen-buoc-sau-8-giay"
+      ]
+    },
+    {
+      "id": "global#button:dang-xuat",
+      "label": "Đăng xuất",
+      "kind": "danger",
+      "page": null,
+      "next": []
+    },
+    {
+      "id": "global#button:danh-muc",
+      "label": "Danh mục",
+      "kind": "nav",
+      "page": null,
+      "next": [
+        "global#link:banh-chay",
+        "global#link:banh-deo",
+        "global#link:banh-nuong",
+        "global#link:banh-tuyet"
+      ]
+    },
+    {
+      "id": "global#combobox:ban-can-tim-banh-gi",
+      "label": "Bạn cần tìm bánh gì?",
+      "kind": "input",
+      "page": null,
+      "next": []
+    },
+    {
+      "id": "global#link:ban-online-cung-luminabox",
+      "label": "Bán online cùng LuminaBox",
+      "kind": "nav",
+      "page": null,
+      "opens": "/become-partner",
+      "next": [
+        "/become-partner#button:ban-online",
+        "/become-partner#button:dang-ky",
+        "/become-partner#button:den-trang-duyet-don",
+        "/become-partner#button:don-dang-ky-cua-toi",
+        "/become-partner#button:mo-rong-ban-hang",
+        "/become-partner#button:thue-quay",
+        "/become-partner#button:tiep-tuc",
+        "/become-partner#input:so-dien-thoai",
+        "/become-partner#input:ten-thuong-hieu",
+        "/become-partner#link:den-trang-duyet-don",
+        "/become-partner#link:trang-cua-hang"
+      ]
+    },
+    {
+      "id": "global#link:banh-chay",
+      "label": "Bánh chay",
+      "kind": "nav",
+      "page": null,
+      "opens": "/products",
+      "next": [
+        "/products#button:banh-chay",
+        "/products#button:banh-deo",
+        "/products#button:banh-nuong",
+        "/products#button:banh-tuyet",
+        "/products#button:hang",
+        "/products#button:loai-banh",
+        "/products#button:nhan",
+        "/products#button:thu-lai",
+        "/products#button:tim-nhan",
+        "/products#combobox:tim-nhan",
+        "products-search"
+      ]
+    },
+    {
+      "id": "global#link:banh-deo",
+      "label": "Bánh dẻo",
+      "kind": "nav",
+      "page": null,
+      "opens": "/products",
+      "next": [
+        "/products#button:banh-chay",
+        "/products#button:banh-deo",
+        "/products#button:banh-nuong",
+        "/products#button:banh-tuyet",
+        "/products#button:hang",
+        "/products#button:loai-banh",
+        "/products#button:nhan",
+        "/products#button:thu-lai",
+        "/products#button:tim-nhan",
+        "/products#combobox:tim-nhan",
+        "products-search"
+      ]
+    },
+    {
+      "id": "global#link:banh-nuong",
+      "label": "Bánh nướng",
+      "kind": "nav",
+      "page": null,
+      "opens": "/products",
+      "next": [
+        "/products#button:banh-chay",
+        "/products#button:banh-deo",
+        "/products#button:banh-nuong",
+        "/products#button:banh-tuyet",
+        "/products#button:hang",
+        "/products#button:loai-banh",
+        "/products#button:nhan",
+        "/products#button:thu-lai",
+        "/products#button:tim-nhan",
+        "/products#combobox:tim-nhan",
+        "products-search"
+      ]
+    },
+    {
+      "id": "global#link:banh-tuyet",
+      "label": "Bánh tuyết",
+      "kind": "nav",
+      "page": null,
+      "opens": "/products",
+      "next": [
+        "/products#button:banh-chay",
+        "/products#button:banh-deo",
+        "/products#button:banh-nuong",
+        "/products#button:banh-tuyet",
+        "/products#button:hang",
+        "/products#button:loai-banh",
+        "/products#button:nhan",
+        "/products#button:thu-lai",
+        "/products#button:tim-nhan",
+        "/products#combobox:tim-nhan",
+        "products-search"
+      ]
+    },
+    {
+      "id": "global#link:chinh-sach-doi-tra",
+      "label": "Chính sách đổi trả",
+      "kind": "nav",
+      "page": null,
+      "opens": "/policies/returns",
+      "next": []
+    },
+    {
+      "id": "global#link:chinh-sach-hoa-hong",
+      "label": "Chính sách hoa hồng",
+      "kind": "nav",
+      "page": null,
+      "opens": "/policies/commission",
+      "next": []
+    },
+    {
+      "id": "global#link:diem-ban",
+      "label": "Điểm bán",
+      "kind": "nav",
+      "page": null,
+      "opens": "/stalls",
+      "next": [
+        "/stalls#button:chua-mo-ban",
+        "/stalls#button:dang-mo-ban",
+        "/stalls#button:phong-to",
+        "/stalls#button:tat-ca",
+        "/stalls#button:thu-lai",
+        "/stalls#button:thu-nho",
+        "/stalls#button:xem-tat-ca-diem-ban",
+        "/stalls#combobox:tim-gian-hang"
+      ]
+    },
+    {
+      "id": "global#link:gio-hang",
+      "label": "Giỏ hàng",
+      "kind": "nav",
+      "page": null,
+      "opens": "/cart",
+      "next": [
+        "/cart#button:thu-lai"
+      ]
+    },
+    {
+      "id": "global#link:gioi-thieu",
+      "label": "Giới thiệu",
+      "kind": "nav",
+      "page": null,
+      "opens": "/",
+      "next": [
+        "/#link:ban-online",
+        "/#link:banh-chay",
+        "/#link:banh-deo",
+        "/#link:banh-nuong",
+        "/#link:banh-tuyet",
+        "/#link:bo-suu-tap-hop-qua",
+        "/#link:hop-qua-trung-thu-moi",
+        "/#link:loai-banh-nhan",
+        "/#link:mua-sam-ngay",
+        "/#link:quan-ly-cua-hang",
+        "/#link:quan-tri-san",
+        "/#link:san-pham-cua-ban",
+        "/#link:thue-gian-hang",
+        "/#link:tro-thanh-doi-tac",
+        "/#link:xem-tat-ca"
+      ]
+    },
+    {
+      "id": "global#link:hop-trung-thu",
+      "label": "Hộp Trung thu",
+      "kind": "nav",
+      "page": null,
+      "opens": "/cake-sets",
+      "next": [
+        "/cake-sets#button:thu-lai"
+      ]
+    },
+    {
+      "id": "global#link:huong-dan-dat-hang",
+      "label": "Hướng dẫn đặt hàng",
+      "kind": "nav",
+      "page": null,
+      "opens": "/help/ordering",
+      "next": []
+    },
+    {
+      "id": "global#link:luminabox",
+      "label": "LuminaBox",
+      "kind": "nav",
+      "page": null,
+      "opens": "/",
+      "next": [
+        "/#link:ban-online",
+        "/#link:banh-chay",
+        "/#link:banh-deo",
+        "/#link:banh-nuong",
+        "/#link:banh-tuyet",
+        "/#link:bo-suu-tap-hop-qua",
+        "/#link:hop-qua-trung-thu-moi",
+        "/#link:loai-banh-nhan",
+        "/#link:mua-sam-ngay",
+        "/#link:quan-ly-cua-hang",
+        "/#link:quan-tri-san",
+        "/#link:san-pham-cua-ban",
+        "/#link:thue-gian-hang",
+        "/#link:tro-thanh-doi-tac",
+        "/#link:xem-tat-ca"
+      ]
+    },
+    {
+      "id": "global#link:san-pham",
+      "label": "Sản phẩm",
+      "kind": "nav",
+      "page": null,
+      "opens": "/products",
+      "next": [
+        "/products#button:banh-chay",
+        "/products#button:banh-deo",
+        "/products#button:banh-nuong",
+        "/products#button:banh-tuyet",
+        "/products#button:hang",
+        "/products#button:loai-banh",
+        "/products#button:nhan",
+        "/products#button:thu-lai",
+        "/products#button:tim-nhan",
+        "/products#combobox:tim-nhan",
+        "products-search"
+      ]
+    },
+    {
+      "id": "global#link:thue-gian-hang",
+      "label": "Thuê gian hàng",
+      "kind": "nav",
+      "page": null,
+      "opens": "/become-partner",
+      "next": [
+        "/become-partner#button:ban-online",
+        "/become-partner#button:dang-ky",
+        "/become-partner#button:den-trang-duyet-don",
+        "/become-partner#button:don-dang-ky-cua-toi",
+        "/become-partner#button:mo-rong-ban-hang",
+        "/become-partner#button:thue-quay",
+        "/become-partner#button:tiep-tuc",
+        "/become-partner#input:so-dien-thoai",
+        "/become-partner#input:ten-thuong-hieu",
+        "/become-partner#link:den-trang-duyet-don",
+        "/become-partner#link:trang-cua-hang"
+      ]
+    },
+    {
+      "id": "global#link:trang-chu",
+      "label": "Trang chủ",
+      "kind": "nav",
+      "page": null,
+      "opens": "/",
+      "next": [
+        "/#link:ban-online",
+        "/#link:banh-chay",
+        "/#link:banh-deo",
+        "/#link:banh-nuong",
+        "/#link:banh-tuyet",
+        "/#link:bo-suu-tap-hop-qua",
+        "/#link:hop-qua-trung-thu-moi",
+        "/#link:loai-banh-nhan",
+        "/#link:mua-sam-ngay",
+        "/#link:quan-ly-cua-hang",
+        "/#link:quan-tri-san",
+        "/#link:san-pham-cua-ban",
+        "/#link:thue-gian-hang",
+        "/#link:tro-thanh-doi-tac",
+        "/#link:xem-tat-ca"
+      ]
+    },
+    {
+      "id": "global#link:tro-thanh-doi-tac",
+      "label": "Trở thành đối tác",
+      "kind": "nav",
+      "page": null,
+      "opens": "/become-partner",
+      "next": [
+        "/become-partner#button:ban-online",
+        "/become-partner#button:dang-ky",
+        "/become-partner#button:den-trang-duyet-don",
+        "/become-partner#button:don-dang-ky-cua-toi",
+        "/become-partner#button:mo-rong-ban-hang",
+        "/become-partner#button:thue-quay",
+        "/become-partner#button:tiep-tuc",
+        "/become-partner#input:so-dien-thoai",
+        "/become-partner#input:ten-thuong-hieu",
+        "/become-partner#link:den-trang-duyet-don",
+        "/become-partner#link:trang-cua-hang"
+      ]
+    },
+    {
+      "id": "global#link:voucher-va-khuyen-mai",
+      "label": "Voucher và khuyến mãi",
+      "kind": "nav",
+      "page": null,
+      "opens": "/vouchers",
+      "next": [
+        "/vouchers#button:thu-lai"
+      ]
+    },
+    {
+      "id": "global#radio:day-du",
+      "label": "Đầy đủ",
+      "kind": "action",
+      "page": null,
+      "next": []
+    },
+    {
+      "id": "global#radio:rut-gon",
+      "label": "Rút gọn",
+      "kind": "action",
+      "page": null,
+      "next": []
+    },
+    {
+      "id": "global#radio:tat-tu-chuyen-buoc",
+      "label": "Tắt tự chuyển bước",
+      "kind": "action",
+      "page": null,
+      "next": []
+    },
+    {
+      "id": "global#radio:tu-chuyen-buoc-sau-2-giay",
+      "label": "Tự chuyển bước sau 2 giây",
+      "kind": "action",
+      "page": null,
+      "next": []
+    },
+    {
+      "id": "global#radio:tu-chuyen-buoc-sau-3-giay",
+      "label": "Tự chuyển bước sau 3 giây",
+      "kind": "action",
+      "page": null,
+      "next": []
+    },
+    {
+      "id": "global#radio:tu-chuyen-buoc-sau-5-giay",
+      "label": "Tự chuyển bước sau 5 giây",
+      "kind": "action",
+      "page": null,
+      "next": []
+    },
+    {
+      "id": "global#radio:tu-chuyen-buoc-sau-8-giay",
+      "label": "Tự chuyển bước sau 8 giây",
+      "kind": "action",
+      "page": null,
+      "next": []
+    },
+    {
+      "id": "pickup-address-add",
+      "label": "Thêm địa chỉ",
+      "kind": "opener",
+      "page": "/store/pickup-addresses",
+      "next": [],
+      "roles": [
+        "Organization"
+      ]
+    },
+    {
+      "id": "products-search",
+      "label": "Tìm theo tên bánh",
+      "kind": "input",
+      "page": "/products",
+      "next": []
+    },
+    {
+      "id": "profile-address-add",
+      "label": "Thêm địa chỉ",
+      "kind": "opener",
+      "page": "/account/profile",
+      "next": []
+    },
+    {
+      "id": "profile-address-manage",
+      "label": "Quản lý địa chỉ (1)",
+      "kind": "nav",
+      "page": "/account/profile",
+      "opens": "/account/addresses",
+      "next": [
+        "/account/addresses#button:sua",
+        "/account/addresses#button:xoa",
+        "address-book-add"
+      ]
+    },
+    {
+      "id": "profile-change-password",
+      "label": "Đổi mật khẩu",
+      "kind": "opener",
+      "page": "/account/profile",
+      "next": []
+    },
+    {
+      "id": "profile-personal-info",
+      "label": "Thông tin cá nhân",
+      "kind": "section",
+      "page": "/account/profile",
+      "next": []
+    },
+    {
+      "id": "profile-shop-profile",
+      "label": "Hồ sơ cửa hàng",
+      "kind": "section",
+      "page": "/account/profile",
+      "next": [],
+      "roles": [
+        "Organization"
+      ]
+    },
+    {
+      "id": "store-nav-pickup-addresses",
+      "label": "Địa chỉ lấy hàng",
+      "kind": "nav",
+      "page": "/store/*",
+      "opens": "/store/pickup-addresses",
+      "next": [
+        "/store/*#link:don-hang",
+        "/store/*#link:gian-hang",
+        "/store/*#link:hop",
+        "/store/*#link:mo-rong-kinh-doanh",
+        "/store/*#link:san-pham",
+        "/store/*#link:tong-quan",
+        "/store/pickup-addresses#button:sua",
+        "/store/pickup-addresses#button:xoa",
+        "pickup-address-add"
+      ],
+      "roles": [
+        "Organization"
+      ]
+    }
+  ]
+}

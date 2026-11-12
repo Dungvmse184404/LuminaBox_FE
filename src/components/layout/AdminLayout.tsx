@@ -8,4 +8,4 @@ const ITEMS: SideNavItem[] = [
   { to: "/admin/stalls", label: "Gian hàng", icon: Store },
 ];
 
-export const AdminLayout = () => <SideNavLayout title="Quản trị" items={ITEMS} />;
+export const AdminLayout = () => <SideNavLayout title="Quản trị" items={ITEMS} guideScope="/admin/*" />;

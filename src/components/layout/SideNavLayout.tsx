@@ -16,12 +16,13 @@ interface Props {
   title: string;
   subtitle?: string | null;
   items: SideNavItem[];
+  guideScope: string;
 }
 
-export function SideNavLayout({ title, subtitle, items }: Props) {
+export function SideNavLayout({ title, subtitle, items, guideScope }: Props) {
   return (
     <Container className="grid gap-6 py-8 md:grid-cols-[14rem_1fr]">
-      <aside className="md:sticky md:top-24 md:self-start">
+      <aside data-guide-scope={guideScope} className="md:sticky md:top-24 md:self-start">
         <div className="mb-3 px-3">
           <p className="text-xs font-semibold uppercase tracking-wide text-ink-muted">{title}</p>
           {subtitle && <p className="mt-0.5 break-words text-sm font-semibold text-ink">{subtitle}</p>}

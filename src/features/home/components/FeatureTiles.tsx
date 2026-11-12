@@ -63,7 +63,7 @@ const TONE = {
 function Tile({ to, image, icon, title, description, cta, tone = "light" }: TileProps) {
   const t = TONE[tone];
   return (
-    <Link to={to} className={cn(TILE, "flex-col justify-end bg-gradient-to-br p-5", t.surface)}>
+    <Link to={to} data-guide-label={title} className={cn(TILE, "flex-col justify-end bg-gradient-to-br p-5", t.surface)}>
       <TileImage path={image} restOpacity={t.imageOpacity} />
       <div className={cn("absolute inset-0 bg-gradient-to-t", t.wash)} />
       <span
@@ -105,6 +105,7 @@ export function FeatureTiles() {
     <div className="grid gap-4 lg:grid-cols-3 lg:grid-rows-[210px_200px]">
       <Link
         to="/cake-sets"
+        data-guide-label="Bộ sưu tập hộp quà"
         className={cn(TILE, "flex-col justify-end bg-gradient-to-br from-chrome-deep via-[#4a1a1d] to-chrome p-6 text-white lg:col-span-2")}
       >
         <TileImage path={IMAGES.giftbox} restOpacity="opacity-45" />
@@ -117,7 +118,7 @@ export function FeatureTiles() {
         </div>
       </Link>
 
-      <Link to="/products" className={cn(TILE, "flex-col justify-between bg-gradient-to-b from-primary-soft to-cream-dark p-5 lg:row-span-2")}>
+      <Link to="/products" data-guide-label="Hộp quà Trung thu mới" className={cn(TILE, "flex-col justify-between bg-gradient-to-b from-primary-soft to-cream-dark p-5 lg:row-span-2")}>
         <TileImage path={IMAGES.giftboxDark} restOpacity="opacity-40" />
         <div className="absolute inset-0 bg-gradient-to-t from-primary-soft/95 via-primary-soft/20 to-transparent" />
         <span className="relative w-fit rounded-full bg-primary px-3 py-1 text-xs font-semibold text-white">Mới ra mắt</span>

@@ -66,7 +66,7 @@ export function AdminCatalogPage() {
         title="Loại bánh & nhân"
         description="Danh mục nền để Organizer chọn khi tạo biến thể sản phẩm."
         actions={
-          <Button onClick={() => openForm(null)}>
+          <Button onClick={() => openForm(null)} data-guide={`catalog-add-${kind}`}>
             <Plus size={16} />
             Thêm {label}
           </Button>
@@ -121,7 +121,7 @@ export function AdminCatalogPage() {
               <Button size="sm" variant="ghost" aria-label={`Sửa ${item.name}`} title="Sửa" onClick={() => openForm(item)}>
                 <Pencil size={14} />
               </Button>
-              <Button size="sm" variant="ghost" aria-label={`Xóa ${item.name}`} title="Xóa" className="hover:text-danger" onClick={() => setDeleting(item)}>
+              <Button size="sm" variant="ghost" aria-label={`Xóa ${item.name}`} title="Xóa" className="hover:text-danger" data-guide-kind="danger" onClick={() => setDeleting(item)}>
                 <Trash2 size={14} />
               </Button>
             </div>

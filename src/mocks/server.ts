@@ -58,8 +58,20 @@ export const listParams = (query: URLSearchParams): ListParams => ({
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 let registered: Promise<unknown> | null = null;
+let pending = 0;
+
+export const pendingMockRequests = () => pending;
 
 export async function handleMock<T>(method: string, url: string, body: unknown): Promise<ApiResponse<T>> {
+  pending++;
+  try {
+    return await resolveMock<T>(method, url, body);
+  } finally {
+    pending--;
+  }
+}
+
+async function resolveMock<T>(method: string, url: string, body: unknown): Promise<ApiResponse<T>> {
   registered ??= import("@/mocks/handlers");
   await registered;
   await sleep(120 + Math.random() * 180);
