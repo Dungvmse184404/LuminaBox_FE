@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Check, Globe2, Store } from "lucide-react";
 import { CornerFrame } from "@/components/ornament/CornerOrnament";
@@ -8,6 +8,7 @@ import { PHONE_PATTERN } from "@/features/auth/validation";
 import { useAuth } from "@/features/auth/AuthContext";
 import { cn } from "@/lib/cn";
 import { hasPickup, updateDraft, usePartnerDraft, type SellKind } from "../draft";
+import { useHasOpenOnline } from "../hooks/useRegistrationState";
 import { PickupAddressFields, validatePickup, type PickupErrors } from "./PickupAddressFields";
 
 const OPTIONS: { kind: SellKind; icon: typeof Store; title: string; text: string; meta: string }[] = [
@@ -49,11 +50,17 @@ export function SellChoice() {
   const [errors, setErrors] = useState<Errors>({});
 
   const isOrganizer = hasRole("Organization");
+  const onlineLocked = useHasOpenOnline(Boolean(user));
   const picked = new Set(draft.kinds);
   const online = picked.has("online");
   const stall = picked.has("stall");
 
+  useEffect(() => {
+    if (onlineLocked && draft.kinds.includes("online")) updateDraft({ kinds: draft.kinds.filter((k) => k !== "online") });
+  }, [onlineLocked, draft.kinds]);
+
   const toggle = (kind: SellKind) => {
+    if (kind === "online" && onlineLocked) return;
     const kinds = picked.has(kind) ? draft.kinds.filter((k) => k !== kind) : [...draft.kinds, kind];
     updateDraft({ kinds: OPTIONS.map((o) => o.kind).filter((k) => kinds.includes(k)) });
   };
@@ -91,8 +98,16 @@ export function SellChoice() {
           {OPTIONS.map(({ kind, icon: Icon, title, text, meta }, index) => {
             const on = picked.has(kind);
             const fromLeft = index === 0;
+            const locked = kind === "online" && onlineLocked;
             return (
-              <button key={kind} type="button" aria-pressed={on} onClick={() => toggle(kind)} className="group relative overflow-hidden p-6 text-left">
+              <button
+                key={kind}
+                type="button"
+                aria-pressed={on}
+                disabled={locked}
+                onClick={() => toggle(kind)}
+                className="group relative overflow-hidden p-6 text-left disabled:cursor-not-allowed disabled:opacity-60"
+              >
                 <span
                   aria-hidden
                   className={cn(
@@ -113,7 +128,7 @@ export function SellChoice() {
                   </span>
                   <span className={cn("mt-3 block text-base font-bold", on ? "text-primary-dark" : "text-ink")}>{title}</span>
                   <span className="mt-1 block text-sm leading-relaxed text-ink-soft">{text}</span>
-                  <span className="mt-2 block text-xs text-ink-muted">{meta}</span>
+                  <span className="mt-2 block text-xs text-ink-muted">{locked ? "Bạn đã có đơn bán online đang xử lý hoặc đã được duyệt" : meta}</span>
                 </span>
               </button>
             );

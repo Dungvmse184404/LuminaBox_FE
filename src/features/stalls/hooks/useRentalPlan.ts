@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type KeyboardEvent, type PointerEvent as ReactPointerEvent } from "react";
-import { clampDay, defaultMaster, fitSpan, MIN_RENTAL_DAYS, moonNum, parseShort, seasonSpan, seasonYears, spanDays, type DayRange, type Span } from "../timeline";
+import { clampDay, defaultMaster, fitSpan, MIN_RENTAL_DAYS, moonNum, parseShort, seasonSpan, seasonYears, spanDays, vnToday, type DayRange, type Span } from "../timeline";
 
 const MIN_GAP = MIN_RENTAL_DAYS - 1;
 
@@ -45,7 +45,9 @@ function initialState(years: number[], snapshot?: PlanSnapshot | null): PlanStat
 
 export function useRentalPlan(snapshot?: PlanSnapshot | null) {
   const [years] = useState(seasonYears);
+  const [today] = useState(vnToday);
   const [state, setState] = useState<PlanState>(() => initialState(years, snapshot));
+  const firstDay = useCallback((span: Span) => Math.max(span.from, today), [today]);
 
   const stateRef = useRef(state);
   stateRef.current = state;
@@ -83,7 +85,7 @@ export function useRentalPlan(snapshot?: PlanSnapshot | null) {
       const span = viewRef.current;
       const delta = Math.round(((e.clientX - drag.x) / drag.width) * spanDays(span));
       if (drag.mode === "start") {
-        const start = clampDay(drag.start + delta, span.from, drag.end - MIN_GAP);
+        const start = clampDay(drag.start + delta, firstDay(span), drag.end - MIN_GAP);
         setRange(drag.id, start, drag.end);
         patch({ cursor: { day: start, edge: start } });
       } else if (drag.mode === "end") {
@@ -92,12 +94,12 @@ export function useRentalPlan(snapshot?: PlanSnapshot | null) {
         patch({ cursor: { day: end, edge: end + 1 } });
       } else {
         const length = drag.end - drag.start;
-        const start = clampDay(drag.start + delta, span.from, span.to - length);
+        const start = clampDay(drag.start + delta, firstDay(span), span.to - length);
         setRange(drag.id, start, start + length);
         patch({ cursor: { day: start, edge: start } });
       }
     },
-    [patch, setRange],
+    [firstDay, patch, setRange],
   );
 
   const onWindowUp = useCallback(() => {
@@ -139,11 +141,11 @@ export function useRentalPlan(snapshot?: PlanSnapshot | null) {
       const span = viewRef.current;
       const range = rangeById(id);
       const length = range.end - range.start;
-      const start = clampDay(dayFromEvent(e) - Math.floor(length / 2), span.from, span.to - length);
+      const start = clampDay(dayFromEvent(e) - Math.floor(length / 2), firstDay(span), span.to - length);
       setRange(id, start, start + length);
       startDrag(id, "move", e, { start, end: start + length });
     },
-    [dayFromEvent, rangeById, setRange, startDrag],
+    [dayFromEvent, firstDay, rangeById, setRange, startDrag],
   );
 
   const onAxisMove = useCallback(
@@ -167,7 +169,7 @@ export function useRentalPlan(snapshot?: PlanSnapshot | null) {
       const span = viewRef.current;
       const range = rangeById(id);
       if (which === "start") {
-        const start = clampDay(range.start + delta, span.from, range.end - MIN_GAP);
+        const start = clampDay(range.start + delta, firstDay(span), range.end - MIN_GAP);
         setRange(id, start, range.end);
         patch({ cursor: { day: start, edge: start } });
       } else {
@@ -176,7 +178,7 @@ export function useRentalPlan(snapshot?: PlanSnapshot | null) {
         patch({ cursor: { day: end, edge: end + 1 } });
       }
     },
-    [patch, rangeById, setRange],
+    [firstDay, patch, rangeById, setRange],
   );
 
   const toggle = useCallback((id: string, preferred?: DayRange) => {

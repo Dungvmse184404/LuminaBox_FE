@@ -17,6 +17,7 @@ interface Props {
   filter: StatusFilter;
   hoverId: string | null;
   plannedIds: Set<string>;
+  lockedIds?: Set<string>;
   onQuery: (value: string) => void;
   onFilter: (value: StatusFilter) => void;
   onPick: (id: string | null) => void;
@@ -58,6 +59,7 @@ export function StallPanel({
   filter,
   hoverId,
   plannedIds,
+  lockedIds,
   onQuery,
   onFilter,
   onPick,
@@ -101,8 +103,11 @@ export function StallPanel({
         .slice(0, 5)
     : [];
 
+  const isLocked = (stall: Stall) => Boolean(lockedIds?.has(stall.id)) && !plannedIds.has(stall.id);
+
   const row = (stall: Stall, extra: string) => {
     const planned = plannedIds.has(stall.id);
+    const locked = isLocked(stall);
     return (
       <div key={stall.id} className="row-wrap">
         <button
@@ -122,6 +127,7 @@ export function StallPanel({
           <span className="row-meta">
             {renting && <span className="price">{dayPrice(stall.rentalPrice)}</span>}
             <span className={statusClass(stall, mode)}>{statusText(stall)}</span>
+            {locked && <span className="status status-rented">Đang chờ duyệt</span>}
             {moonFor(stall)}
           </span>
         </button>
@@ -130,6 +136,8 @@ export function StallPanel({
             type="button"
             className="row-add"
             aria-pressed={planned}
+            disabled={locked}
+            title={locked ? "Bạn đã có đơn thuê gian này đang chờ duyệt" : undefined}
             aria-label={planned ? `Bỏ ${stall.name} khỏi lịch thuê` : `Thêm ${stall.name} vào lịch thuê`}
             onClick={() => onToggle(stall.id)}
           >
@@ -214,6 +222,10 @@ export function StallPanel({
               )}
               {!renting ? (
                 renderDetail?.(selected)
+              ) : isLocked(selected) ? (
+                <button type="button" className="cta cta-ghost" disabled>
+                  Đã có đơn đang chờ duyệt
+                </button>
               ) : plannedIds.has(selected.id) ? (
                 <button type="button" className="cta cta-ghost" onClick={() => onToggle(selected.id)}>
                   Bỏ khỏi lịch thuê

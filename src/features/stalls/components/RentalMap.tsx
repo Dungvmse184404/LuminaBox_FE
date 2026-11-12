@@ -26,11 +26,12 @@ interface Props {
   plan: RentalPlan;
   submitLabel: string;
   linkedId?: string | null;
+  lockedIds?: Set<string>;
   onBack?: () => void;
   onSubmit: () => void;
 }
 
-export function RentalMap({ plan, submitLabel, linkedId, onBack, onSubmit }: Props) {
+export function RentalMap({ plan, submitLabel, linkedId, lockedIds, onBack, onSubmit }: Props) {
   const { data, isLoading, isError, refetch } = useStalls();
   const stalls = data ?? NO_STALLS;
   const mapRef = useRef<StallMapHandle>(null);
@@ -91,6 +92,7 @@ export function RentalMap({ plan, submitLabel, linkedId, onBack, onSubmit }: Pro
         filter={filter}
         hoverId={hoverId}
         plannedIds={plannedIds}
+        lockedIds={lockedIds}
         onQuery={(value) => {
           setQuery(value);
           setSelectedId(null);
@@ -103,6 +105,7 @@ export function RentalMap({ plan, submitLabel, linkedId, onBack, onSubmit }: Pro
         onPick={pick}
         onHover={setHoverId}
         onToggle={(id) => {
+          if (lockedIds?.has(id) && !plannedIds.has(id)) return;
           const stall = stalls.find((s) => s.id === id);
           plan.toggle(id, stall ? freeRange(bookedRanges(stall.bookings), plan.state.year) : undefined);
         }}
@@ -144,7 +147,7 @@ export function RentalMap({ plan, submitLabel, linkedId, onBack, onSubmit }: Pro
       </div>
 
       {hasPlan && (
-        <RentalDock plan={plan} stalls={stalls} hoverId={hoverId} submitLabel={submitLabel} onBack={onBack} onHover={setHoverId} onFocus={pick} onSubmit={onSubmit} />
+        <RentalDock plan={plan} stalls={stalls} hoverId={hoverId} submitLabel={submitLabel} lockedIds={lockedIds} onBack={onBack} onHover={setHoverId} onFocus={pick} onSubmit={onSubmit} />
       )}
     </>
   );

@@ -8,10 +8,11 @@ import { useToast } from "@/components/ui/Toast";
 import { useDistricts, useProvinces, useSaveAddress, useWards } from "@/features/address/hooks/useAddresses";
 import { useAuth } from "@/features/auth/AuthContext";
 import { useStalls } from "@/features/stalls/hooks/useStalls";
-import { fullDate, priceText, rentalDays, toDate } from "@/features/stalls/timeline";
+import { fullDate, priceText, rentalDays, toDate, vnToday } from "@/features/stalls/timeline";
 import { errorMessage } from "@/lib/errors";
 import { clearDraft, hasPickup, usePartnerDraft } from "../draft";
 import { useCreateAdditionalOnline, useCreateAdditionalStalls, useCreateOrganizerRegistration } from "../hooks/usePartner";
+import { usePendingStallIds } from "../hooks/useRegistrationState";
 
 type Status = "idle" | "running" | "done" | "failed";
 
@@ -25,6 +26,11 @@ interface Task {
 
 const isoDate = (num: number) => toDate(num).toISOString().slice(0, 10);
 
+const MAX_STALLS_PER_REQUEST = 10;
+
+const chunk = <T,>(items: T[], size: number) =>
+  Array.from({ length: Math.ceil(items.length / size) }, (_, index) => items.slice(index * size, (index + 1) * size));
+
 export function PartnerConfirmPage() {
   const navigate = useNavigate();
   const toast = useToast();
@@ -35,6 +41,7 @@ export function PartnerConfirmPage() {
   const createAdditionalStalls = useCreateAdditionalStalls();
   const createAdditionalOnline = useCreateAdditionalOnline();
   const saveAddress = useSaveAddress();
+  const pendingStallIds = usePendingStallIds(Boolean(user));
   const provinces = useProvinces();
   const { pickup } = draft;
   const districts = useDistricts(pickup.address.provinceId);
@@ -103,12 +110,14 @@ export function PartnerConfirmPage() {
       const groups = new Map<string, typeof rentals>();
       rentals.forEach((row) => groups.set(`${row.start}-${row.end}`, [...(groups.get(`${row.start}-${row.end}`) ?? []), row]));
       groups.forEach((group, key) =>
-        list.push({
-          key: `stalls-${key}`,
-          title: `Thuê thêm ${group.length} quầy`,
-          detail: `${group.map((row) => row.stall.name).join(", ")} · ${fullDate(group[0].start)} → ${fullDate(group[0].end)}`,
-          run: () => createAdditionalStalls.mutateAsync({ stallIds: group.map((row) => row.id), startDate: isoDate(group[0].start), endDate: isoDate(group[0].end) }),
-        }),
+        chunk(group, MAX_STALLS_PER_REQUEST).forEach((part, index) =>
+          list.push({
+            key: `stalls-${key}-${index}`,
+            title: `Thuê thêm ${part.length} quầy`,
+            detail: `${part.map((row) => row.stall.name).join(", ")} · ${fullDate(part[0].start)} → ${fullDate(part[0].end)}`,
+            run: () => createAdditionalStalls.mutateAsync({ stallIds: part.map((row) => row.id), startDate: isoDate(part[0].start), endDate: isoDate(part[0].end) }),
+          }),
+        ),
       );
     } else if (stall) {
       rentals.forEach((row) =>
@@ -129,6 +138,11 @@ export function PartnerConfirmPage() {
   const sending = Object.values(status).includes("running");
   const finished = tasks.length > 0 && tasks.every((task) => status[task.key] === "done");
   const missingStalls = stall && rentals.length === 0;
+  const started = Object.keys(status).length > 0;
+  const today = vnToday();
+  const rentalIssue = (row: (typeof rentals)[number]) =>
+    started ? null : pendingStallIds.has(row.id) ? "Bạn đã có đơn thuê quầy này đang chờ duyệt" : row.start < today ? "Ngày bắt đầu đã qua" : null;
+  const blockedStalls = stall && rentals.some((row) => rentalIssue(row));
 
   const send = async () => {
     const progress: Record<string, Status> = { ...status };
@@ -211,14 +225,20 @@ export function PartnerConfirmPage() {
               <p className="text-danger">Chưa chọn quầy nào.</p>
             ) : (
               <>
-                {rentals.map((row) => (
-                  <div key={row.id} className="flex flex-wrap justify-between gap-2 border-b border-line/60 py-1.5 last:border-0">
-                    <span className="font-medium text-ink">{row.stall.name}</span>
-                    <span className="text-ink-soft">
-                      {fullDate(row.start)} → {fullDate(row.end)} · {row.days} ngày · {priceText(row.cost)}
-                    </span>
-                  </div>
-                ))}
+                {rentals.map((row) => {
+                  const issue = rentalIssue(row);
+                  return (
+                    <div key={row.id} className="flex flex-wrap justify-between gap-2 border-b border-line/60 py-1.5 last:border-0">
+                      <span className="font-medium text-ink">
+                        {row.stall.name}
+                        {issue && <span className="block text-xs font-normal text-danger">{issue}</span>}
+                      </span>
+                      <span className="text-ink-soft">
+                        {fullDate(row.start)} → {fullDate(row.end)} · {row.days} ngày · {priceText(row.cost)}
+                      </span>
+                    </div>
+                  );
+                })}
                 <div className="flex justify-between pt-1 font-semibold text-ink">
                   <span>Tổng tiền thuê</span>
                   <span className="text-primary">{priceText(total)}</span>
@@ -258,7 +278,7 @@ export function PartnerConfirmPage() {
           {finished ? (
             <Button onClick={openRequests}>Xem đơn của tôi</Button>
           ) : (
-            <Button loading={sending} disabled={missingStalls || tasks.length === 0} onClick={send}>
+            <Button loading={sending} disabled={missingStalls || blockedStalls || tasks.length === 0} onClick={send}>
               {Object.values(status).includes("failed") ? "Gửi lại đơn lỗi" : "Xác nhận gửi"}
             </Button>
           )}
