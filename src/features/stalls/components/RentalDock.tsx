@@ -18,6 +18,7 @@ import {
   priceText,
   rentalDays,
   shortDate,
+  vnToday,
   widthPct,
   type DayRange,
   type Ext,
@@ -31,6 +32,7 @@ interface Props {
   stalls: Stall[];
   hoverId: string | null;
   submitLabel: string;
+  lockedIds?: Set<string>;
   onBack?: () => void;
   onHover: (id: string | null) => void;
   onFocus: (id: string) => void;
@@ -46,6 +48,17 @@ function Icon({ path, size }: { path: string; size: number }) {
 }
 
 const shortName = (name: string) => name.replace(/^Gian\s+/i, "");
+
+interface Issue {
+  label: string;
+  title: string;
+}
+
+const ISSUES = {
+  clash: { label: "Trùng lịch", title: "trùng lịch đã có người thuê" },
+  past: { label: "Ngày đã qua", title: "ngày bắt đầu đã qua" },
+  pending: { label: "Đang chờ duyệt", title: "bạn đã có đơn thuê gian này đang chờ duyệt" },
+} satisfies Record<string, Issue>;
 const EDGE_CLEAR = 7;
 
 function TrackLines({ lines, soft, halos, exts }: { lines: Line[]; soft?: boolean; halos: number[]; exts: Ext[] }) {
@@ -69,7 +82,7 @@ interface RowProps {
   stall: Stall;
   range: DayRange;
   booked: DayRange[];
-  clash: boolean;
+  issue: Issue | null;
   isOn: boolean;
   lines: Line[];
   marks: Mark[];
@@ -79,7 +92,7 @@ interface RowProps {
   onFocus: (id: string) => void;
 }
 
-function StallRow({ plan, stall, range, booked, clash, isOn, lines, marks, halos, exts, onHover, onFocus }: RowProps) {
+function StallRow({ plan, stall, range, booked, issue, isOn, lines, marks, halos, exts, onHover, onFocus }: RowProps) {
   const span = plan.viewSpan;
   const days = rentalDays(range);
   const cost = stall.rentalPrice * days;
@@ -89,9 +102,9 @@ function StallRow({ plan, stall, range, booked, clash, isOn, lines, marks, halos
   return (
     <div className="tl-grid tl-row" onMouseEnter={() => onHover(stall.id)} onMouseLeave={() => onHover(null)}>
       <div className="tl-name">
-        <button type="button" className="tl-link" title={clash ? `${stall.name}: trùng lịch đã có người thuê` : stall.name} onClick={() => onFocus(stall.id)}>
+        <button type="button" className="tl-link" title={issue ? `${stall.name}: ${issue.title}` : stall.name} onClick={() => onFocus(stall.id)}>
           {shortName(stall.name)}
-          {clash && <span className="tl-clash">Trùng lịch</span>}
+          {issue && <span className="tl-clash">{issue.label}</span>}
         </button>
         <button type="button" className="tl-remove" aria-label={`Bỏ ${stall.name} khỏi lịch thuê`} onClick={() => plan.toggle(stall.id)}>
           <X size={13} />
@@ -116,7 +129,7 @@ function StallRow({ plan, stall, range, booked, clash, isOn, lines, marks, halos
             })}
         </div>
         <div
-          className={`bar${isOn ? " bar-on" : ""}${clash ? " bar-clash" : ""}`}
+          className={`bar${isOn ? " bar-on" : ""}${issue ? " bar-clash" : ""}`}
           style={{ left: `${edgePct(span, range.start)}%`, width: `${widthPct(span, days)}%` }}
           onPointerDown={(e) => plan.startDrag(stall.id, "move", e, range)}
         >
@@ -161,7 +174,7 @@ function StallRow({ plan, stall, range, booked, clash, isOn, lines, marks, halos
   );
 }
 
-export function RentalDock({ plan, stalls, hoverId, submitLabel, onBack, onHover, onFocus, onSubmit }: Props) {
+export function RentalDock({ plan, stalls, hoverId, submitLabel, lockedIds, onBack, onHover, onFocus, onSubmit }: Props) {
   const { state, years, viewSpan: span } = plan;
   const { items, cursor, editing, open, year } = state;
 
@@ -171,13 +184,15 @@ export function RentalDock({ plan, stalls, hoverId, submitLabel, onBack, onHover
   const halos = useMemo(() => moonsIn(span).map((moon) => edgePct(span, moon)), [span]);
   const exts = useMemo(() => buildExts(state.span, span), [state.span, span]);
 
+  const today = vnToday();
   const rows = items.flatMap((item) => {
     const stall = stalls.find((s) => s.id === item.id);
     if (!stall) return [];
     const booked = bookedRanges(stall.bookings);
-    return [{ item, stall, booked, clash: clashes(item, booked) }];
+    const issue = lockedIds?.has(item.id) ? ISSUES.pending : item.start < today ? ISSUES.past : clashes(item, booked) ? ISSUES.clash : null;
+    return [{ item, stall, booked, issue }];
   });
-  const anyClash = rows.some((row) => row.clash);
+  const firstIssue = rows.find((row) => row.issue)?.issue ?? null;
   const total = rows.reduce((sum, row) => sum + row.stall.rentalPrice * rentalDays(row.item), 0);
   const yearIndex = years.indexOf(year);
   const onMark = marks.some((mark) => cursor?.day === mark.num);
@@ -244,7 +259,7 @@ export function RentalDock({ plan, stalls, hoverId, submitLabel, onBack, onHover
               Quay lại
             </button>
           )}
-          <button type="button" className="dock-cta" disabled={rows.length === 0 || anyClash} title={anyClash ? "Có gian trùng lịch đã có người thuê" : undefined} onClick={onSubmit}>
+          <button type="button" className="dock-cta" disabled={rows.length === 0 || Boolean(firstIssue)} title={firstIssue ? `Có gian ${firstIssue.title}` : undefined} onClick={onSubmit}>
             {submitLabel}
           </button>
           <button type="button" className="dock-toggle" aria-label={open ? "Thu gọn lịch thuê" : "Mở lịch thuê"} aria-expanded={open} onClick={() => plan.patch({ open: !open, cursor: null })}>
@@ -293,7 +308,7 @@ export function RentalDock({ plan, stalls, hoverId, submitLabel, onBack, onHover
                 stall={row.stall}
                 range={row.item}
                 booked={row.booked}
-                clash={row.clash}
+                issue={row.issue}
                 isOn={hoverId === row.item.id || editing === row.item.id}
                 lines={lines}
                 marks={marks}

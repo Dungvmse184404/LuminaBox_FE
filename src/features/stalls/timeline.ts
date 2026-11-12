@@ -234,14 +234,14 @@ export const moonTaken = (booked: DayRange[], year: number) => {
   return booked.some((b) => b.start <= moon && b.end >= moon);
 };
 
-export function freeRange(booked: DayRange[], year: number): DayRange {
+export function freeRange(booked: DayRange[], year: number, minDay = vnToday()): DayRange {
   const preferred = defaultMaster(year);
-  if (!clashes(preferred, booked)) return preferred;
+  if (preferred.start >= minDay && !clashes(preferred, booked)) return preferred;
   const length = preferred.end - preferred.start;
   const span = seasonSpan(year);
   const moon = moonNum(year);
   let best: DayRange | null = null;
-  for (let start = span.from; start + length <= span.to; start++) {
+  for (let start = Math.max(span.from, minDay); start + length <= span.to; start++) {
     const range = { start, end: start + length };
     if (clashes(range, booked)) continue;
     if (!best || Math.abs(start + length / 2 - moon) < Math.abs(best.start + length / 2 - moon)) best = range;

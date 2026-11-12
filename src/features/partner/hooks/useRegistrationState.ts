@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 import { authApi } from "@/features/auth/api/authApi";
 import { useAuth } from "@/features/auth/AuthContext";
 import { refreshTokens } from "@/lib/api";
@@ -10,6 +10,11 @@ const OPEN_ONLINE_STATUSES: RegistrationStatus[] = ["Pending", "AwaitingConfirma
 export function useHasOpenOnline(enabled = true) {
   const { data } = useMyRegistrations({ type: "Online", pageSize: 50 }, enabled);
   return Boolean(data?.items.some((item) => OPEN_ONLINE_STATUSES.includes(item.status)));
+}
+
+export function usePendingStallIds(enabled = true) {
+  const { data } = useMyRegistrations({ type: "Stall", status: "Pending", pageSize: 50 }, enabled);
+  return useMemo(() => new Set((data?.items ?? []).flatMap((item) => (item.stallId ? [item.stallId] : []))), [data]);
 }
 
 export function useReloadCurrentUser() {
