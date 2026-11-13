@@ -61,7 +61,9 @@ export function VouchersPage() {
     <>
       <PageHeader title="Voucher và khuyến mãi" />
 
-      <h2 className="mb-3 font-serif text-lg font-bold text-ink">Voucher của tôi</h2>
+      <h2 className="mb-3 font-serif text-lg font-bold text-ink" data-guide="vouchers-mine" data-guide-label="Voucher của tôi">
+        Voucher của tôi
+      </h2>
       {claimed.isLoading ? (
         <SkeletonRows rows={2} />
       ) : claimed.isError ? (

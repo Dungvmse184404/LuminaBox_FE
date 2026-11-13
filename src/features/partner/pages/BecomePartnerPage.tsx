@@ -54,6 +54,7 @@ export function BecomePartnerPage() {
               <button
                 key={key}
                 type="button"
+                data-guide={`partner-tab-${key}`}
                 data-guide-label={label}
                 onClick={() => show(key)}
                 className={cn(

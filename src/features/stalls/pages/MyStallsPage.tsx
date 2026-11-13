@@ -31,7 +31,7 @@ export function MyStallsPage() {
             <Link to="/become-partner?tab=requests">
               <Button variant="outline">Đơn đăng ký của tôi</Button>
             </Link>
-            <Link to={REGISTER_STALL}>
+            <Link to={REGISTER_STALL} data-guide="store-stall-rent">
               <Button>
                 <Plus size={16} />
                 Thuê thêm gian

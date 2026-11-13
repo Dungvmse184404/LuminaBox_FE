@@ -18,12 +18,13 @@ interface Props {
   onPageChange: (page: number) => void;
   linkPrefix: string;
   showBuyer?: boolean;
+  guideId?: string;
 }
 
-export function OrderList({ data, isLoading, isError, onRetry, status, onStatusChange, onPageChange, linkPrefix, showBuyer }: Props) {
+export function OrderList({ data, isLoading, isError, onRetry, status, onStatusChange, onPageChange, linkPrefix, showBuyer, guideId }: Props) {
   return (
     <>
-      <div className="mb-4 flex flex-wrap gap-2">
+      <div className="mb-4 flex flex-wrap gap-2" data-guide={guideId} data-guide-label={guideId ? "Lọc theo trạng thái đơn" : undefined}>
         {ORDER_FILTERS.map((filter) => (
           <button
             key={filter.value}

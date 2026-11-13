@@ -23,12 +23,18 @@ Timings and sizes (find timeout 4 s, highlight 10 s, idle 30 s, ring gap, …) l
 - The highlight ends on any pointer down (the click still goes through) or after 10 s.
 
 ### Highlight look
-- `markGuideElement` sets `data-guide-active` and draws a **gold ripple ring** (`.lb-guide-ring`) as an overlay in `body` that follows the element (so `overflow: hidden` parents cannot clip it), with the element's corner radius + 4 px.
-- Colour = `--lb-guide-color` (default `--color-gold`, like the stall map pins); the ring pulses outward every 1.2 s, static under reduced motion.
+- `markGuideElement` sets `data-guide-active` and draws a **focus spotlight**: overlays in `body` that follow the element every frame (so `overflow: hidden` parents cannot clip them and scrolling keeps them aligned):
+  - `.lb-guide-veil`: the page dims (`--color-ink` 16 %) except a hole around the element;
+  - two `.lb-guide-ring` (`--color-gold`, 1.5 px): inner at 5 px from the edge, outer faint (35 %) at 13 px; corner radius = element radius + gap.
+- **Converge** (560 ms, ease-out): veil and rings close in from far away, the outer ring 80 ms later. Then they hold still.
+- **Press** (`mark.press()`, 300 ms, ease-in): the inner ring shrinks into the element's centre and fades, the outer ring and the veil open outward and fade, the element dips to scale 0.96. Used only before an auto-click.
+- Release: a 200 ms fade when the highlight ends while holding (expiry, user click elsewhere); immediate after a press.
+- Reduced motion: no converge and no press, the overlays appear at once.
+- All sizes and timings: `ringInnerGapPx`, `ringOuterGapPx`, `ringOuterOpacity`, `focus*`, `press*` in `guideConfig.ts`. The chat panel fades out while the element lies under it (`useGuideOverlap`).
 
 ### Walk (desktop)
 - `paths.ts` finds the shortest path (BFS over `next`) from a node rendered on the current page to the target. Start nodes are nodes of this page that are not revealed by another node in place (menu items start hidden behind `account-menu`). Only `nav` and `opener` nodes are passed through; excluded nodes and nodes outside the user's role are skipped.
-- `walk.ts` highlights each step. A `nav` step shows a countdown badge (`lb-guide-countdown`) and is clicked for the user when it ends; other kinds wait for the user's click. The target is highlighted like in jump mode, never clicked.
+- `walk.ts` highlights each step. A `nav` step is clicked for the user when the countdown ends (the countdown runs silently, nothing is shown on the button; the press animation starts `pressMs` before, so the click still lands on time); other kinds wait for the user's click. The target is highlighted like in jump mode, never clicked.
 - Countdown = **Hướng dẫn tự chuyển bước** in the effect settings menu (`guideCountdown` in `lib/appearance.ts`, 0 / 2 / 3 / 5 / 8 s, default 3). 0 or reduced motion → no auto-click, the user clicks each step.
 - Cancel the whole walk: pointer down outside the highlighted element, any key except Tab / Shift (Enter / Space on the element are allowed), a new guide, or 30 s without action.
 - A step whose element does not appear within 4 s (e.g. "Quản lý địa chỉ" exists only when the user has an address) → fall back to jump.
@@ -91,7 +97,7 @@ The only hand-written part besides `MANUAL_NODES`; kept when the map is regenera
 - Kind (declared, not guessed from the text): `data-guide-kind` wins — `Button` sets `danger` for its `danger`, `dangerOutline`, `dangerGhost` variants, and other dangerous controls declare it themselves (ghost delete icons, the logout item); link → `nav`; menu / tab trigger → `nav`; submit or radio → `action`; input / combobox → `input`; `[data-guide]` card → `section` (or `input` when it holds one input); other buttons → `opener` (never auto-clicked).
 - A name that **starts** with Xóa / Hủy / Thanh toán / Đăng xuất but is not declared `danger` is only reported by `--check`.
 - Limits: elements that depend on data appear only in a mock scenario that has that state — add a scenario (and its mock data) rather than a manual node. Triggers without `aria-expanded` / `aria-haspopup` are not explored — add the attribute (done for "Danh mục").
-- `pnpm guide:crawl --check` also lists every guide with the roles taken from its target (`OK` / `MANUAL` / `BROKEN`) and exits with code 1 when a guide target is missing. Warnings (no failure): guide targets without `data-guide`, `exclude` / `kinds` entries that match no node, danger-looking names not declared `danger`, names guessed from long text, names containing numbers (a count would change the id), route access that differs from `handle.roles`; plus `MANUAL_NODES` the crawler now finds. Today: 155 nodes, 7 / 7 guides `OK`, no warning.
+- `pnpm guide:crawl --check` also lists every guide with the roles taken from its target (`OK` / `MANUAL` / `BROKEN`) and exits with code 1 when a guide target is missing. Warnings (no failure): guide targets without `data-guide`, `exclude` / `kinds` entries that match no node, danger-looking names not declared `danger`, names guessed from long text, names containing numbers (a count would change the id), route access that differs from `handle.roles`; plus `MANUAL_NODES` the crawler now finds. Today: 157 nodes, 20 / 20 guides `OK`, no warning.
 
 ## Not built yet
 Optional CI job that runs `pnpm guide:crawl --check` on each PR (see [`localDocs/architecture/integrations/ai-guide-plan.md`](../../localDocs/architecture/integrations/ai-guide-plan.md)).

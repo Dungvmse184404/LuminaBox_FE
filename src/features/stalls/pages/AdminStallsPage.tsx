@@ -61,7 +61,7 @@ export function AdminStallsPage() {
         title="Gian hàng"
         description="Các gian tại điểm bán mà Organizer có thể thuê."
         actions={
-          <Button onClick={() => openForm(null)}>
+          <Button onClick={() => openForm(null)} data-guide="admin-stall-add">
             <Plus size={16} />
             Thêm gian hàng
           </Button>

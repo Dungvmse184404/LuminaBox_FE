@@ -143,7 +143,7 @@ export function StallPanel({
   return (
     <aside className="panel panel-glass stalls-overlay" aria-label="Danh sách gian hàng">
       <div style={{ flex: "none", display: "flex", flexDirection: "column", gap: 10, padding: "12px 12px 8px" }}>
-        <div className="search">
+        <div className="search" data-guide="stalls-search">
           <Search size={18} aria-hidden="true" />
           <Autocomplete
             freeText

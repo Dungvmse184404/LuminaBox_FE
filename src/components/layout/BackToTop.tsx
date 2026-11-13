@@ -18,7 +18,7 @@ export function BackToTop() {
       onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
       aria-label="Lên đầu trang"
       className={cn(
-        "fixed bottom-6 right-6 z-40 grid size-11 place-items-center rounded-full bg-primary text-white shadow-lg transition-all hover:bg-primary-dark",
+        "fixed bottom-24 right-7 z-40 grid size-11 place-items-center rounded-full bg-primary text-white shadow-lg transition-all hover:bg-primary-dark",
         visible ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-3 opacity-0",
       )}
     >

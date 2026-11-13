@@ -4,6 +4,8 @@ const EDGE_GAP = 2;
 const THUMB_SIZE = 2;
 const SCROLLERS = "[class*='overflow-y-auto'], [class*='overflow-x-auto'], [class*='overflow-auto'], .panel-scroll, .tl-rows";
 
+const NATIVE_SCROLL = "[data-scroll-native]";
+
 const supportsScrollEnd = "onscrollend" in window;
 
 type Axis = "y" | "x";
@@ -16,7 +18,7 @@ interface ThumbState {
 const attached = new WeakMap<HTMLElement, () => void>();
 
 function attach(el: HTMLElement) {
-  if (attached.has(el)) return;
+  if (attached.has(el) || el.closest(NATIVE_SCROLL)) return;
 
   const root = el === document.documentElement;
   const host = root ? document.body : el;
@@ -111,6 +113,7 @@ function attach(el: HTMLElement) {
 
   const render = () => {
     frame = 0;
+    if (!root) Object.values(thumbs).forEach((thumb) => thumb.el.style.setProperty("display", "none"));
     (["y", "x"] as const).forEach((axis) => {
       const { scrollable, track, length, progress } = measure(axis);
       if (!scrollable) {
@@ -155,7 +158,7 @@ function attach(el: HTMLElement) {
   const resizeObserver = new ResizeObserver(schedule);
   resizeObserver.observe(el);
   const mutationObserver = new MutationObserver(schedule);
-  mutationObserver.observe(el, { childList: true, subtree: true, characterData: true });
+  mutationObserver.observe(el, { childList: true, subtree: true, characterData: true, attributes: true, attributeFilter: ["open"] });
 
   render();
 

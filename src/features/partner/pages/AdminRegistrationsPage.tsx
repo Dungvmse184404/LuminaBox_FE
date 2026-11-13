@@ -111,6 +111,7 @@ export function AdminRegistrationsPage() {
       <Card className="space-y-4">
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           <Input
+            data-guide="admin-registrations-search"
             label="Tìm kiếm"
             value={search}
             onChange={(e) => {

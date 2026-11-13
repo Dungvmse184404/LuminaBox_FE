@@ -42,6 +42,7 @@ export function EffectSettingsMenu() {
         aria-expanded={open}
         aria-haspopup="dialog"
         aria-label="Cài đặt hiệu ứng"
+        data-guide="effect-settings"
         className="flex flex-col items-center gap-0.5 rounded-lg px-3 py-1 text-primary-soft transition hover:text-white"
       >
         <Sparkles size={20} />

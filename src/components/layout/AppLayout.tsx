@@ -4,6 +4,7 @@ import { AmbientBackground } from "@/components/ambient/AmbientBackground";
 import { BackToTop } from "@/components/layout/BackToTop";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
+import { AiChatWidget } from "@/features/ai-chat/components/AiChatWidget";
 import { GuideProvider } from "@/features/guide/GuideProvider";
 
 const PLAIN_SECTIONS = /^\/(store|admin)(\/|$)/;
@@ -29,6 +30,7 @@ export function AppLayout() {
         <Footer compact={fullScreen} />
         <BackToTop />
       </div>
+      <AiChatWidget />
     </GuideProvider>
   );
 }

@@ -31,6 +31,7 @@ export function OrdersPage() {
         onStatusChange={changeStatus}
         onPageChange={setPage}
         linkPrefix="/orders"
+        guideId="orders-status-filter"
       />
     </>
   );
@@ -53,6 +54,7 @@ export function StoreOrdersPage() {
         onPageChange={setPage}
         linkPrefix="/store/orders"
         showBuyer
+        guideId="store-orders-status-filter"
       />
     </>
   );

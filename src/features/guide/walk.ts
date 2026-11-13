@@ -35,13 +35,16 @@ async function runStep(node: GuideNode, countdownMs: number, signal: AbortSignal
   const element: HTMLElement = found;
 
   scrollToGuideElement(element);
-  const unmark = markGuideElement(element);
+  const mark = markGuideElement(element);
   const autoClick = countdownMs > 0 && canAutoClick(node) && !prefersReducedMotion();
-  const badge = autoClick ? showCountdown(element, countdownMs) : null;
 
   return new Promise<StepResult>((resolve) => {
     let settled = false;
-    const autoTimer = autoClick ? window.setTimeout(() => element.click(), countdownMs) : 0;
+    const pressAndClick = async () => {
+      await mark.press();
+      if (!settled) element.click();
+    };
+    const autoTimer = autoClick ? window.setTimeout(() => void pressAndClick(), Math.max(0, countdownMs - GUIDE_CONFIG.pressMs)) : 0;
     const idleTimer = window.setTimeout(() => finish("cancelled"), GUIDE_CONFIG.stepIdleTimeoutMs);
 
     const onClick = () => finish("passed");
@@ -64,8 +67,7 @@ async function runStep(node: GuideNode, countdownMs: number, signal: AbortSignal
       document.removeEventListener("pointerdown", onPointerDown, true);
       document.removeEventListener("keydown", onKeyDown, true);
       signal.removeEventListener("abort", onAbort);
-      unmark();
-      badge?.remove();
+      mark.release();
       resolve(signal.aborted ? "cancelled" : result);
     }
 
@@ -74,24 +76,4 @@ async function runStep(node: GuideNode, countdownMs: number, signal: AbortSignal
     document.addEventListener("keydown", onKeyDown, true);
     signal.addEventListener("abort", onAbort);
   });
-}
-
-function showCountdown(element: HTMLElement, countdownMs: number): HTMLElement {
-  const badge = document.createElement("div");
-  badge.className = "lb-guide-countdown";
-  badge.setAttribute("aria-hidden", "true");
-  badge.style.setProperty("--lb-guide-countdown-ms", `${countdownMs}ms`);
-  document.body.appendChild(badge);
-
-  const startedAt = performance.now();
-  const follow = () => {
-    if (!badge.isConnected) return;
-    const rect = element.getBoundingClientRect();
-    badge.style.left = `${Math.min(rect.right, window.innerWidth - GUIDE_CONFIG.badgeEdgePx)}px`;
-    badge.style.top = `${Math.max(rect.top, GUIDE_CONFIG.badgeEdgePx)}px`;
-    badge.textContent = String(Math.max(1, Math.ceil((countdownMs - (performance.now() - startedAt)) / 1000)));
-    requestAnimationFrame(follow);
-  };
-  follow();
-  return badge;
 }

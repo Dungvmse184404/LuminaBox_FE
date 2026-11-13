@@ -42,6 +42,71 @@
       "target": "catalog-add-category",
       "label": "Loại bánh & nhân",
       "description": "Add a new cake category to the platform catalogue"
+    },
+    "track_orders": {
+      "target": "orders-status-filter",
+      "label": "Đơn hàng của tôi",
+      "description": "See my orders and their status (waiting for confirmation, shipping, delivered, cancelled)"
+    },
+    "my_vouchers": {
+      "target": "vouchers-mine",
+      "label": "Voucher và khuyến mãi",
+      "description": "See my saved vouchers and claim new promotions"
+    },
+    "find_stalls": {
+      "target": "stalls-search",
+      "label": "Điểm bán",
+      "description": "Find offline stalls (points of sale, pickup places) on the map by name, code or area"
+    },
+    "become_partner": {
+      "target": "partner-tab-register",
+      "label": "Trở thành đối tác",
+      "description": "Register as a partner: sell online on LuminaBox or rent a stall at a point of sale"
+    },
+    "my_partner_requests": {
+      "target": "partner-tab-requests",
+      "label": "Đơn đăng ký của tôi",
+      "description": "See the status of my partner and stall rental applications"
+    },
+    "effect_settings": {
+      "target": "effect-settings",
+      "label": "Cài đặt hiệu ứng",
+      "description": "Change animation effects and the auto-step time of on-screen guides"
+    },
+    "add_product": {
+      "target": "store-product-add",
+      "label": "Sản phẩm của tôi",
+      "description": "Add a new product to my shop (variants, images, wholesale prices, stock per stall)"
+    },
+    "add_box": {
+      "target": "store-box-add",
+      "label": "Hộp quà",
+      "description": "Add a gift box that buyers can choose together with cakes"
+    },
+    "manage_store_orders": {
+      "target": "store-orders-status-filter",
+      "label": "Đơn hàng của cửa hàng",
+      "description": "See and process my shop's orders by status"
+    },
+    "rent_stall": {
+      "target": "store-stall-rent",
+      "label": "Gian hàng của tôi",
+      "description": "Rent one more stall at a point of sale for my shop"
+    },
+    "add_stall": {
+      "target": "admin-stall-add",
+      "label": "Gian hàng",
+      "description": "Add a new stall at a point of sale that partners can rent"
+    },
+    "review_partner_requests": {
+      "target": "admin-registrations-search",
+      "label": "Đơn đăng ký đối tác",
+      "description": "Review partner applications (approve or reject)"
+    },
+    "manage_fillings": {
+      "target": "catalog-tab-filling",
+      "label": "Loại bánh & nhân",
+      "description": "Add or edit cake fillings in the platform catalogue"
     }
   }
 }

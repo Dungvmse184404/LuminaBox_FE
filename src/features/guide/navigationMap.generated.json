@@ -13,16 +13,15 @@
       "opens": "/become-partner",
       "next": [
         "/become-partner#button:ban-online",
-        "/become-partner#button:dang-ky",
         "/become-partner#button:den-trang-duyet-don",
-        "/become-partner#button:don-dang-ky-cua-toi",
-        "/become-partner#button:mo-rong-ban-hang",
         "/become-partner#button:thue-quay",
         "/become-partner#button:tiep-tuc",
         "/become-partner#input:so-dien-thoai",
         "/become-partner#input:ten-thuong-hieu",
         "/become-partner#link:den-trang-duyet-don",
-        "/become-partner#link:trang-cua-hang"
+        "/become-partner#link:trang-cua-hang",
+        "partner-tab-register",
+        "partner-tab-requests"
       ],
       "roles": [
         "Organization",
@@ -159,9 +158,9 @@
         "/admin/catalog#button:xoa-banh-nuong",
         "/admin/catalog#button:xoa-banh-tuyet",
         "/admin/catalog#combobox:tim-loai-banh",
-        "/admin/catalog#tab:loai-banh",
-        "/admin/catalog#tab:nhan",
-        "catalog-add-category"
+        "catalog-add-category",
+        "catalog-tab-category",
+        "catalog-tab-filling"
       ],
       "roles": [
         "Manager"
@@ -239,10 +238,10 @@
         "/store/*#link:mo-rong-kinh-doanh",
         "/store/*#link:san-pham",
         "/store/*#link:tong-quan",
-        "/store/products#button:them-san-pham",
         "/store/products#button:thu-lai",
         "/store/products#input:tim-theo-ten-san-pham",
-        "store-nav-pickup-addresses"
+        "store-nav-pickup-addresses",
+        "store-product-add"
       ],
       "roles": [
         "Organization"
@@ -256,16 +255,15 @@
       "opens": "/become-partner",
       "next": [
         "/become-partner#button:ban-online",
-        "/become-partner#button:dang-ky",
         "/become-partner#button:den-trang-duyet-don",
-        "/become-partner#button:don-dang-ky-cua-toi",
-        "/become-partner#button:mo-rong-ban-hang",
         "/become-partner#button:thue-quay",
         "/become-partner#button:tiep-tuc",
         "/become-partner#input:so-dien-thoai",
         "/become-partner#input:ten-thuong-hieu",
         "/become-partner#link:den-trang-duyet-don",
-        "/become-partner#link:trang-cua-hang"
+        "/become-partner#link:trang-cua-hang",
+        "partner-tab-register",
+        "partner-tab-requests"
       ],
       "roles": [
         "Organization",
@@ -280,16 +278,15 @@
       "opens": "/become-partner",
       "next": [
         "/become-partner#button:ban-online",
-        "/become-partner#button:dang-ky",
         "/become-partner#button:den-trang-duyet-don",
-        "/become-partner#button:don-dang-ky-cua-toi",
-        "/become-partner#button:mo-rong-ban-hang",
         "/become-partner#button:thue-quay",
         "/become-partner#button:tiep-tuc",
         "/become-partner#input:so-dien-thoai",
         "/become-partner#input:ten-thuong-hieu",
         "/become-partner#link:den-trang-duyet-don",
-        "/become-partner#link:trang-cua-hang"
+        "/become-partner#link:trang-cua-hang",
+        "partner-tab-register",
+        "partner-tab-requests"
       ],
       "roles": [
         "User"
@@ -358,7 +355,7 @@
         "/admin/*#link:tong-quan",
         "/admin/registrations#button:xem-don-cua-banh-trung-thu-nguyet-cat",
         "/admin/registrations#button:xem-don-cua-kinh-do-gia-truyen",
-        "/admin/registrations#input:tim-kiem"
+        "admin-registrations-search"
       ],
       "roles": [
         "Manager"
@@ -374,9 +371,9 @@
         "/admin/*#link:don-doi-tac",
         "/admin/*#link:loai-banh-nhan",
         "/admin/*#link:tong-quan",
-        "/admin/stalls#button:them-gian-hang",
         "/admin/stalls#button:thu-lai",
-        "/admin/stalls#input:tim-theo-ma-ten-gian"
+        "/admin/stalls#input:tim-theo-ma-ten-gian",
+        "admin-stall-add"
       ],
       "roles": [
         "Manager"
@@ -401,9 +398,9 @@
         "/admin/catalog#button:xoa-banh-nuong",
         "/admin/catalog#button:xoa-banh-tuyet",
         "/admin/catalog#combobox:tim-loai-banh",
-        "/admin/catalog#tab:loai-banh",
-        "/admin/catalog#tab:nhan",
-        "catalog-add-category"
+        "catalog-add-category",
+        "catalog-tab-category",
+        "catalog-tab-filling"
       ],
       "roles": [
         "Manager"
@@ -515,43 +512,6 @@
       ]
     },
     {
-      "id": "/admin/catalog#tab:loai-banh",
-      "label": "Loại bánh",
-      "kind": "nav",
-      "page": "/admin/catalog",
-      "next": [],
-      "roles": [
-        "Manager"
-      ]
-    },
-    {
-      "id": "/admin/catalog#tab:nhan",
-      "label": "Nhân",
-      "kind": "nav",
-      "page": "/admin/catalog",
-      "opens": "/admin/catalog",
-      "next": [
-        "/admin/*#link:don-doi-tac",
-        "/admin/*#link:gian-hang",
-        "/admin/*#link:loai-banh-nhan",
-        "/admin/*#link:tong-quan",
-        "/admin/catalog#button:sua-banh-chay",
-        "/admin/catalog#button:sua-banh-deo",
-        "/admin/catalog#button:sua-banh-nuong",
-        "/admin/catalog#button:sua-banh-tuyet",
-        "/admin/catalog#button:xoa-banh-chay",
-        "/admin/catalog#button:xoa-banh-deo",
-        "/admin/catalog#button:xoa-banh-nuong",
-        "/admin/catalog#button:xoa-banh-tuyet",
-        "/admin/catalog#combobox:tim-loai-banh",
-        "/admin/catalog#tab:loai-banh",
-        "catalog-add-category"
-      ],
-      "roles": [
-        "Manager"
-      ]
-    },
-    {
       "id": "/admin/registrations#button:xem-don-cua-banh-trung-thu-nguyet-cat",
       "label": "Xem đơn của Bánh Trung Thu Nguyệt Cát",
       "kind": "opener",
@@ -566,26 +526,6 @@
       "label": "Xem đơn của Kinh Đô Gia Truyền",
       "kind": "opener",
       "page": "/admin/registrations",
-      "next": [],
-      "roles": [
-        "Manager"
-      ]
-    },
-    {
-      "id": "/admin/registrations#input:tim-kiem",
-      "label": "Tìm kiếm",
-      "kind": "input",
-      "page": "/admin/registrations",
-      "next": [],
-      "roles": [
-        "Manager"
-      ]
-    },
-    {
-      "id": "/admin/stalls#button:them-gian-hang",
-      "label": "Thêm gian hàng",
-      "kind": "opener",
-      "page": "/admin/stalls",
       "next": [],
       "roles": [
         "Manager"
@@ -623,16 +563,6 @@
       ]
     },
     {
-      "id": "/become-partner#button:dang-ky",
-      "label": "Đăng ký",
-      "kind": "opener",
-      "page": "/become-partner",
-      "next": [],
-      "roles": [
-        "User"
-      ]
-    },
-    {
       "id": "/become-partner#button:den-trang-duyet-don",
       "label": "Đến trang duyệt đơn",
       "kind": "opener",
@@ -640,27 +570,6 @@
       "next": [],
       "roles": [
         "Manager"
-      ]
-    },
-    {
-      "id": "/become-partner#button:don-dang-ky-cua-toi",
-      "label": "Đơn đăng ký của tôi",
-      "kind": "opener",
-      "page": "/become-partner",
-      "next": [],
-      "roles": [
-        "Organization",
-        "User"
-      ]
-    },
-    {
-      "id": "/become-partner#button:mo-rong-ban-hang",
-      "label": "Mở rộng bán hàng",
-      "kind": "opener",
-      "page": "/become-partner",
-      "next": [],
-      "roles": [
-        "Organization"
       ]
     },
     {
@@ -718,7 +627,7 @@
         "/admin/*#link:tong-quan",
         "/admin/registrations#button:xem-don-cua-banh-trung-thu-nguyet-cat",
         "/admin/registrations#button:xem-don-cua-kinh-do-gia-truyen",
-        "/admin/registrations#input:tim-kiem"
+        "admin-registrations-search"
       ],
       "roles": [
         "Manager"
@@ -827,7 +736,8 @@
         "/orders#button:da-xac-nhan",
         "/orders#button:dang-giao",
         "/orders#button:tat-ca",
-        "/orders#button:thu-lai"
+        "/orders#button:thu-lai",
+        "orders-status-filter"
       ]
     },
     {
@@ -950,13 +860,6 @@
       "next": []
     },
     {
-      "id": "/stalls#combobox:tim-gian-hang",
-      "label": "Tìm gian hàng",
-      "kind": "input",
-      "page": "/stalls",
-      "next": []
-    },
-    {
       "id": "/store/*#link:don-hang",
       "label": "Đơn hàng",
       "kind": "nav",
@@ -975,7 +878,8 @@
         "/store/orders#button:dang-giao",
         "/store/orders#button:tat-ca",
         "/store/orders#button:thu-lai",
-        "store-nav-pickup-addresses"
+        "store-nav-pickup-addresses",
+        "store-orders-status-filter"
       ],
       "roles": [
         "Organization"
@@ -998,8 +902,8 @@
         "/store/stalls#button:thue-them-gian",
         "/store/stalls#link:don-dang-ky-cua-toi",
         "/store/stalls#link:thue-gian-hang",
-        "/store/stalls#link:thue-them-gian",
-        "store-nav-pickup-addresses"
+        "store-nav-pickup-addresses",
+        "store-stall-rent"
       ],
       "roles": [
         "Organization"
@@ -1017,9 +921,9 @@
         "/store/*#link:mo-rong-kinh-doanh",
         "/store/*#link:san-pham",
         "/store/*#link:tong-quan",
-        "/store/boxes#button:them-hop",
         "/store/boxes#button:thu-lai",
         "/store/boxes#input:tim-theo-ten-hop",
+        "store-box-add",
         "store-nav-pickup-addresses"
       ],
       "roles": [
@@ -1034,16 +938,15 @@
       "opens": "/become-partner",
       "next": [
         "/become-partner#button:ban-online",
-        "/become-partner#button:dang-ky",
         "/become-partner#button:den-trang-duyet-don",
-        "/become-partner#button:don-dang-ky-cua-toi",
-        "/become-partner#button:mo-rong-ban-hang",
         "/become-partner#button:thue-quay",
         "/become-partner#button:tiep-tuc",
         "/become-partner#input:so-dien-thoai",
         "/become-partner#input:ten-thuong-hieu",
         "/become-partner#link:den-trang-duyet-don",
-        "/become-partner#link:trang-cua-hang"
+        "/become-partner#link:trang-cua-hang",
+        "partner-tab-register",
+        "partner-tab-requests"
       ],
       "roles": [
         "Organization"
@@ -1061,10 +964,10 @@
         "/store/*#link:hop",
         "/store/*#link:mo-rong-kinh-doanh",
         "/store/*#link:tong-quan",
-        "/store/products#button:them-san-pham",
         "/store/products#button:thu-lai",
         "/store/products#input:tim-theo-ten-san-pham",
-        "store-nav-pickup-addresses"
+        "store-nav-pickup-addresses",
+        "store-product-add"
       ],
       "roles": [
         "Organization"
@@ -1085,16 +988,6 @@
         "/store/*#link:san-pham",
         "store-nav-pickup-addresses"
       ],
-      "roles": [
-        "Organization"
-      ]
-    },
-    {
-      "id": "/store/boxes#button:them-hop",
-      "label": "Thêm hộp",
-      "kind": "opener",
-      "page": "/store/boxes",
-      "next": [],
       "roles": [
         "Organization"
       ]
@@ -1210,16 +1103,6 @@
       ]
     },
     {
-      "id": "/store/products#button:them-san-pham",
-      "label": "Thêm sản phẩm",
-      "kind": "opener",
-      "page": "/store/products",
-      "next": [],
-      "roles": [
-        "Organization"
-      ]
-    },
-    {
       "id": "/store/products#button:thu-lai",
       "label": "Thử lại",
       "kind": "opener",
@@ -1277,16 +1160,15 @@
       "opens": "/become-partner",
       "next": [
         "/become-partner#button:ban-online",
-        "/become-partner#button:dang-ky",
         "/become-partner#button:den-trang-duyet-don",
-        "/become-partner#button:don-dang-ky-cua-toi",
-        "/become-partner#button:mo-rong-ban-hang",
         "/become-partner#button:thue-quay",
         "/become-partner#button:tiep-tuc",
         "/become-partner#input:so-dien-thoai",
         "/become-partner#input:ten-thuong-hieu",
         "/become-partner#link:den-trang-duyet-don",
-        "/become-partner#link:trang-cua-hang"
+        "/become-partner#link:trang-cua-hang",
+        "partner-tab-register",
+        "partner-tab-requests"
       ],
       "roles": [
         "Organization"
@@ -1300,39 +1182,15 @@
       "opens": "/become-partner",
       "next": [
         "/become-partner#button:ban-online",
-        "/become-partner#button:dang-ky",
         "/become-partner#button:den-trang-duyet-don",
-        "/become-partner#button:don-dang-ky-cua-toi",
-        "/become-partner#button:mo-rong-ban-hang",
         "/become-partner#button:thue-quay",
         "/become-partner#button:tiep-tuc",
         "/become-partner#input:so-dien-thoai",
         "/become-partner#input:ten-thuong-hieu",
         "/become-partner#link:den-trang-duyet-don",
-        "/become-partner#link:trang-cua-hang"
-      ],
-      "roles": [
-        "Organization"
-      ]
-    },
-    {
-      "id": "/store/stalls#link:thue-them-gian",
-      "label": "Thuê thêm gian",
-      "kind": "nav",
-      "page": "/store/stalls",
-      "opens": "/become-partner",
-      "next": [
-        "/become-partner#button:ban-online",
-        "/become-partner#button:dang-ky",
-        "/become-partner#button:den-trang-duyet-don",
-        "/become-partner#button:don-dang-ky-cua-toi",
-        "/become-partner#button:mo-rong-ban-hang",
-        "/become-partner#button:thue-quay",
-        "/become-partner#button:tiep-tuc",
-        "/become-partner#input:so-dien-thoai",
-        "/become-partner#input:ten-thuong-hieu",
-        "/become-partner#link:den-trang-duyet-don",
-        "/become-partner#link:trang-cua-hang"
+        "/become-partner#link:trang-cua-hang",
+        "partner-tab-register",
+        "partner-tab-requests"
       ],
       "roles": [
         "Organization"
@@ -1411,7 +1269,8 @@
         "/orders#button:da-xac-nhan",
         "/orders#button:dang-giao",
         "/orders#button:tat-ca",
-        "/orders#button:thu-lai"
+        "/orders#button:thu-lai",
+        "orders-status-filter"
       ]
     },
     {
@@ -1457,7 +1316,8 @@
       "page": null,
       "opens": "/vouchers",
       "next": [
-        "/vouchers#button:thu-lai"
+        "/vouchers#button:thu-lai",
+        "vouchers-mine"
       ]
     },
     {
@@ -1466,6 +1326,26 @@
       "kind": "opener",
       "page": "/account/addresses",
       "next": []
+    },
+    {
+      "id": "admin-registrations-search",
+      "label": "Tìm kiếm",
+      "kind": "input",
+      "page": "/admin/registrations",
+      "next": [],
+      "roles": [
+        "Manager"
+      ]
+    },
+    {
+      "id": "admin-stall-add",
+      "label": "Thêm gian hàng",
+      "kind": "opener",
+      "page": "/admin/stalls",
+      "next": [],
+      "roles": [
+        "Manager"
+      ]
     },
     {
       "id": "catalog-add-category",
@@ -1478,7 +1358,44 @@
       ]
     },
     {
-      "id": "global#button:cai-dat-hieu-ung",
+      "id": "catalog-tab-category",
+      "label": "Loại bánh",
+      "kind": "nav",
+      "page": "/admin/catalog",
+      "next": [],
+      "roles": [
+        "Manager"
+      ]
+    },
+    {
+      "id": "catalog-tab-filling",
+      "label": "Nhân",
+      "kind": "nav",
+      "page": "/admin/catalog",
+      "opens": "/admin/catalog",
+      "next": [
+        "/admin/*#link:don-doi-tac",
+        "/admin/*#link:gian-hang",
+        "/admin/*#link:loai-banh-nhan",
+        "/admin/*#link:tong-quan",
+        "/admin/catalog#button:sua-banh-chay",
+        "/admin/catalog#button:sua-banh-deo",
+        "/admin/catalog#button:sua-banh-nuong",
+        "/admin/catalog#button:sua-banh-tuyet",
+        "/admin/catalog#button:xoa-banh-chay",
+        "/admin/catalog#button:xoa-banh-deo",
+        "/admin/catalog#button:xoa-banh-nuong",
+        "/admin/catalog#button:xoa-banh-tuyet",
+        "/admin/catalog#combobox:tim-loai-banh",
+        "catalog-add-category",
+        "catalog-tab-category"
+      ],
+      "roles": [
+        "Manager"
+      ]
+    },
+    {
+      "id": "effect-settings",
       "label": "Cài đặt hiệu ứng",
       "kind": "nav",
       "page": null,
@@ -1526,16 +1443,15 @@
       "opens": "/become-partner",
       "next": [
         "/become-partner#button:ban-online",
-        "/become-partner#button:dang-ky",
         "/become-partner#button:den-trang-duyet-don",
-        "/become-partner#button:don-dang-ky-cua-toi",
-        "/become-partner#button:mo-rong-ban-hang",
         "/become-partner#button:thue-quay",
         "/become-partner#button:tiep-tuc",
         "/become-partner#input:so-dien-thoai",
         "/become-partner#input:ten-thuong-hieu",
         "/become-partner#link:den-trang-duyet-don",
-        "/become-partner#link:trang-cua-hang"
+        "/become-partner#link:trang-cua-hang",
+        "partner-tab-register",
+        "partner-tab-requests"
       ]
     },
     {
@@ -1648,7 +1564,7 @@
         "/stalls#button:thu-lai",
         "/stalls#button:thu-nho",
         "/stalls#button:xem-tat-ca-diem-ban",
-        "/stalls#combobox:tim-gian-hang"
+        "stalls-search"
       ]
     },
     {
@@ -1755,16 +1671,15 @@
       "opens": "/become-partner",
       "next": [
         "/become-partner#button:ban-online",
-        "/become-partner#button:dang-ky",
         "/become-partner#button:den-trang-duyet-don",
-        "/become-partner#button:don-dang-ky-cua-toi",
-        "/become-partner#button:mo-rong-ban-hang",
         "/become-partner#button:thue-quay",
         "/become-partner#button:tiep-tuc",
         "/become-partner#input:so-dien-thoai",
         "/become-partner#input:ten-thuong-hieu",
         "/become-partner#link:den-trang-duyet-don",
-        "/become-partner#link:trang-cua-hang"
+        "/become-partner#link:trang-cua-hang",
+        "partner-tab-register",
+        "partner-tab-requests"
       ]
     },
     {
@@ -1799,16 +1714,15 @@
       "opens": "/become-partner",
       "next": [
         "/become-partner#button:ban-online",
-        "/become-partner#button:dang-ky",
         "/become-partner#button:den-trang-duyet-don",
-        "/become-partner#button:don-dang-ky-cua-toi",
-        "/become-partner#button:mo-rong-ban-hang",
         "/become-partner#button:thue-quay",
         "/become-partner#button:tiep-tuc",
         "/become-partner#input:so-dien-thoai",
         "/become-partner#input:ten-thuong-hieu",
         "/become-partner#link:den-trang-duyet-don",
-        "/become-partner#link:trang-cua-hang"
+        "/become-partner#link:trang-cua-hang",
+        "partner-tab-register",
+        "partner-tab-requests"
       ]
     },
     {
@@ -1818,7 +1732,8 @@
       "page": null,
       "opens": "/vouchers",
       "next": [
-        "/vouchers#button:thu-lai"
+        "/vouchers#button:thu-lai",
+        "vouchers-mine"
       ]
     },
     {
@@ -1869,6 +1784,35 @@
       "kind": "action",
       "page": null,
       "next": []
+    },
+    {
+      "id": "orders-status-filter",
+      "label": "Lọc theo trạng thái đơn",
+      "kind": "section",
+      "page": "/orders",
+      "next": []
+    },
+    {
+      "id": "partner-tab-register",
+      "label": "Đăng ký",
+      "kind": "opener",
+      "page": "/become-partner",
+      "next": [],
+      "roles": [
+        "Organization",
+        "User"
+      ]
+    },
+    {
+      "id": "partner-tab-requests",
+      "label": "Đơn đăng ký của tôi",
+      "kind": "opener",
+      "page": "/become-partner",
+      "next": [],
+      "roles": [
+        "Organization",
+        "User"
+      ]
     },
     {
       "id": "pickup-address-add",
@@ -1931,6 +1875,23 @@
       ]
     },
     {
+      "id": "stalls-search",
+      "label": "Tìm theo tên, mã hoặc khu vực",
+      "kind": "input",
+      "page": "/stalls",
+      "next": []
+    },
+    {
+      "id": "store-box-add",
+      "label": "Thêm hộp",
+      "kind": "opener",
+      "page": "/store/boxes",
+      "next": [],
+      "roles": [
+        "Organization"
+      ]
+    },
+    {
       "id": "store-nav-pickup-addresses",
       "label": "Địa chỉ lấy hàng",
       "kind": "nav",
@@ -1950,6 +1911,55 @@
       "roles": [
         "Organization"
       ]
+    },
+    {
+      "id": "store-orders-status-filter",
+      "label": "Lọc theo trạng thái đơn",
+      "kind": "section",
+      "page": "/store/orders",
+      "next": [],
+      "roles": [
+        "Organization"
+      ]
+    },
+    {
+      "id": "store-product-add",
+      "label": "Thêm sản phẩm",
+      "kind": "opener",
+      "page": "/store/products",
+      "next": [],
+      "roles": [
+        "Organization"
+      ]
+    },
+    {
+      "id": "store-stall-rent",
+      "label": "Thuê thêm gian",
+      "kind": "nav",
+      "page": "/store/stalls",
+      "opens": "/become-partner",
+      "next": [
+        "/become-partner#button:ban-online",
+        "/become-partner#button:den-trang-duyet-don",
+        "/become-partner#button:thue-quay",
+        "/become-partner#button:tiep-tuc",
+        "/become-partner#input:so-dien-thoai",
+        "/become-partner#input:ten-thuong-hieu",
+        "/become-partner#link:den-trang-duyet-don",
+        "/become-partner#link:trang-cua-hang",
+        "partner-tab-register",
+        "partner-tab-requests"
+      ],
+      "roles": [
+        "Organization"
+      ]
+    },
+    {
+      "id": "vouchers-mine",
+      "label": "Voucher của tôi",
+      "kind": "section",
+      "page": "/vouchers",
+      "next": []
     }
   ]
 }

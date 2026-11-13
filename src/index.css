@@ -260,58 +260,27 @@
   animation: lb-shimmer 1.6s linear infinite;
 }
 
+.lb-guide-veil {
+  position: fixed;
+  z-index: 58;
+  pointer-events: none;
+  opacity: 0;
+  box-shadow: 0 0 0 200vmax color-mix(in oklab, var(--color-ink) 16%, transparent);
+}
+
 .lb-guide-ring {
-  --lb-guide-color: var(--color-gold);
   position: fixed;
   z-index: 60;
-  border: 2px solid var(--lb-guide-color);
+  box-sizing: border-box;
+  border: 3px solid var(--color-gold);
   pointer-events: none;
-  animation: lb-guide-ripple 1.2s ease-out infinite;
+  opacity: 0;
 }
 
-@keyframes lb-guide-ripple {
-  from {
-    box-shadow: 0 0 0 0 color-mix(in oklab, var(--lb-guide-color) 75%, transparent);
-  }
-  to {
-    box-shadow: 0 0 0 14px color-mix(in oklab, var(--lb-guide-color) 0%, transparent);
-  }
+.lb-guide-ring--outer {
+  border-width: 2px;
 }
 
-@property --lb-guide-progress {
-  syntax: "<percentage>";
-  inherits: false;
-  initial-value: 100%;
-}
-
-.lb-guide-countdown {
-  position: fixed;
-  z-index: 61;
-  display: grid;
-  place-items: center;
-  width: 1.5rem;
-  height: 1.5rem;
-  translate: -50% -50%;
-  border-radius: 9999px;
-  font-size: 0.7rem;
-  font-weight: 700;
-  color: var(--color-primary);
-  background:
-    radial-gradient(closest-side, var(--color-card) 72%, transparent 76%),
-    conic-gradient(var(--color-primary) var(--lb-guide-progress), var(--color-primary-soft) 0);
-  box-shadow: var(--shadow-pop);
-  pointer-events: none;
-  animation: lb-guide-countdown var(--lb-guide-countdown-ms, 3000ms) linear forwards;
-}
-
-@keyframes lb-guide-countdown {
-  from {
-    --lb-guide-progress: 100%;
-  }
-  to {
-    --lb-guide-progress: 0%;
-  }
-}
 
 .lb-flash {
   animation: lb-flash-ring 1.6s ease-in-out;
@@ -562,8 +531,7 @@
   .lb-fade-in,
   .lb-skeleton,
   .lb-flash,
-  .lb-cloud,
-  .lb-guide-ring {
+  .lb-cloud {
     animation: none;
   }
 

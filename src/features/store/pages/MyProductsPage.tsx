@@ -100,7 +100,7 @@ export function MyProductsPage() {
         title="Sản phẩm của tôi"
         description="Sản phẩm, biến thể, ảnh, giá sỉ và tồn kho theo gian."
         actions={
-          <Button onClick={() => setProductForm({ open: true, product: null })}>
+          <Button onClick={() => setProductForm({ open: true, product: null })} data-guide="store-product-add">
             <Plus size={16} />
             Thêm sản phẩm
           </Button>

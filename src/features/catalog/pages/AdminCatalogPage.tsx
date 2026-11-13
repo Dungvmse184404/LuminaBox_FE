@@ -79,6 +79,7 @@ export function AdminCatalogPage() {
             key={key}
             type="button"
             role="tab"
+            data-guide={`catalog-tab-${key}`}
             aria-selected={kind === key}
             onClick={() => switchTab(key)}
             className={cn(

@@ -64,7 +64,7 @@ export function MyBoxesPage() {
         title="Hộp quà"
         description="Hộp bán riêng, khách chọn kèm khi mua bánh."
         actions={
-          <Button onClick={() => setForm({ open: true, box: null })}>
+          <Button onClick={() => setForm({ open: true, box: null })} data-guide="store-box-add">
             <Plus size={16} />
             Thêm hộp
           </Button>

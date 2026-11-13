@@ -18,10 +18,12 @@ interface GlowSpot {
 const DEFAULT_ACTIVE_SELECTOR = '[aria-current="page"], [aria-selected="true"]';
 const IDLE_WIDTH_RATIO = 0.4;
 const WATCHED_ATTRIBUTES = ["aria-current", "aria-selected", "class"];
+const PENDING_HOLD_MS = 3000;
 
 export function GlowHairline({ scopeRef, activeSelector = DEFAULT_ACTIVE_SELECTOR, itemSelector, spread = 2, className }: Props) {
   const lineRef = useRef<HTMLDivElement>(null);
   const hoveredRef = useRef<HTMLElement | null>(null);
+  const pendingRef = useRef<HTMLElement | null>(null);
   const [spot, setSpot] = useState<GlowSpot | null>(null);
   const [animated, setAnimated] = useState(false);
 
@@ -30,7 +32,9 @@ export function GlowHairline({ scopeRef, activeSelector = DEFAULT_ACTIVE_SELECTO
     const scope = scopeRef.current;
     if (!line) return;
     const lineRect = line.getBoundingClientRect();
-    const target = hoveredRef.current ?? scope?.querySelector<HTMLElement>(activeSelector);
+    const active = scope?.querySelector<HTMLElement>(activeSelector) ?? null;
+    if (pendingRef.current && (pendingRef.current === active || !pendingRef.current.isConnected)) pendingRef.current = null;
+    const target = hoveredRef.current ?? pendingRef.current ?? active;
     const targetRect = target?.getBoundingClientRect();
     const next: GlowSpot =
       targetRect && targetRect.width > 0
@@ -54,6 +58,7 @@ export function GlowHairline({ scopeRef, activeSelector = DEFAULT_ACTIVE_SELECTO
     const line = lineRef.current;
     if (!scope || !line) return;
     let disposed = false;
+    let pendingTimer: number | undefined;
 
     const resizeObserver = new ResizeObserver(measure);
     resizeObserver.observe(scope);
@@ -76,7 +81,20 @@ export function GlowHairline({ scopeRef, activeSelector = DEFAULT_ACTIVE_SELECTO
       hoveredRef.current = null;
       measure();
     };
+    const holdItem = (event: Event) => {
+      if (!itemSelector || !(event.target instanceof Element)) return;
+      const item = event.target.closest<HTMLElement>(itemSelector);
+      if (!item || !scope.contains(item)) return;
+      pendingRef.current = item;
+      window.clearTimeout(pendingTimer);
+      pendingTimer = window.setTimeout(() => {
+        pendingRef.current = null;
+        measure();
+      }, PENDING_HOLD_MS);
+      measure();
+    };
 
+    scope.addEventListener("click", holdItem);
     scope.addEventListener("pointerover", followItem);
     scope.addEventListener("focusin", followItem);
     scope.addEventListener("pointerleave", releaseItem);
@@ -89,7 +107,9 @@ export function GlowHairline({ scopeRef, activeSelector = DEFAULT_ACTIVE_SELECTO
 
     return () => {
       disposed = true;
+      window.clearTimeout(pendingTimer);
       resizeObserver.disconnect();
+      scope.removeEventListener("click", holdItem);
       mutationObserver.disconnect();
       scope.removeEventListener("pointerover", followItem);
       scope.removeEventListener("focusin", followItem);
